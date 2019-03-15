@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2014 wcm.io
+ * Copyright (C) 2019 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * #L%
  */
 /**
- * Helper for building virtual resource trees for Granite UI components.
+ * Helper models for Granite UI components.
  */
-@org.osgi.annotation.versioning.Version("1.1")
-package io.wcm.wcm.ui.granite.resource;
+@org.osgi.annotation.versioning.Version("1.0")
+package io.wcm.wcm.ui.granite.components.pathfield;
