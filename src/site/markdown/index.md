@@ -33,6 +33,11 @@ This library provides a selection of [Granite UI components][components] usable 
 Additionally a set of [Granite UI validators][validation] is provided which can be used with AEM 6.2 and up.
 
 
+### GitHub Repository
+
+Sources: https://github.com/wcm-io/io.wcm.wcm.ui.granite
+
+
 [components]: components.html
 [validation]: validation.html
 [showhide]: showhide.html
