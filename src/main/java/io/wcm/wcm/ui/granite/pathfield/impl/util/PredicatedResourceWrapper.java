@@ -22,7 +22,6 @@ package io.wcm.wcm.ui.granite.pathfield.impl.util;
 import java.util.Iterator;
 
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.iterators.FilterIterator;
 import org.apache.commons.collections.iterators.TransformIterator;
 import org.apache.sling.api.resource.Resource;
@@ -56,12 +55,8 @@ public class PredicatedResourceWrapper extends ResourceWrapper {
   @Override
   @SuppressWarnings("unchecked")
   public Iterator<Resource> listChildren() {
-    return new TransformIterator(new FilterIterator(super.listChildren(), predicate), new Transformer() {
-      @Override
-      public Resource transform(Object o) {
-        return new PredicatedResourceWrapper((Resource)o, predicate);
-      }
-    });
+    return new TransformIterator(new FilterIterator(super.listChildren(), predicate),
+        obj -> new PredicatedResourceWrapper((Resource)obj, predicate));
   }
 
   @Override

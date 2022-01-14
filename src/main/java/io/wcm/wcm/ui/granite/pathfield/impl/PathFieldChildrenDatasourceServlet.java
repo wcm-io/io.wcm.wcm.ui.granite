@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -141,12 +140,9 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
 
       if (searchName != null) {
         final Pattern searchNamePattern = Pattern.compile(Pattern.quote(searchName), Pattern.CASE_INSENSITIVE);
-        predicates.add(new Predicate() {
-          @Override
-          public boolean evaluate(Object obj) {
+        predicates.add(obj -> {
             Resource r = (Resource)obj;
             return searchNamePattern.matcher(r.getName()).lookingAt();
-          }
         });
       }
 
@@ -161,12 +157,7 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
 
           // sort result set alphabetically - but only if parent node does not have orderable child nodes
           if (!isOrderableChildNodes(parent)) {
-            Collections.sort(list, new Comparator<Resource>() {
-              @Override
-              public int compare(Resource r1, Resource r2) {
-                return r1.getName().compareTo(r2.getName());
-              }
-            });
+            Collections.sort(list, (Resource r1, Resource r2) -> r1.getName().compareTo(r2.getName()));
           }
 
           return new TransformIterator(new PagingIterator<>(list.iterator(), offset, limit), transformer);
@@ -179,6 +170,7 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
     request.setAttribute(DataSource.class.getName(), ds);
   }
 
+  @SuppressWarnings("java:S2583") // filter may be null
   private List<Predicate> toPredicates(@NotNull String[] filter) {
     if (filter == null) {
       return Collections.emptyList();
@@ -200,18 +192,13 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
   }
 
   private static Transformer createTransformer(final String itemResourceType, final Predicate predicate) {
-    return new Transformer() {
+    return r -> new PredicatedResourceWrapper((Resource)r, predicate) {
       @Override
-      public Resource transform(Object r) {
-        return new PredicatedResourceWrapper((Resource)r, predicate) {
-          @Override
-          public String getResourceType() {
-            if (itemResourceType == null) {
-              return super.getResourceType();
-            }
-            return itemResourceType;
-          }
-        };
+      public String getResourceType() {
+        if (itemResourceType == null) {
+          return super.getResourceType();
+        }
+        return itemResourceType;
       }
     };
   }

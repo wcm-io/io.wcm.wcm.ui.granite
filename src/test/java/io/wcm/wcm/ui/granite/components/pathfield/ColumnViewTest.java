@@ -70,7 +70,9 @@ class ColumnViewTest {
         String path = resource.getValueMap().get("path", String.class);
         if (path != null) {
           Resource pathRessource = context.resourceResolver().getResource(path);
-          context.request().setAttribute(DataSource.class.getName(), new ResourceDataSource(pathRessource));
+          if (pathRessource != null) {
+            context.request().setAttribute(DataSource.class.getName(), new ResourceDataSource(pathRessource));
+          }
         }
         return requestDispatcher;
       }
