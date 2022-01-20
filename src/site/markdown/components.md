@@ -78,8 +78,6 @@ Enhancements over AEM version:
 
 ![Path Field component](images/pathfield-component.png)
 
-*Please note:* Some of the listed features will only work in AEM 6.3 and higher.
-
 A field that allows the user to enter path. This path field can be used for both picking page paths or asset paths.
 
 ```json
@@ -99,6 +97,7 @@ Enhancements over AEM version:
 * Hides certain "AEM-internal" content paths which should not be shown when picking pages or assets
 * Provide `appendPath` parameter that allows to add an additional sub path to the configured root path
 * Supports any resource-based predicates as `filter` (and not only `folder`, `hierarchy`, `hierarchyNotFile`, `nosystem`)
+* Automatically applies a `nodeTypes` filter when none is configured (cq:Page or dam:Asset, depending on root path)
 
 
 ### Config-Scope Path Browser (deprecated)

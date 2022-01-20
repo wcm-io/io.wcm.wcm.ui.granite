@@ -1,7 +1,9 @@
 {
   "jcr:primaryType": "nt:unstructured",
   "rootPath": "${empty param.root ? \"/\" : param.root}",
+  "searchFormContainsNodeTypes": false,
   "path": "${empty param.path ? (empty param.root ? \"/\" : param.root) : param.path}",
+  "nodeTypes": "${empty param.nodeTypes ? \"\" : param.nodeTypes}",
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/pathfield/picker",
   "targetCollection": "#granite-ui-pathfield-picker-collection",
   "selectionCount": "${empty param.selectionCount ? \"single\" : param.selectionCount}",
@@ -33,26 +35,16 @@
     "name": "fulltext",
     "targetCollection": "#granite-ui-pathfield-picker-search-collection",
     "form": {
+      "excludepaths": {
+        "name": "excludepaths",
+        "value": "(.*)?(jcr:content|rep:policy)(/.*)?",
+        "sling:resourceType": "granite/ui/components/coral/foundation/form/hidden"
+      },
       "rootpath": {
         "name": "path",
         "value": "${empty param.root ? \"/\" : param.root}",
         "fieldLabel": "Path",
         "sling:resourceType": "granite/ui/components/coral/foundation/form/textfield"
-      },
-      "group_or": {
-        "name": "group.p.or",
-        "value": "true",
-        "sling:resourceType": "granite/ui/components/coral/foundation/form/hidden"
-      },
-      "group_1_type": {
-        "name": "group.1_type",
-        "value": "cq:Page",
-        "sling:resourceType": "granite/ui/components/coral/foundation/form/hidden"
-      },
-      "group_2_type": {
-        "name": "group.2_type",
-        "value": "dam:Asset",
-        "sling:resourceType": "granite/ui/components/coral/foundation/form/hidden"
       },
       "orderby": {
         "name": "orderby",
@@ -83,7 +75,7 @@
         "selectionCount": "${requestPathInfo.selectors[1]}",
         "datasource": {
           "offset": "${requestPathInfo.selectors[2]}",
-          "itemResourceType": "cq/gui/components/coral/admin/page/card",
+          "itemResourceType": "granite/ui/components/coral/foundation/form/pathfield/card",
           "limit": "${empty requestPathInfo.selectors[3] ? \"21\" : requestPathInfo.selectors[3] + 1}",
           "sling:resourceType": "granite/ui/components/coral/foundation/querybuilder/datasource"
         }

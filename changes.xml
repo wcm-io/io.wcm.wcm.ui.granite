@@ -25,6 +25,9 @@
 
     <release version="1.9.0" date="not released">
       <action type="update" dev="sseifert">
+        Pathfield Granite UI component: Add support for nodeTypes filtering, and default to cq:Page or dam:Asset (depending on rootPath).
+      </action>
+      <action type="update" dev="sseifert">
         Switch to AEM 6.5 as minimum version.
       </action>
     </release>

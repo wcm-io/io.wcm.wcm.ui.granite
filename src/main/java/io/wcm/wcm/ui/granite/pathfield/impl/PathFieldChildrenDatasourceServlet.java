@@ -62,7 +62,6 @@ import com.adobe.granite.ui.components.ds.EmptyDataSource;
 import com.day.cq.commons.predicate.PredicateProvider;
 
 import io.wcm.wcm.ui.granite.pathfield.impl.predicate.HideInternalContentPathsPredicate;
-import io.wcm.wcm.ui.granite.pathfield.impl.util.DummyPageContext;
 import io.wcm.wcm.ui.granite.pathfield.impl.util.PredicatedResourceWrapper;
 
 /**
@@ -88,7 +87,7 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
   protected void doGet(@NotNull SlingHttpServletRequest request, @NotNull SlingHttpServletResponse response)
       throws ServletException, IOException {
 
-    final ExpressionHelper ex = new ExpressionHelper(expressionResolver, new DummyPageContext(request, response));
+    final ExpressionHelper ex = new ExpressionHelper(expressionResolver, request);
     final Config cfg = new Config(request.getResource().getChild(Config.DATASOURCE));
 
     final String query = ex.getString(cfg.get("query", String.class));

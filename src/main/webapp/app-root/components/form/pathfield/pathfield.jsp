@@ -19,18 +19,15 @@
 --%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
-<%@page import="org.osgi.framework.Version"%>
-<%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="com.adobe.granite.ui.components.Config"%>
 <%@page import="com.adobe.granite.ui.components.ExpressionHelper"%>
-<%@page import="org.apache.jackrabbit.util.Text"%>
 <%@page import="org.apache.sling.api.resource.Resource"%>
-<%@page import="org.apache.sling.api.resource.ResourceResolver"%>
+<%@page import="org.apache.sling.api.resource.ValueMap"%>
 <%@page import="org.apache.sling.api.request.RequestDispatcherOptions"%>
 <%@page import="org.apache.sling.api.wrappers.ValueMapDecorator"%>
-<%@page import="com.day.cq.commons.jcr.JcrConstants"%>
+<%@page import="org.apache.jackrabbit.util.Text"%>
+<%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@page import="io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource"%>
-<%@page import="io.wcm.wcm.ui.granite.util.GraniteUi"%>
 <%@page import="io.wcm.wcm.ui.granite.util.RootPathResolver"%>
 <%@include file="../../global/global.jsp" %><%--###
 
@@ -39,8 +36,7 @@ wcm.io Granite UI Extensions PathField
 
 A field that allows the user to enter path.
 
-It extends `granite/ui/components/coral/foundation/form/pathfield` component
-(with a fallback to `granite/ui/components/foundation/form/pathbrowser` for older AEM versions).
+It extends `granite/ui/components/coral/foundation/form/pathfield` component.
 
 It supports the same properties as it's super component. The following properties
 are overwritten or added.
@@ -64,47 +60,49 @@ are overwritten or added.
 
 ###--%><%
 
-String resourceType = GraniteUi.getExistingResourceType(resourceResolver,
-    "granite/ui/components/coral/foundation/form/pathfield",
-    "granite/ui/components/foundation/form/pathbrowser");
+Config cfg = cmp.getConfig();
+ExpressionHelper ex = cmp.getExpressionHelper();
 Map<String,Object> props = new HashMap<>();
 
-boolean isPathField = StringUtils.equals(resourceType, "granite/ui/components/coral/foundation/form/pathfield");
-
-// resolver root path
+// resolve root path
 RootPathResolver rootPathResolver = new RootPathResolver(cmp, slingRequest);
 String rootPath = rootPathResolver.get();
+props.put("rootPath", rootPath);
 
-if (isPathField) {
-  Config cfg = cmp.getConfig();
-  ExpressionHelper ex = cmp.getExpressionHelper();
-
-  String filter = cfg.get("filter", "hierarchyNotFile");
-  boolean multiple = cfg.get("multiple", false);
-  String selectionCount = multiple ? "multiple" : "single";
-
-  // build path to picker and suggestion src based on overlayed pathfield content from wcm.io
-  String defaultPickerSrc = "/mnt/overlay/wcm-io/wcm/ui/granite/content/form/pathfield/picker.html"
-      + "?_charset_=utf-8&path={value}&root=" + Text.escape(rootPath) + "&filter=" + Text.escape(filter) + "&selectionCount=" + Text.escape(selectionCount);
-  String pickerSrc = ex.getString(cfg.get("pickerSrc", defaultPickerSrc));
-
-  String defaultSuggestionSrc = "/mnt/overlay/wcm-io/wcm/ui/granite/content/form/pathfield/suggestion{.offset,limit}.html"
-      + "?_charset_=utf-8&root=" + Text.escape(rootPath) + "&filter=" + Text.escape(filter) + "{&query}";
-  String suggestionSrc = ex.getString(cfg.get("suggestionSrc", defaultSuggestionSrc));
-
-  props.put("pickerSrc", pickerSrc);
-  props.put("suggestionSrc", suggestionSrc);  
-}
-else {
-  resourceType = "granite/ui/components/foundation/form/pathbrowser";
-  props.put("rootPath", rootPath);
+// auto-detect node type (if not given)
+String nodeTypes = cfg.get("nodeTypes", String.class);
+if (nodeTypes == null) {
+  if (StringUtils.equals(rootPath, "/content/dam") || StringUtils.startsWith(rootPath, "/content/dam/")) {
+    nodeTypes = "dam:Asset";
+  }
+  else {
+    nodeTypes = "cq:Page";
+  }
+  props.put("nodeTypes", nodeTypes);
 }
 
-// simulate resource for dialog field def with new rootPath instead of configured one
+String filter = cfg.get("filter", "hierarchyNotFile");
+boolean multiple = cfg.get("multiple", false);
+String selectionCount = multiple ? "multiple" : "single";
+
+// build path to picker and suggestion src based on overlayed pathfield content from wcm.io
+String defaultPickerSrc = "/mnt/overlay/wcm-io/wcm/ui/granite/content/form/pathfield/picker.html"
+    + "?_charset_=utf-8&path={value}&root=" + Text.escape(rootPath) + "&filter=" + Text.escape(filter)
+    + "&selectionCount=" + Text.escape(selectionCount) + "&nodeTypes=" + Text.escape(nodeTypes);
+String pickerSrc = ex.getString(cfg.get("pickerSrc", defaultPickerSrc));
+
+String defaultSuggestionSrc = "/mnt/overlay/wcm-io/wcm/ui/granite/content/form/pathfield/suggestion{.offset,limit}.html"
+    + "?_charset_=utf-8&root=" + Text.escape(rootPath) + "&filter=" + Text.escape(filter) + "{&query}";
+String suggestionSrc = ex.getString(cfg.get("suggestionSrc", defaultSuggestionSrc));
+
+props.put("pickerSrc", pickerSrc);
+props.put("suggestionSrc", suggestionSrc);  
+
+//simulate resource for dialog field def with new rootPath instead of configured one
 Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(resource, new ValueMapDecorator(props));
 
 RequestDispatcherOptions options = new RequestDispatcherOptions();
-options.setForceResourceType(resourceType);
+options.setForceResourceType("granite/ui/components/coral/foundation/form/pathfield");
 RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(resourceWrapper, options);
 dispatcher.include(slingRequest, slingResponse);
 
