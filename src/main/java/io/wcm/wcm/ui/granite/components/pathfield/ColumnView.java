@@ -129,6 +129,7 @@ public final class ColumnView {
    * @param resource Given resource
    * @return Data source
    */
+  @SuppressWarnings("java:S112") // allow generic exception
   private DataSource getDataSource(ComponentHelper cmp, Resource resource) {
     try {
       /*
@@ -160,7 +161,7 @@ public final class ColumnView {
 
     boolean hasMore = false;
     if (size != null) {
-      List<Resource> list = new ArrayList<Resource>();
+      List<Resource> list = new ArrayList<>();
       while (items.hasNext() && list.size() < size) {
         list.add(items.next());
       }
@@ -241,7 +242,7 @@ public final class ColumnView {
    * The result is ordered with the root as the first item.
    */
   private static List<Resource> getAncestors(Resource currentResource, Resource rootResource) {
-    List<Resource> results = new ArrayList<Resource>();
+    List<Resource> results = new ArrayList<>();
 
     if (currentResource == null || rootResource == null || StringUtils.equals(currentResource.getPath(), rootResource.getPath())) {
       return results;

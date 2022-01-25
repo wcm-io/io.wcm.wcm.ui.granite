@@ -28,12 +28,14 @@ import org.apache.sling.api.resource.ValueMap;
 
 import com.adobe.granite.ui.components.ExpressionResolver;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.sling.commons.resource.ImmutableValueMap;
 
 public class MockExpressionResolver implements ExpressionResolver {
 
   @Override
   @SuppressWarnings("null")
+  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   public <T> T resolve(String expression, Locale locale, Class<T> expectedType, PageContext pageContext) {
     ValueMap valueMap = ImmutableValueMap.of("value", expression);
     return valueMap.get("value", expectedType);
@@ -41,6 +43,7 @@ public class MockExpressionResolver implements ExpressionResolver {
 
   @Override
   @SuppressWarnings("null")
+  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   public <T> T resolve(String expression, Locale locale, Class<T> expectedType, SlingHttpServletRequest request) {
     ValueMap valueMap = ImmutableValueMap.of("value", expression);
     return valueMap.get("value", expectedType);

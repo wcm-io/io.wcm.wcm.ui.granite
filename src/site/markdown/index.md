@@ -18,7 +18,8 @@ Granite UI Components for AEM Touch UI.
 
 |WCM Granite UI Extensions version |AEM version supported
 |----------------------------------|----------------------
-|1.7.x or higher                   |AEM 6.4+, AEMaaCS
+|1.9.x or higher                   |AEM 6.5+, AEMaaCS
+|1.7.x - 1.8.x                     |AEM 6.4+, AEMaaCS
 |1.6.x                             |AEM 6.3+
 |1.2.x - 1.5.x                     |AEM 6.2+
 |1.0.x - 1.1.x                     |AEM 6.1+
@@ -30,6 +31,11 @@ Granite UI Components for AEM Touch UI.
 This library provides a selection of [Granite UI components][components] usable in any projects. Some components are subclasses of Granite UI components shipped with AEM Touch UI, overriding and extending some of its features.
 
 Additionally a set of [Granite UI validators][validation] is provided which can be used with AEM 6.2 and up.
+
+
+### GitHub Repository
+
+Sources: https://github.com/wcm-io/io.wcm.wcm.ui.granite
 
 
 [components]: components.html

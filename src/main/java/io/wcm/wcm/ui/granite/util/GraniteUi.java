@@ -118,12 +118,10 @@ public final class GraniteUi {
 
     // if we are currently in create page wizard try to extract content path from referer,
     // as it is not available via other ways
-    if (!isValidContentPath(contentPath)) {
-      if (StringUtils.contains(request.getRequestURI(), CREATEPAGEWITZARD_PROPERTIES_URI)) {
-        String referer = request.getHeader(HEADER_REFERER);
-        if (referer != null && StringUtils.contains(referer, CREATEPAGEWITZARD_URI)) {
-          contentPath = StringUtils.substringAfter(referer, CREATEPAGEWITZARD_URI);
-        }
+    if (!isValidContentPath(contentPath) && StringUtils.contains(request.getRequestURI(), CREATEPAGEWITZARD_PROPERTIES_URI)) {
+      String referer = request.getHeader(HEADER_REFERER);
+      if (referer != null && StringUtils.contains(referer, CREATEPAGEWITZARD_URI)) {
+        contentPath = StringUtils.substringAfter(referer, CREATEPAGEWITZARD_URI);
       }
     }
 
