@@ -25,13 +25,13 @@
   <parent>
     <groupId>io.wcm</groupId>
     <artifactId>io.wcm.parent_toplevel</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.2</version>
     <relativePath/>
   </parent>
 
   <groupId>io.wcm</groupId>
   <artifactId>io.wcm.wcm.ui.granite</artifactId>
-  <version>1.9.0</version>
+  <version>1.9.2</version>
   <packaging>jar</packaging>
 
   <name>WCM Granite UI Extensions</name>
@@ -49,7 +49,7 @@
     <site.url.module.prefix>wcm/ui/granite</site.url.module.prefix>
 
     <!-- Enable reproducible builds -->
-    <project.build.outputTimestamp>2022-01-25T14:53:23Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2022-03-15T11:10:28Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
