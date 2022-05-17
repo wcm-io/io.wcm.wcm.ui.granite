@@ -25,6 +25,9 @@
 
     <release version="1.9.4" date="not released">
       <action type="update" dev="sseifert">
+        Granite UI validators: Add category 'io.wcm.caconfig.editor.validations' to make the validators available in wcm.io Context-Aware Configuration Editor.
+      </action>
+      <action type="update" dev="sseifert">
         Switch to AEM 6.5.7 as minimum version.
       </action>
     </release>
