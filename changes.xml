@@ -23,6 +23,15 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.9.4" date="2022-05-18">
+      <action type="update" dev="sseifert">
+        Granite UI validators: Add category 'io.wcm.caconfig.editor.validation' to make the validators available in wcm.io Context-Aware Configuration Editor.
+      </action>
+      <action type="update" dev="sseifert">
+        Switch to AEM 6.5.7 as minimum version.
+      </action>
+    </release>
+
     <release version="1.9.2" date="2022-03-15">
       <action type="update" dev="sseifert">
         Granite UI validators: Add category 'cq.sites.validations' to make the validators available in create page wizard.
