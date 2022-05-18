@@ -20,7 +20,7 @@
 /*
  * Registers Coral UI 3 validators.
  */
-;(function(document, Granite, $, undefined) {
+;(function(Granite, $) {
   "use strict";
 
   // Predefined patterns
@@ -32,7 +32,7 @@
     path: /^(\/[^\/]+)+$/
   };
 
-  var foundationValidator = $(window).adaptTo("foundation-registry");
+  var registry = $(window).adaptTo("foundation-registry");
 
   var getValue = function(el) {
     if (el.value) {
@@ -44,7 +44,7 @@
   };
 
   // predefined "email" pattern validator
-  foundationValidator.register('foundation.validation.validator', {
+  registry.register('foundation.validation.validator', {
     selector: '[data-foundation-validation="wcmio.email"]',
     validate: function(el) {
       var value = getValue(el);
@@ -56,7 +56,7 @@
   });
 
   // predefined "url" pattern validator
-  foundationValidator.register('foundation.validation.validator', {
+  registry.register('foundation.validation.validator', {
     selector: '[data-foundation-validation="wcmio.url"]',
     validate: function(el) {
       var value = getValue(el);
@@ -68,7 +68,7 @@
   });
 
   // predefined "path" pattern validator
-  foundationValidator.register('foundation.validation.validator', {
+  registry.register('foundation.validation.validator', {
     selector: '[data-foundation-validation="wcmio.path"]',
     validate: function(el) {
       var value = getValue(el);
@@ -80,7 +80,7 @@
   });
 
   // "pattern" validator with custom regex pattern and message
-  foundationValidator.register('foundation.validation.validator', {
+  registry.register('foundation.validation.validator', {
     selector: '[data-foundation-validation="wcmio.pattern"]',
     validate: function(el) {
       el = $(el);
@@ -94,4 +94,4 @@
     }
   });
 
-})(document, Granite, Granite.$);
+})(Granite, Granite.$);
