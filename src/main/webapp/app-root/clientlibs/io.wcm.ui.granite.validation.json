@@ -4,6 +4,6 @@
     "cq.authoring.dialog",
     "cq.siteadmin.admin.properties",
     "cq.sites.validations",
-    "io.wcm.caconfig.editor.validations"
+    "io.wcm.caconfig.editor.validation"
   ]
 }
