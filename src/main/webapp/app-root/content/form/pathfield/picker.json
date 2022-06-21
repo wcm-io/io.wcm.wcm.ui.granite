@@ -20,7 +20,7 @@
       "limit": 40,
       "granite:id": "granite-ui-pathfield-picker-collection",
       "loadAncestors": true,
-      "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/pathfield/columnview",
+      "sling:resourceType": "granite/ui/components/coral/foundation/columnview",
       "selectionCount": "${empty param.selectionCount ? \"single\" : param.selectionCount}",
       "datasource": {
         "filter": "${param.filter}",

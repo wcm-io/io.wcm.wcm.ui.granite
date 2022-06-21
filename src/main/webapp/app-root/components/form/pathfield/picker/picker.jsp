@@ -33,11 +33,16 @@
 // validate paths and fallback to next-possible paths if invalid to ensure picker can always be used
 Config cfg = cmp.getConfig();
 ExpressionHelper ex = cmp.getExpressionHelper();
+String rootPath = StringUtils.trimToNull(ex.getString(cfg.get("rootPath", String.class)));
 String path = StringUtils.trimToNull(ex.getString(cfg.get("path", String.class)));
-String rootPath = StringUtils.trimToNull(ex.getString(cfg.get("rootPath", "/")));
+
+// ensure both rootPath and path point ot existing paths - fallback to parent/root path if that's not the case
+rootPath = getExistingPath(rootPath, "/", resourceResolver);
+path = getExistingPath(path, rootPath, resourceResolver);
 
 Map<String,Object> props = new HashMap<>();
-props.put("path", getExistingPath(path, rootPath, resourceResolver));
+props.put("rootPath", rootPath);
+props.put("path", path);
 
 // simulate resource for dialog field def with new rootPath instead of configured one
 Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(resource, new ValueMapDecorator(props));
@@ -54,6 +59,9 @@ dispatcher.include(slingRequest, slingResponse);
  * existing resource path - up to the root path. As fallback, return the root path.
  */
 String getExistingPath(String path, String rootPath, ResourceResolver resourceResolver) {
+  if (StringUtils.equals(path, rootPath)) {
+    return path;
+  }
   String rootPathWithSuffix = rootPath;
   if (!StringUtils.endsWith(rootPathWithSuffix, "/")) {
     rootPathWithSuffix += "/";
