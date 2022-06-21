@@ -21,6 +21,7 @@
 
 %><%@page session="false"
           import="org.apache.sling.commons.json.io.JSONStringer,
+                  org.apache.commons.lang3.StringUtils,
                   com.adobe.granite.ui.components.AttrBuilder,
                   com.adobe.granite.ui.components.Config,
                   com.adobe.granite.ui.components.ExpressionHelper,
@@ -55,6 +56,11 @@ if (previewSrc != null && previewSrc.startsWith("/")) {
 String layoutName = "foundation-layout-columnview";
 boolean isSelectionMode = ex.getBoolean(cfg.get("selectionMode", "true"));
 String selectionCount = ex.getString(cfg.get("selectionCount", "multiple"));
+
+Resource datasource = resource.getChild("datasource");
+Integer size = ex.get(cfg.get("size", String.class), Integer.class);
+Long limit = ex.get(cfg.get("limit", String.class), Long.class);
+long offset = datasource != null ? ex.get(datasource.getValueMap().get("offset", "0"), long.class) : 0;
 String sortBy = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap().get("sortName", String.class))) : null;
 String sortOrder = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap().get("sortDir", String.class))) : null;
 
@@ -73,7 +79,7 @@ attrs.add("data-foundation-collection-sortorder", sortOrder);
 String layoutJson = new JSONStringer()
     .object()
     .key("name").value(layoutName)
-    .key("limit").value(ex.get(cfg.get("limit", String.class), Long.class))
+    .key("limit").value(limit != null ? limit : 40)
     .key("size").value(size)
     .key("previewSrc").value(previewSrc)
     .key("previewMaximized").value(cfg.get("previewMaximized", false))
@@ -107,12 +113,24 @@ for (Column column : model.getColumns()) {
     %><coral-wait size="L" centered></coral-wait><%
   }
   else {
+    long index = 0;
     for (ColumnItem columnItem : column.getItems()) {
       AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
       itemAttrs.addClass("foundation-collection-item");
       itemAttrs.add("data-foundation-collection-item-id", columnItem.getItemId());
-
-      cmp.include(columnItem.getResource(), columnItem.getResourceType(), new Options().tag(new Tag(itemAttrs)));
+      if (column.isCurrentResource()) {
+        itemAttrs.add("data-granite-collection-item-id", columnItem.getItemId());
+        itemAttrs.add("data-datasource-index", "" + (index + offset));
+      }
+      if (size != null && size <= index) {
+        itemAttrs.addClass("is-lazyLoaded");
+        itemAttrs.addClass("foundation-layout-columnview-item-placeholder");
+        // add an empty coral-columnview-itemselect to avoid creation of coral-checkbox
+        %><coral-columnview-item <%= itemAttrs %>><coral-columnview-item-content><div coral-columnview-itemselect></div></coral-columnview-item-content></coral-columnview-item><%
+      } else {
+        cmp.include(columnItem.getResource(), columnItem.getResourceType(), new Options().tag(new Tag(itemAttrs)));
+      }
+      index++;
     }
   }
 
@@ -126,7 +144,25 @@ for (Column column : model.getColumns()) {
     }
   }
 
-  %></coral-columnview-column-content></coral-columnview-column><%
+  %></coral-columnview-column-content><%
+  if (column.isCurrentResource()) {
+    %><div class="granite-collection-loading-title-wrapper">
+  <div class="granite-collection-loading-title">
+    <div class="granite-collection-loading-container">
+      <coral-wait class="granite-collection-loading-wait"></coral-wait>
+      <span><%=xssAPI.encodeForHTML(i18n.get("Loading more items"))%></span>
+    </div>
+  </div>
+</div><%
+  }
+  %></coral-columnview-column><%
 }
-
-%></coral-columnview>
+%><div class="granite-collection-loading-title-wrapper">
+  <div class="granite-collection-loading-title">
+    <div class="granite-collection-loading-container">
+      <coral-wait class="granite-collection-loading-wait"></coral-wait>
+      <span><%=xssAPI.encodeForHTML(i18n.get("Loading"))%></span>
+    </div>
+  </div>
+</div>
+</coral-columnview>

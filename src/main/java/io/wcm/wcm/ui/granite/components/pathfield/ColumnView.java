@@ -33,6 +33,7 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.wrappers.CompositeValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
@@ -46,8 +47,6 @@ import com.adobe.granite.ui.components.ExpressionHelper;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.wcm.ui.granite.pathfield.impl.DatasourceOverrideWrapper;
-import io.wcm.wcm.ui.granite.pathfield.impl.LimitIncreaseDatasourceWrapper;
 import io.wcm.wcm.ui.granite.pathfield.impl.util.DummyPageContext;
 import io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource;
 
@@ -59,7 +58,8 @@ import io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource;
 public final class ColumnView {
 
   private static final String FALLBACK_ROOT_RESOURCE = "/";
-  private final long DEFAULT_PAGINATION_LIMIT = 1000;
+  private static final String NN_DATASOURCE = "datasource";
+  private static final long DEFAULT_PAGINATION_LIMIT = 1000;
 
   @SlingObject
   private SlingHttpServletRequest request;
@@ -109,9 +109,34 @@ public final class ColumnView {
       columns.addAll(getAncestorColumns(currentResource, rootResource));
     }
 
+    // calculate total size
+    long totalSize = DEFAULT_PAGINATION_LIMIT;
+    if (limit != null) {
+      totalSize = Math.max(totalSize, limit);
+    }
+    if (size != null) {
+      totalSize = Math.max(totalSize, size);
+    }
+
+    Long limitFromDataSource = null;
+    Resource datasourceResource = request.getResource().getChild(NN_DATASOURCE);
+    if (datasourceResource != null) {
+      limitFromDataSource = ex.get(datasourceResource.getValueMap().get("limit", String.class), Long.class);
+    }
+
+    DataSource dataSource = null;
+    if (size != null && size >= 20 && datasourceResource != null && limitFromDataSource != null) {
+      dataSource = getDataSourceLimitIncrease(cmp, currentResource, datasourceResource, limitFromDataSource + totalSize - size + 1);
+    }
+    if (dataSource == null) {
+      dataSource = getDataSourceDefault(cmp, currentResource);
+      if (size != null) {
+        totalSize = size;
+      }
+    }
+
     // generate columns for items
-    DataSource dataSource = getDataSource(cmp, currentResource, size, limit, ex);
-    columns.add(getCurrentResourceColumn(dataSource, size, currentResource, itemResourceType));
+    columns.add(getCurrentResourceColumn(dataSource, totalSize, currentResource, itemResourceType));
   }
 
   private boolean isSameResourceOrChild(Resource rootResource, Resource resource) {
@@ -135,14 +160,10 @@ public final class ColumnView {
    * Get data source to list children of given resource.
    * @param cmp Component helper
    * @param resource Given resource
-   * @param size Size
-   * @param limit Limit
-   * @param ex Expression helper
    * @return Data source
    */
   @SuppressWarnings("java:S112") // allow generic exception
-  private DataSource getDataSource(ComponentHelper cmp, Resource resource, Integer size, Long limit,
-      ExpressionHelper ex) {
+  private DataSource getDataSourceDefault(ComponentHelper cmp, Resource resource) {
     try {
       /*
        * by default the path is read from request "path" parameter
@@ -151,38 +172,39 @@ public final class ColumnView {
        */
       ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("path", resource.getPath()));
       Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.wrapMerge(request.getResource(), overwriteProperties);
+      return cmp.getItemDataSource(dataSourceResourceWrapper);
+    }
+    catch (ServletException | IOException ex) {
+      throw new RuntimeException("Unable to get data source.", ex);
+    }
+  }
 
-      Resource datasource = dataSourceResourceWrapper.getChild("datasource");
-      long offset = datasource != null ? ex.get(datasource.getValueMap().get("offset", "0"), long.class) : 0;
 
-      //Below statement for BC
-      long totalSize = limit != null && limit >= DEFAULT_PAGINATION_LIMIT ? limit : DEFAULT_PAGINATION_LIMIT;
-      totalSize = size != null && size >= totalSize ? size : totalSize;
+  /**
+   * Get data source to list children of given resource.
+   * @param cmp Component helper
+   * @param resource Given resource
+   * @param dataSourceResource Data source resource
+   * @param newLimit New limit
+   * @return Data source
+   */
+  @SuppressWarnings("java:S112") // allow generic exception
+  private DataSource getDataSourceLimitIncrease(ComponentHelper cmp, Resource resource, Resource dataSourceResource, long newLimit) {
+    try {
+      /*
+       * by default the path is read from request "path" parameter
+       * here we overwrite it via a synthetic resource because the path may be overwritten by validation logic
+       * to ensure the path is not beyond the configured root path
+       */
+      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("path", resource.getPath()));
+      Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(request.getResource(), overwriteProperties);
 
-      DataSource ds;
-      if (size == null || size < 20 || size >= totalSize || datasource == null) {
-        ds = cmp.getItemDataSource();
-        if (size != null) {
-          totalSize = size;
-        }
-      }
-      else {
-        try {
-          Resource datasourceWrapper = new LimitIncreaseDatasourceWrapper(datasource, ex, totalSize - size + 1);
-          Resource resourceWrapper = new DatasourceOverrideWrapper(resource, datasourceWrapper);
-          ds = cmp.asDataSource(datasourceWrapper, resourceWrapper);
-        }
-        catch (Exception e) {
-          log.debug("Failed to wrap datasource for lookahead {}", e);
-          log.info("Fallback to non-lookahead datasource");
-          ds = cmp.getItemDataSource();
-          if (size != null) {
-            totalSize = size;
-          }
-        }
-      }
+      ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("limit", newLimit));
+      Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
+          dataSourceResource.getResourceType(),
+          new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
 
-      return ds;
+      return cmp.asDataSource(dataSourceResourceWrapper, resourceWrapper);
     }
     catch (ServletException | IOException e) {
       throw new RuntimeException("Unable to get data source.", e);
@@ -192,27 +214,26 @@ public final class ColumnView {
   /**
    * Generate column for data source items for current resource.
    * @param dataSource Data source
-   * @param size Size limit
+   * @param totalSize Size limit
    * @param currentResource Current resource
    * @param itemResourceType Item resource type
    * @return Column
    */
-  private static Column getCurrentResourceColumn(DataSource dataSource, Integer size,
+  private static Column getCurrentResourceColumn(DataSource dataSource, long totalSize,
       Resource currentResource, String itemResourceType) {
 
     Iterator<Resource> items = dataSource.iterator();
 
     boolean hasMore = false;
-    if (size != null) {
-      List<Resource> list = new ArrayList<>();
-      while (items.hasNext() && list.size() < size) {
-        list.add(items.next());
-      }
-      hasMore = items.hasNext();
-      items = list.iterator();
+    List<Resource> list = new ArrayList<>();
+    while (items.hasNext() && list.size() < totalSize) {
+      list.add(items.next());
     }
+    hasMore = items.hasNext();
+    items = list.iterator();
 
     Column column = new Column()
+        .isCurrentResource(true)
         .columnId(currentResource.getPath())
         .hasMore(hasMore)
         .metaElement(true);
