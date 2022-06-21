@@ -55,6 +55,8 @@ if (previewSrc != null && previewSrc.startsWith("/")) {
 String layoutName = "foundation-layout-columnview";
 boolean isSelectionMode = ex.getBoolean(cfg.get("selectionMode", "true"));
 String selectionCount = ex.getString(cfg.get("selectionCount", "multiple"));
+String sortBy = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap().get("sortName", String.class))) : null;
+String sortOrder = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap().get("sortDir", String.class))) : null;
 
 Tag tag = cmp.consumeTag();
 AttrBuilder attrs = tag.getAttrs();
@@ -65,14 +67,20 @@ attrs.add("data-foundation-collection-id", model.getCurrentResource().getPath())
 attrs.add("data-foundation-collection-src", src);
 attrs.add("data-foundation-selections-mode", selectionCount);
 attrs.add("data-foundation-mode-group", cfg.get("modeGroup", String.class));
+attrs.add("data-foundation-collection-sortby", sortBy);
+attrs.add("data-foundation-collection-sortorder", sortOrder);
 
 String layoutJson = new JSONStringer()
     .object()
     .key("name").value(layoutName)
-    .key("limit").value(cfg.get("limit", 40))
+    .key("limit").value(ex.get(cfg.get("limit", String.class), Long.class))
+    .key("size").value(size)
     .key("previewSrc").value(previewSrc)
+    .key("previewMaximized").value(cfg.get("previewMaximized", false))
     // This is used as an id to identify the layout when there are multiple layouts to represent the same collection.
     .key("layoutId").value(resource.getName())
+    .key("trackingFeature").value(cfg.get("trackingFeature", String.class))
+    .key("trackingElement").value(cfg.get("trackingElement", String.class))
     .endObject()
     .toString();
 
