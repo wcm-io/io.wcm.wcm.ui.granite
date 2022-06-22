@@ -52,6 +52,7 @@ import io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource;
 
 /**
  * Model for customized columnview Granite UI component for path field.
+ * Logic derived from <code>/libs/granite/ui/components/coral/foundation/columnview/columnview.jsp</code>
  */
 @Model(adaptables = SlingHttpServletRequest.class)
 @ProviderType
@@ -117,6 +118,8 @@ public final class ColumnView {
     }
 
     // calculate total number of items to return
+    // NOTE: i assume the logic was intended in a different way, using DEFAULT_PAGINATION_LIMIT as max cap and not
+    // as minimum - but the logic in columnview.jsp is exactly like this
     long totalSize = DEFAULT_PAGINATION_LIMIT;
     if (limit != null) {
       totalSize = Math.max(totalSize, limit);
