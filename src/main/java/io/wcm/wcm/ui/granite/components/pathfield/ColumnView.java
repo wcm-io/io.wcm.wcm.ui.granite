@@ -33,9 +33,12 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.wrappers.CompositeValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 import com.adobe.granite.ui.components.ComponentHelper;
@@ -49,13 +52,25 @@ import io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource;
 
 /**
  * Model for customized columnview Granite UI component for path field.
+ * Logic derived from <code>/libs/granite/ui/components/coral/foundation/columnview/columnview.jsp</code>
  */
 @Model(adaptables = SlingHttpServletRequest.class)
 @ProviderType
 public final class ColumnView {
 
   private static final String FALLBACK_ROOT_RESOURCE = "/";
+  private static final long DEFAULT_PAGINATION_LIMIT = 1000;
 
+  private static final String NN_DATASOURCE = "datasource";
+  private static final String PN_SIZE = "size";
+  private static final String PN_LIMIT = "limit";
+  private static final String PN_ITEM_RESOURCE_TYPE = "itemResourceType";
+  private static final String PN_SHOW_ROOT = "showRoot";
+  private static final String PN_LOAD_ANCESTORS = "loadAncestors";
+  private static final String PN_PATH = "path";
+
+  @SlingObject
+  private Resource componentResource;
   @SlingObject
   private SlingHttpServletRequest request;
   @SlingObject
@@ -73,10 +88,11 @@ public final class ColumnView {
     Config cfg = cmp.getConfig();
     ExpressionHelper ex = cmp.getExpressionHelper();
 
-    Integer size = ex.get(cfg.get("size", String.class), Integer.class);
-    String itemResourceType = cfg.get("itemResourceType");
-    boolean showRoot = cfg.get("showRoot", false);
-    boolean loadAncestors = cfg.get("loadAncestors", false);
+    Integer size = ex.get(cfg.get(PN_SIZE, String.class), Integer.class);
+    Long limit = ex.get(cfg.get(PN_LIMIT, String.class), Long.class);
+    String itemResourceType = cfg.get(PN_ITEM_RESOURCE_TYPE, String.class);
+    boolean showRoot = cfg.get(PN_SHOW_ROOT, false);
+    boolean loadAncestors = cfg.get(PN_LOAD_ANCESTORS, false);
 
     // make sure we always have a valid root resource
     Resource rootResource = resourceResolver.getResource(ex.getString(cfg.get("rootPath", FALLBACK_ROOT_RESOURCE)));
@@ -85,7 +101,7 @@ public final class ColumnView {
     }
 
     // if current resource is invalid or not same or descendant of root resource, set it to root resource
-    String path = ex.getString(cfg.get("path", rootResource.getPath()));
+    String path = ex.getString(cfg.get(PN_PATH, rootResource.getPath()));
     currentResource = resourceResolver.getResource(path);
     if (currentResource == null || !isSameResourceOrChild(rootResource, currentResource)) {
       currentResource = rootResource;
@@ -101,9 +117,40 @@ public final class ColumnView {
       columns.addAll(getAncestorColumns(currentResource, rootResource));
     }
 
+    // calculate total number of items to return
+    // NOTE: i assume the logic was intended in a different way, using DEFAULT_PAGINATION_LIMIT as max cap and not
+    // as minimum - but the logic in columnview.jsp is exactly like this
+    long totalSize = DEFAULT_PAGINATION_LIMIT;
+    if (limit != null) {
+      totalSize = Math.max(totalSize, limit);
+    }
+    if (size != null) {
+      totalSize = Math.max(totalSize, size);
+    }
+
+    // check if a limit value is defined for the data source
+    Long limitFromDataSource = null;
+    Resource datasourceResource = componentResource.getChild(NN_DATASOURCE);
+    if (datasourceResource != null) {
+      limitFromDataSource = ex.get(datasourceResource.getValueMap().get(PN_LIMIT, String.class), Long.class);
+    }
+
+    DataSource dataSource = null;
+    if (size != null && size >= 20 && datasourceResource != null && limitFromDataSource != null) {
+      // if a limit is configured for the data source or size is at least 20,
+      // calculate a new limit for the data source and overwrite it (synthetic) in the data source definition
+      long newLimit = limitFromDataSource + totalSize - size + 1;
+      dataSource = getDataSource(cmp, currentResource, datasourceResource, newLimit);
+    }
+    else {
+      dataSource = getDataSource(cmp, currentResource);
+      if (size != null) {
+        totalSize = size;
+      }
+    }
+
     // generate columns for items
-    DataSource dataSource = getDataSource(cmp, currentResource);
-    columns.add(getCurrentResourceColumn(dataSource, size, currentResource, itemResourceType));
+    columns.add(getCurrentResourceColumn(dataSource, totalSize, currentResource, itemResourceType));
   }
 
   private boolean isSameResourceOrChild(Resource rootResource, Resource resource) {
@@ -129,17 +176,42 @@ public final class ColumnView {
    * @param resource Given resource
    * @return Data source
    */
-  @SuppressWarnings("java:S112") // allow generic exception
   private DataSource getDataSource(ComponentHelper cmp, Resource resource) {
+    return getDataSource(cmp, resource, null, null);
+  }
+
+
+  /**
+   * Get data source to list children of given resource.
+   * @param cmp Component helper
+   * @param resource Resource pointing to current path
+   * @param dataSourceResource Data source resource
+   * @param newLimit Set limit defined in data source to this new value
+   * @return Data source
+   */
+  @SuppressWarnings("java:S112") // allow generic exception
+  private DataSource getDataSource(@NotNull ComponentHelper cmp, @NotNull Resource resource,
+      @Nullable Resource dataSourceResource, @Nullable Long newLimit) {
     try {
       /*
        * by default the path is read from request "path" parameter
        * here we overwrite it via a synthetic resource because the path may be overwritten by validation logic
        * to ensure the path is not beyond the configured root path
        */
-      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("path", resource.getPath()));
-      Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.wrapMerge(request.getResource(), overwriteProperties);
-      return cmp.getItemDataSource(dataSourceResourceWrapper);
+      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of(PN_PATH, resource.getPath()));
+      Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(componentResource, overwriteProperties);
+
+      if (dataSourceResource != null && newLimit != null) {
+        // overwrite limit property in data source definition
+        ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of(PN_LIMIT, newLimit));
+        Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
+            dataSourceResource.getResourceType(),
+            new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
+        return cmp.asDataSource(dataSourceResourceWrapper, resourceWrapper);
+      }
+      else {
+        return cmp.getItemDataSource(resourceWrapper);
+      }
     }
     catch (ServletException | IOException ex) {
       throw new RuntimeException("Unable to get data source.", ex);
@@ -149,27 +221,26 @@ public final class ColumnView {
   /**
    * Generate column for data source items for current resource.
    * @param dataSource Data source
-   * @param size Size limit
+   * @param totalSize Size limit
    * @param currentResource Current resource
    * @param itemResourceType Item resource type
    * @return Column
    */
-  private static Column getCurrentResourceColumn(DataSource dataSource, Integer size,
+  private static Column getCurrentResourceColumn(DataSource dataSource, long totalSize,
       Resource currentResource, String itemResourceType) {
 
     Iterator<Resource> items = dataSource.iterator();
 
     boolean hasMore = false;
-    if (size != null) {
-      List<Resource> list = new ArrayList<>();
-      while (items.hasNext() && list.size() < size) {
-        list.add(items.next());
-      }
-      hasMore = items.hasNext();
-      items = list.iterator();
+    List<Resource> list = new ArrayList<>();
+    while (items.hasNext() && list.size() < totalSize) {
+      list.add(items.next());
     }
+    hasMore = items.hasNext();
+    items = list.iterator();
 
     Column column = new Column()
+        .isCurrentResource(true)
         .columnId(currentResource.getPath())
         .hasMore(hasMore)
         .metaElement(true);

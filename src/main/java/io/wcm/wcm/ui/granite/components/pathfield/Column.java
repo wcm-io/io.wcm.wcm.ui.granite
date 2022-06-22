@@ -34,6 +34,7 @@ public final class Column {
   private String columnId;
   private boolean hasMore;
   private boolean lazy;
+  private boolean isCurrentResource;
   private String activeId;
   private boolean metaElement;
   private final List<ColumnItem> items = new ArrayList<>();
@@ -66,6 +67,15 @@ public final class Column {
 
   Column lazy(boolean value) {
     this.lazy = value;
+    return this;
+  }
+
+  public boolean isCurrentResource() {
+    return this.isCurrentResource;
+  }
+
+  Column isCurrentResource(boolean value) {
+    this.isCurrentResource = value;
     return this;
   }
 
