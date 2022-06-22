@@ -24,7 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.RequestDispatcher;
@@ -42,6 +45,7 @@ import com.adobe.granite.ui.components.ExpressionResolver;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.ResourceDataSource;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.sling.commons.adapter.AdaptTo;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -95,6 +99,13 @@ class ColumnViewTest {
     context.create().resource("/content/site1/en/page1/page12");
     context.create().resource("/content/site1/en/page2");
     context.create().resource("/content/site1/en/page2/page21");
+    context.create().resource("/content/site1/en/page2/page22");
+    context.create().resource("/content/site1/en/page2/page23");
+    context.create().resource("/content/site1/en/page2/page24");
+    context.create().resource("/content/site1/en/page2/page25");
+    context.create().resource("/content/site1/en/page2/page26");
+    context.create().resource("/content/site1/en/page2/page27");
+    context.create().resource("/content/site1/en/page2/page28");
   }
 
   @Test
@@ -149,7 +160,7 @@ class ColumnViewTest {
   }
 
   @Test
-  void testRoot_SizeLimit() {
+  void testRoot_Size() {
     List<Column> columns = getColumns(
         "rootPath", "/content/site1/en",
         "path", "/content/site1/en",
@@ -264,13 +275,37 @@ class ColumnViewTest {
         "/content/site1/en/page2");
   }
 
+  @Test
+  void testRoot_Limit_DataSource() {
+    Map<String, Object> datasourceProps = ImmutableMap.of("limit", 5);
+    List<Column> columns = getColumns(datasourceProps,
+        "rootPath", "/content/site1/en/page2",
+        "path", "/content/site1/en/page2",
+        "size", 25,
+        "limit", 4);
+    assertEquals(1, columns.size());
+    assertColumn(columns.get(0), "/content/site1/en/page2", false,
+        "/content/site1/en/page2/page21",
+        "/content/site1/en/page2/page22",
+        "/content/site1/en/page2/page23",
+        "/content/site1/en/page2/page24",
+        "/content/site1/en/page2/page25",
+        "/content/site1/en/page2/page26",
+        "/content/site1/en/page2/page27",
+        "/content/site1/en/page2/page28");
+  }
 
   // --- test helper methods ---
 
   private List<Column> getColumns(Object... props) {
+    return getColumns(Collections.emptyMap(), props);
+  }
+
+  private List<Column> getColumns(Map<String, Object> dataSourceProps, Object... props) {
     context.currentResource(context.create().resource("/apps/pathfield", props));
-    context.create().resource("/apps/pathfield/datasource",
-        "sling:resourceType", "/dummyDataSource");
+    Map<String, Object> combinedDataSourceProps = new HashMap<>(dataSourceProps);
+    combinedDataSourceProps.put("sling:resourceType", "/dummyDataSource");
+    context.create().resource("/apps/pathfield/datasource", combinedDataSourceProps);
     ColumnView underTest = AdaptTo.notNull(context.request(), ColumnView.class);
     return underTest.getColumns();
   }
