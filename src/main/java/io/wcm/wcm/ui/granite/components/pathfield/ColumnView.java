@@ -38,8 +38,6 @@ import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.osgi.annotation.versioning.ProviderType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.adobe.granite.ui.components.ComponentHelper;
 import com.adobe.granite.ui.components.Config;
@@ -70,8 +68,6 @@ public final class ColumnView {
 
   private Resource currentResource;
   private final List<Column> columns = new ArrayList<>();
-
-  private static final Logger log = LoggerFactory.getLogger(ColumnView.class);
 
   @PostConstruct
   @SuppressWarnings("null")

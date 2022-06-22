@@ -122,6 +122,9 @@ for (Column column : model.getColumns()) {
         itemAttrs.add("data-granite-collection-item-id", columnItem.getItemId());
         itemAttrs.add("data-datasource-index", "" + (index + offset));
       }
+      if (columnItem.getActive() != null && columnItem.getActive()) {
+        itemAttrs.addBoolean("active", true);
+      }
       if (size != null && size <= index) {
         itemAttrs.addClass("is-lazyLoaded");
         itemAttrs.addClass("foundation-layout-columnview-item-placeholder");
