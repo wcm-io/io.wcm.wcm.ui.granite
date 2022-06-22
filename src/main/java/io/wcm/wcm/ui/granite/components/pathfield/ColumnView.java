@@ -58,8 +58,15 @@ import io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource;
 public final class ColumnView {
 
   private static final String FALLBACK_ROOT_RESOURCE = "/";
-  private static final String NN_DATASOURCE = "datasource";
   private static final long DEFAULT_PAGINATION_LIMIT = 1000;
+
+  private static final String NN_DATASOURCE = "datasource";
+  private static final String PN_SIZE = "size";
+  private static final String PN_LIMIT = "limit";
+  private static final String PN_ITEM_RESOURCE_TYPE = "itemResourceType";
+  private static final String PN_SHOW_ROOT = "showRoot";
+  private static final String PN_LOAD_ANCESTORS = "loadAncestors";
+  private static final String PN_PATH = "path";
 
   @SlingObject
   private Resource componentResource;
@@ -80,11 +87,11 @@ public final class ColumnView {
     Config cfg = cmp.getConfig();
     ExpressionHelper ex = cmp.getExpressionHelper();
 
-    Integer size = ex.get(cfg.get("size", String.class), Integer.class);
-    Long limit = ex.get(cfg.get("limit", String.class), Long.class);
-    String itemResourceType = cfg.get("itemResourceType", String.class);
-    boolean showRoot = cfg.get("showRoot", false);
-    boolean loadAncestors = cfg.get("loadAncestors", false);
+    Integer size = ex.get(cfg.get(PN_SIZE, String.class), Integer.class);
+    Long limit = ex.get(cfg.get(PN_LIMIT, String.class), Long.class);
+    String itemResourceType = cfg.get(PN_ITEM_RESOURCE_TYPE, String.class);
+    boolean showRoot = cfg.get(PN_SHOW_ROOT, false);
+    boolean loadAncestors = cfg.get(PN_LOAD_ANCESTORS, false);
 
     // make sure we always have a valid root resource
     Resource rootResource = resourceResolver.getResource(ex.getString(cfg.get("rootPath", FALLBACK_ROOT_RESOURCE)));
@@ -93,7 +100,7 @@ public final class ColumnView {
     }
 
     // if current resource is invalid or not same or descendant of root resource, set it to root resource
-    String path = ex.getString(cfg.get("path", rootResource.getPath()));
+    String path = ex.getString(cfg.get(PN_PATH, rootResource.getPath()));
     currentResource = resourceResolver.getResource(path);
     if (currentResource == null || !isSameResourceOrChild(rootResource, currentResource)) {
       currentResource = rootResource;
@@ -122,7 +129,7 @@ public final class ColumnView {
     Long limitFromDataSource = null;
     Resource datasourceResource = componentResource.getChild(NN_DATASOURCE);
     if (datasourceResource != null) {
-      limitFromDataSource = ex.get(datasourceResource.getValueMap().get("limit", String.class), Long.class);
+      limitFromDataSource = ex.get(datasourceResource.getValueMap().get(PN_LIMIT, String.class), Long.class);
     }
 
     DataSource dataSource = null;
@@ -188,12 +195,12 @@ public final class ColumnView {
        * here we overwrite it via a synthetic resource because the path may be overwritten by validation logic
        * to ensure the path is not beyond the configured root path
        */
-      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("path", resource.getPath()));
+      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of(PN_PATH, resource.getPath()));
       Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(componentResource, overwriteProperties);
 
       if (dataSourceResource != null && newLimit != null) {
         // overwrite limit property in data source definition
-        ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("limit", newLimit));
+        ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of(PN_LIMIT, newLimit));
         Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
             dataSourceResource.getResourceType(),
             new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
