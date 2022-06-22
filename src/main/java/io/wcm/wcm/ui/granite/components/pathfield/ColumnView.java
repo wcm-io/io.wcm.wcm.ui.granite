@@ -37,6 +37,8 @@ import org.apache.sling.api.wrappers.CompositeValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 import com.adobe.granite.ui.components.ComponentHelper;
@@ -59,6 +61,8 @@ public final class ColumnView {
   private static final String NN_DATASOURCE = "datasource";
   private static final long DEFAULT_PAGINATION_LIMIT = 1000;
 
+  @SlingObject
+  private Resource componentResource;
   @SlingObject
   private SlingHttpServletRequest request;
   @SlingObject
@@ -105,7 +109,7 @@ public final class ColumnView {
       columns.addAll(getAncestorColumns(currentResource, rootResource));
     }
 
-    // calculate total size
+    // calculate total number of items to return
     long totalSize = DEFAULT_PAGINATION_LIMIT;
     if (limit != null) {
       totalSize = Math.max(totalSize, limit);
@@ -114,18 +118,22 @@ public final class ColumnView {
       totalSize = Math.max(totalSize, size);
     }
 
+    // check if a limit value is defined for the data source
     Long limitFromDataSource = null;
-    Resource datasourceResource = request.getResource().getChild(NN_DATASOURCE);
+    Resource datasourceResource = componentResource.getChild(NN_DATASOURCE);
     if (datasourceResource != null) {
       limitFromDataSource = ex.get(datasourceResource.getValueMap().get("limit", String.class), Long.class);
     }
 
     DataSource dataSource = null;
     if (size != null && size >= 20 && datasourceResource != null && limitFromDataSource != null) {
-      dataSource = getDataSourceLimitIncrease(cmp, currentResource, datasourceResource, limitFromDataSource + totalSize - size + 1);
+      // if a limit is configured for the data source or size is at least 20,
+      // calculate a new limit for the data source and overwrite it (synthetic) in the data source definition
+      long newLimit = limitFromDataSource + totalSize - size + 1;
+      dataSource = getDataSource(cmp, currentResource, datasourceResource, newLimit);
     }
-    if (dataSource == null) {
-      dataSource = getDataSourceDefault(cmp, currentResource);
+    else {
+      dataSource = getDataSource(cmp, currentResource);
       if (size != null) {
         totalSize = size;
       }
@@ -158,34 +166,22 @@ public final class ColumnView {
    * @param resource Given resource
    * @return Data source
    */
-  @SuppressWarnings("java:S112") // allow generic exception
-  private DataSource getDataSourceDefault(ComponentHelper cmp, Resource resource) {
-    try {
-      /*
-       * by default the path is read from request "path" parameter
-       * here we overwrite it via a synthetic resource because the path may be overwritten by validation logic
-       * to ensure the path is not beyond the configured root path
-       */
-      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("path", resource.getPath()));
-      Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.wrapMerge(request.getResource(), overwriteProperties);
-      return cmp.getItemDataSource(dataSourceResourceWrapper);
-    }
-    catch (ServletException | IOException ex) {
-      throw new RuntimeException("Unable to get data source.", ex);
-    }
+  private DataSource getDataSource(ComponentHelper cmp, Resource resource) {
+    return getDataSource(cmp, resource, null, null);
   }
 
 
   /**
    * Get data source to list children of given resource.
    * @param cmp Component helper
-   * @param resource Given resource
+   * @param resource Resource pointing to current path
    * @param dataSourceResource Data source resource
-   * @param newLimit New limit
+   * @param newLimit Set limit defined in data source to this new value
    * @return Data source
    */
   @SuppressWarnings("java:S112") // allow generic exception
-  private DataSource getDataSourceLimitIncrease(ComponentHelper cmp, Resource resource, Resource dataSourceResource, long newLimit) {
+  private DataSource getDataSource(@NotNull ComponentHelper cmp, @NotNull Resource resource,
+      @Nullable Resource dataSourceResource, @Nullable Long newLimit) {
     try {
       /*
        * by default the path is read from request "path" parameter
@@ -193,17 +189,22 @@ public final class ColumnView {
        * to ensure the path is not beyond the configured root path
        */
       ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("path", resource.getPath()));
-      Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(request.getResource(), overwriteProperties);
+      Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(componentResource, overwriteProperties);
 
-      ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("limit", newLimit));
-      Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
-          dataSourceResource.getResourceType(),
-          new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
-
-      return cmp.asDataSource(dataSourceResourceWrapper, resourceWrapper);
+      if (dataSourceResource != null && newLimit != null) {
+        // overwrite limit property in data source definition
+        ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of("limit", newLimit));
+        Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
+            dataSourceResource.getResourceType(),
+            new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
+        return cmp.asDataSource(dataSourceResourceWrapper, resourceWrapper);
+      }
+      else {
+        return cmp.getItemDataSource(resourceWrapper);
+      }
     }
-    catch (ServletException | IOException e) {
-      throw new RuntimeException("Unable to get data source.", e);
+    catch (ServletException | IOException ex) {
+      throw new RuntimeException("Unable to get data source.", ex);
     }
   }
 
