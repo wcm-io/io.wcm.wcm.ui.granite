@@ -45,7 +45,7 @@
 
   // predefined "email" pattern validator
   registry.register('foundation.validation.validator', {
-    selector: '[data-foundation-validation="wcmio.email"]',
+    selector: '[data-foundation-validation~="wcmio.email"]',
     validate: function(el) {
       var value = getValue(el);
       var valid = value.length === 0 || pattern.email.test(value);
@@ -57,7 +57,7 @@
 
   // predefined "url" pattern validator
   registry.register('foundation.validation.validator', {
-    selector: '[data-foundation-validation="wcmio.url"]',
+    selector: '[data-foundation-validation~="wcmio.url"]',
     validate: function(el) {
       var value = getValue(el);
       var valid = value.length === 0 || pattern.url.test(value);
@@ -69,7 +69,7 @@
 
   // predefined "path" pattern validator
   registry.register('foundation.validation.validator', {
-    selector: '[data-foundation-validation="wcmio.path"]',
+    selector: '[data-foundation-validation~="wcmio.path"]',
     validate: function(el) {
       var value = getValue(el);
       var valid = value.length === 0 || pattern.path.test(value);
@@ -81,7 +81,7 @@
 
   // "pattern" validator with custom regex pattern and message
   registry.register('foundation.validation.validator', {
-    selector: '[data-foundation-validation="wcmio.pattern"]',
+    selector: '[data-foundation-validation~="wcmio.pattern"]',
     validate: function(el) {
       el = $(el);
       var regex = el.attr("data-wcmio-pattern");

@@ -46,9 +46,11 @@ var assertInvalid = function(validate, value) {
   });
 }
 
+
+
 // assert validator implementation
 describe('wcmio.email', function() {
-  var validate = validators['[data-foundation-validation="wcmio.email"]'];
+  var validate = validators['[data-foundation-validation~="wcmio.email"]'];
   assertValid(validate, "firstname.lastname@mycompany.com");
   assertInvalid(validate, "http://myhost");
   assertInvalid(validate, "http://www.domain.com/path1");
@@ -65,7 +67,7 @@ describe('wcmio.email', function() {
 });
 
 describe('wcmio.url', function() {
-  var validate = validators['[data-foundation-validation="wcmio.url"]'];
+  var validate = validators['[data-foundation-validation~="wcmio.url"]'];
   assertInvalid(validate, "firstname.lastname@mycompany.com");
   assertValid(validate, "http://myhost");
   assertValid(validate, "http://www.domain.com/path1");
@@ -82,7 +84,7 @@ describe('wcmio.url', function() {
 });
 
 describe('wcmio.path', function() {
-  var validate = validators['[data-foundation-validation="wcmio.path"]'];
+  var validate = validators['[data-foundation-validation~="wcmio.path"]'];
   assertInvalid(validate, "firstname.lastname@mycompany.com");
   assertInvalid(validate, "http://myhost");
   assertInvalid(validate, "http://www.domain.com/path1");
@@ -99,7 +101,7 @@ describe('wcmio.path', function() {
 });
 
 describe('wcmio.pattern', function() {
-  var validate = validators['[data-foundation-validation="wcmio.pattern"]'];
+  var validate = validators['[data-foundation-validation~="wcmio.pattern"]'];
 
   it('matches pattern', function() {
     assert.equal(validate({
