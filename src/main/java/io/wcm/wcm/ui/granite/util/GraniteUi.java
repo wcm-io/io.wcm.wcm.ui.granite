@@ -36,6 +36,14 @@ import com.day.cq.wcm.api.PageManager;
 
 /**
  * Helper methods for GraniteUI components.
+ * <p>
+ * It uses some heuristics to get the current content path in context of a GraniteUI component:
+ * </p>
+ * <ol>
+ * <li>Inside create page wizard, try to get content path from referrer header</li>
+ * <li>Try to get content path from request suffix</li>
+ * <li>Try to get content path from "item" request parameter (inside multifield component)</li>
+ * </ol>
  */
 @ProviderType
 public final class GraniteUi {
