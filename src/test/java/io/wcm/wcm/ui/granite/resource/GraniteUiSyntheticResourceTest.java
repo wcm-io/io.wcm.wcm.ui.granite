@@ -31,33 +31,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.day.cq.commons.jcr.JcrConstants;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
+import io.wcm.sling.commons.resource.ImmutableValueMap;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
 class GraniteUiSyntheticResourceTest {
 
-  private static final ValueMap SAMPLE_PROPERTES = new ValueMapDecorator(ImmutableMap.<String, Object>builder()
-      .put("sling:resourceType", "/sample/type")
-      .put("prop1", "value1")
-      .put("prop2", 25)
-      .build());
+  private static final ValueMap SAMPLE_PROPERTES = ImmutableValueMap.of(
+      "sling:resourceType", "/sample/type",
+      "prop1", "value1",
+      "prop2", 25);
 
-  private static final ValueMap OTHER_SAMPLE_PROPERTES = new ValueMapDecorator(ImmutableMap.<String, Object>builder()
-      .put("prop1", "value2")
-      .put("prop3", 55)
-      .build());
+  private static final ValueMap OTHER_SAMPLE_PROPERTES = ImmutableValueMap.of(
+      "prop1", "value2",
+      "prop3", 55);
 
   private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
 
@@ -131,8 +129,8 @@ class GraniteUiSyntheticResourceTest {
     assertEquals("/my/path/child2", child2.getPath());
     assertEquals("/my/child/type", child2.getResourceType());
 
-    List<Resource> childrenFromIterator = ImmutableList.copyOf(parent.listChildren());
-    List<Resource> childrenFromIterable = ImmutableList.copyOf(parent.getChildren());
+    List<Resource> childrenFromIterator = IteratorUtils.toList(parent.listChildren());
+    List<Resource> childrenFromIterable = IterableUtils.toList(parent.getChildren());
     assertEquals(childrenFromIterator, childrenFromIterable);
     assertEquals(2, childrenFromIterator.size());
     assertTrue(parent.hasChildren());
@@ -189,18 +187,18 @@ class GraniteUiSyntheticResourceTest {
 
     copySubtree(parent, source);
 
-    List<Resource> children1 = ImmutableList.copyOf(parent.getChildren());
+    List<Resource> children1 = IterableUtils.toList(parent.getChildren());
     assertEquals(1, children1.size());
     assertEquals("/target/path/source", children1.get(0).getPath());
     assertEquals("value1", children1.get(0).getValueMap().get("prop1", String.class));
 
-    List<Resource> children2 = ImmutableList.copyOf(children1.get(0).getChildren());
+    List<Resource> children2 = IterableUtils.toList(children1.get(0).getChildren());
     assertEquals(2, children2.size());
     assertEquals("/target/path/source/child1", children2.get(0).getPath());
     assertEquals("value2", children2.get(0).getValueMap().get("prop1", String.class));
     assertEquals("/target/path/source/child2", children2.get(1).getPath());
 
-    List<Resource> children3 = ImmutableList.copyOf(children2.get(0).getChildren());
+    List<Resource> children3 = IterableUtils.toList(children2.get(0).getChildren());
     assertEquals(2, children3.size());
     assertEquals("/target/path/source/child1/child11", children3.get(0).getPath());
     assertEquals("/target/path/source/child1/child12", children3.get(1).getPath());

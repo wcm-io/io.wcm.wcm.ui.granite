@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +41,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import com.adobe.granite.ui.components.ExpressionResolver;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.day.cq.commons.predicate.PredicateProvider;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -83,7 +82,7 @@ class PathFieldChildrenDatasourceServletTest {
 
   @Test
   void testHierarchyNotFilePredicate() {
-    Map<String, Object> props = ImmutableMap.<String, Object>of(
+    Map<String, Object> props = Map.of(
         "path", "/content/l1",
         "filter", "hierarchyNotFile");
     assertResultPaths(props,
@@ -93,7 +92,7 @@ class PathFieldChildrenDatasourceServletTest {
 
   @Test
   void testNoSystemPredicate() {
-    Map<String, Object> props = ImmutableMap.<String, Object>of(
+    Map<String, Object> props = Map.of(
         "path", "/content/l1",
         "filter", "nosystem");
     assertResultPaths(props,
@@ -104,7 +103,7 @@ class PathFieldChildrenDatasourceServletTest {
 
   @Test
   void testQuery() {
-    Map<String, Object> props = ImmutableMap.<String, Object>of(
+    Map<String, Object> props = Map.of(
         "query", "fi",
         "rootPath", "/content/l1",
         "filter", "nosystem");
@@ -120,7 +119,7 @@ class PathFieldChildrenDatasourceServletTest {
         .resource("l2a", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
         .resource("file", JCR_PRIMARYTYPE, NT_FILE);
 
-    Map<String, Object> props = ImmutableMap.<String, Object>of(
+    Map<String, Object> props = Map.of(
         "path", "/content/l2",
         "filter", "hierarchyNotFile");
     assertResultPaths(props,
@@ -137,8 +136,8 @@ class PathFieldChildrenDatasourceServletTest {
       throw new RuntimeException(ex);
     }
     DataSource ds = (DataSource)context.request().getAttribute(DataSource.class.getName());
-    List<String> actualPaths = ImmutableList.copyOf(ds.iterator()).stream().map(Resource::getPath).collect(Collectors.toList());
-    List<String> expectedPaths = ImmutableList.copyOf(paths);
+    List<String> actualPaths = IteratorUtils.toList(ds.iterator()).stream().map(Resource::getPath).collect(Collectors.toList());
+    List<String> expectedPaths = List.of(paths);
     assertEquals(expectedPaths, actualPaths);
   }
 

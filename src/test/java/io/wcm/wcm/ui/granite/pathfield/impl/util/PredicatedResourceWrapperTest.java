@@ -28,12 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -55,7 +54,7 @@ class PredicatedResourceWrapperTest {
 
     assertTrue(underTest.hasChildren());
 
-    List<Resource> children = ImmutableList.copyOf(underTest.listChildren());
+    List<Resource> children = IteratorUtils.toList(underTest.listChildren());
     assertEquals(2, children.size());
     assertEquals("child1", children.get(0).getName());
     assertEquals("child3", children.get(1).getName());
@@ -75,7 +74,7 @@ class PredicatedResourceWrapperTest {
 
     assertFalse(underTest.hasChildren());
 
-    List<Resource> children = ImmutableList.copyOf(underTest.listChildren());
+    List<Resource> children = IteratorUtils.toList(underTest.listChildren());
     assertTrue(children.isEmpty());
 
     assertNull(underTest.getChild("child2"));
@@ -90,7 +89,7 @@ class PredicatedResourceWrapperTest {
 
     assertFalse(underTest.hasChildren());
 
-    List<Resource> children = ImmutableList.copyOf(underTest.listChildren());
+    List<Resource> children = IteratorUtils.toList(underTest.listChildren());
     assertTrue(children.isEmpty());
   }
 
