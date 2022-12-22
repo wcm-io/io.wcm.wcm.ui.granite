@@ -7,7 +7,7 @@
 Granite UI Components for AEM Touch UI.
 
 Documentation: https://wcm.io/wcm/ui/granite/<br/>
-Issues: https://wcm-io.atlassian.net/browse/WWCM<br/>
+Issues: https://github.com/wcm-io/io.wcm.wcm.ui.granite/issues<br/>
 Wiki: https://wcm-io.atlassian.net/wiki/<br/>
 Continuous Integration: https://github.com/wcm-io/io.wcm.wcm.ui.granite/actions<br/>
 Commercial support: https://wcm.io/commercial-support.html
