@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
@@ -45,7 +46,6 @@ import com.adobe.granite.ui.components.ComponentHelper;
 import com.adobe.granite.ui.components.Config;
 import com.adobe.granite.ui.components.ExpressionHelper;
 import com.adobe.granite.ui.components.ds.DataSource;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.wcm.ui.granite.pathfield.impl.util.DummyPageContext;
 import io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource;
@@ -198,12 +198,12 @@ public final class ColumnView {
        * here we overwrite it via a synthetic resource because the path may be overwritten by validation logic
        * to ensure the path is not beyond the configured root path
        */
-      ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of(PN_PATH, resource.getPath()));
+      ValueMap overwriteProperties = new ValueMapDecorator(Map.of(PN_PATH, resource.getPath()));
       Resource resourceWrapper = GraniteUiSyntheticResource.wrapMerge(componentResource, overwriteProperties);
 
       if (dataSourceResource != null && newLimit != null) {
         // overwrite limit property in data source definition
-        ValueMap overwriteDataSourceProperties = new ValueMapDecorator(ImmutableMap.<String, Object>of(PN_LIMIT, newLimit));
+        ValueMap overwriteDataSourceProperties = new ValueMapDecorator(Map.of(PN_LIMIT, newLimit));
         Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
             dataSourceResource.getResourceType(),
             new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));

@@ -26,8 +26,6 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
-import com.google.common.collect.ImmutableSet;
-
 /**
  * Hide certain "AEM-internal" content paths when listing resource children.
  */
@@ -37,34 +35,33 @@ public class HideInternalContentPathsPredicate implements Predicate {
    * List of paths that are hidden by default.
    * Please note: it's allowed to see them if they are selected as root path, but not visible as children.
    */
-  private static final Set<String> HIDE_CONTENT_PATHS = ImmutableSet.<String>builder()
-      .add("/content/catalogs")
-      .add("/content/cq:tags")
-      .add("/content/campaigns")
-      .add("/content/communities")
-      .add("/content/community")
-      .add("/content/community-components")
-      .add("/content/community-templates")
-      .add("/content/dam")
-      .add("/content/dam/catalogs")
-      .add("/content/dam/collections")
-      .add("/content/dam/formsanddocuments")
-      .add("/content/dam/formsanddocuments-themes")
-      .add("/content/dam/templates")
-      .add("/content/entities")
-      .add("/content/experience-fragments")
-      .add("/content/forms")
-      .add("/content/launches")
-      .add("/content/mac")
-      .add("/content/mobileapps")
-      .add("/content/publications")
-      .add("/content/usergenerated")
-      .add("/content/phonegap")
-      .add("/content/projects")
-      .add("/content/screens")
-      .add("/content/sites")
-      .add("/content/versionhistory")
-      .build();
+  private static final Set<String> HIDE_CONTENT_PATHS = Set.of(
+      "/content/catalogs",
+      "/content/cq:tags",
+      "/content/campaigns",
+      "/content/communities",
+      "/content/community",
+      "/content/community-components",
+      "/content/community-templates",
+      "/content/dam",
+      "/content/dam/catalogs",
+      "/content/dam/collections",
+      "/content/dam/formsanddocuments",
+      "/content/dam/formsanddocuments-themes",
+      "/content/dam/templates",
+      "/content/entities",
+      "/content/experience-fragments",
+      "/content/forms",
+      "/content/launches",
+      "/content/mac",
+      "/content/mobileapps",
+      "/content/publications",
+      "/content/usergenerated",
+      "/content/phonegap",
+      "/content/projects",
+      "/content/screens",
+      "/content/sites",
+      "/content/versionhistory");
 
   private static final Pattern FIRST_LEVEL_PATH = Pattern.compile("^/[^/]+$");
   private static final String CONTENT_ROOT_PATH = "/content";

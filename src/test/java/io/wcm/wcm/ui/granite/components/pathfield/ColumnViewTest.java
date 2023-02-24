@@ -44,8 +44,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.adobe.granite.ui.components.ExpressionResolver;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.ResourceDataSource;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.sling.commons.adapter.AdaptTo;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -277,7 +275,7 @@ class ColumnViewTest {
 
   @Test
   void testRoot_Limit_DataSource() {
-    Map<String, Object> datasourceProps = ImmutableMap.of("limit", 5);
+    Map<String, Object> datasourceProps = Map.of("limit", 5);
     List<Column> columns = getColumns(datasourceProps,
         "rootPath", "/content/site1/en/page2",
         "path", "/content/site1/en/page2",
@@ -320,7 +318,7 @@ class ColumnViewTest {
     assertEquals(hasMore, column.isHasMore(), "hasMore");
     assertNull(column.getActiveId(), "activeId");
 
-    List<String> expectedItemIds = ImmutableList.copyOf(columnItemIds);
+    List<String> expectedItemIds = List.of(columnItemIds);
     List<String> actualItemIds = column.getItems().stream()
         .map(item -> item.getItemId())
         .collect(Collectors.toList());

@@ -17,12 +17,12 @@
   limitations under the License.
   #L%
   --%>
+<%@page import="java.util.Map"%>
 <%@page import="org.apache.sling.api.resource.Resource"%>
 <%@page import="org.apache.sling.api.resource.ValueMap"%>
 <%@page import="org.apache.sling.api.request.RequestDispatcherOptions"%>
 <%@page import="org.apache.sling.api.wrappers.ValueMapDecorator"%>
 <%@page import="com.adobe.granite.ui.components.Config"%>
-<%@page import="com.google.common.collect.ImmutableMap"%>
 <%@page import="io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource"%>
 <%@page import="io.wcm.wcm.ui.granite.util.GraniteUi"%>
 <%@include file="../../global/global.jsp" %><%
@@ -31,7 +31,7 @@ Config cfg = cmp.getConfig();
 String name = cfg.get("name", String.class);
 String value = cfg.get("value", "true");
 
-ValueMap overwriteProperties = new ValueMapDecorator(ImmutableMap.<String,Object>of(
+ValueMap overwriteProperties = new ValueMapDecorator(Map.<String,Object>of(
     "value", value,
     // is already generated below - do not generated twice
     "deleteHint", false));

@@ -25,13 +25,13 @@
   <parent>
     <groupId>io.wcm</groupId>
     <artifactId>io.wcm.parent_toplevel</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
     <relativePath/>
   </parent>
 
   <groupId>io.wcm</groupId>
   <artifactId>io.wcm.wcm.ui.granite</artifactId>
-  <version>1.9.8</version>
+  <version>1.9.10</version>
   <packaging>jar</packaging>
 
   <name>WCM Granite UI Extensions</name>
@@ -49,7 +49,7 @@
     <site.url.module.prefix>wcm/ui/granite</site.url.module.prefix>
 
     <!-- Enable reproducible builds -->
-    <project.build.outputTimestamp>2022-10-13T08:49:03Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-02-24T15:04:43Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -171,6 +171,12 @@
         <configuration>
           <bnd>
             Sling-Initial-Content: SLING-INF/app-root;overwrite:=true;ignoreImportProviders:=xml;path:=/apps/wcm-io/wcm/ui/granite
+
+            Sling-Namespaces: \
+              wcmio=http://wcm.io/ns,\
+              cq=http://www.day.com/jcr/cq/1.0,\
+              granite=http://www.adobe.com/jcr/granite/1.0,\
+              sling=http://sling.apache.org/jcr/sling/1.0
 
             Import-Package: \
               <!-- For build compatibility with Java 11 -->\

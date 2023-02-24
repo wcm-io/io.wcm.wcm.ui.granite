@@ -19,6 +19,7 @@
  */
 package io.wcm.wcm.ui.granite.resource;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -35,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 import com.day.cq.commons.jcr.JcrConstants;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Extended version of {@link SyntheticResource} that allows to pass an own value map and optional child resources.
@@ -148,7 +148,7 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
         path,
         resourceType,
         valueMap,
-        ImmutableList.<Resource>of());
+        Collections.emptyList());
   }
 
   /**
@@ -217,7 +217,7 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
         parentResource.getPath() + "/" + name,
         resourceType,
         valueMap,
-        ImmutableList.<Resource>of());
+        Collections.emptyList());
     if (parentResource instanceof GraniteUiSyntheticResource) {
       ((GraniteUiSyntheticResource)parentResource).addChild(child);
     }

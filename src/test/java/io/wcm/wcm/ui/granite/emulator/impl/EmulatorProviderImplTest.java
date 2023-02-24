@@ -38,8 +38,6 @@ import com.day.cq.wcm.emulator.Emulator;
 import com.day.cq.wcm.emulator.EmulatorProvider;
 import com.day.cq.wcm.mobile.api.device.DeviceGroup;
 import com.day.cq.wcm.mobile.api.device.DeviceGroupList;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -61,10 +59,10 @@ class EmulatorProviderImplTest {
     underTest = context.registerInjectActivateService(new EmulatorProviderImpl(),
         "templatePathPatterns", new String[] { "^/apps/app1/.*$", "^/apps/app2/.*$" });
 
-    page1 = context.create().page("/content/page1", "/apps/app1/template1", ImmutableMap.<String, Object>of(
+    page1 = context.create().page("/content/page1", "/apps/app1/template1",
         "cq:deviceGroups", new String[] {
             "/etc/mobile/groups/responsive"
-        }));
+        });
     page2 = context.create().page("/content/page1/page2", "/apps/app2/template2");
     page3 = context.create().page("/content/page1/page3", "/apps/app3/template3");
   }
@@ -87,10 +85,10 @@ class EmulatorProviderImplTest {
     Emulator emulator1 = mock(Emulator.class);
     Emulator emulator2 = mock(Emulator.class);
     deviceGroupList.add(deviceGroup1);
-    when(deviceGroup1.getEmulators()).thenReturn(ImmutableList.of(emulator1, emulator2));
+    when(deviceGroup1.getEmulators()).thenReturn(List.of(emulator1, emulator2));
     DeviceGroup deviceGroup2 = mock(DeviceGroup.class);
     Emulator emulator3 = mock(Emulator.class);
-    when(deviceGroup2.getEmulators()).thenReturn(ImmutableList.of(emulator3));
+    when(deviceGroup2.getEmulators()).thenReturn(List.of(emulator3));
     deviceGroupList.add(deviceGroup2);
 
     List<Emulator> emulators = underTest.getEmulators(resource);

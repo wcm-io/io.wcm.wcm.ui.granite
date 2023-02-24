@@ -17,6 +17,7 @@
   limitations under the License.
   #L%
 --%>
+<%@page import="java.util.Map"%>
 <%@page import="com.adobe.granite.ui.components.Config"%>
 <%@page import="org.apache.sling.api.resource.Resource"%>
 <%@page import="org.apache.sling.api.resource.ValueMap"%>
@@ -24,7 +25,6 @@
 <%@page import="org.apache.sling.caconfig.resource.ConfigurationResourceResolver"%>
 <%@page import="org.apache.sling.api.wrappers.ValueMapDecorator"%>
 <%@page import="com.day.cq.commons.jcr.JcrConstants"%>
-<%@page import="com.google.common.collect.ImmutableMap"%>
 <%@page import="io.wcm.wcm.ui.granite.resource.GraniteUiSyntheticResource"%>
 <%@page import="io.wcm.wcm.ui.granite.util.GraniteUi"%>
 <%@include file="../../global/global.jsp" %><%
@@ -48,7 +48,7 @@ if (rootPath != null) {
   if (appendPath != null) {
     rootPath += appendPath;
   }
-  overwriteProperties = new ValueMapDecorator(ImmutableMap.<String,Object>of("rootPath", rootPath));
+  overwriteProperties = new ValueMapDecorator(Map.<String,Object>of("rootPath", rootPath));
 }
 else {
   overwriteProperties = ValueMapDecorator.EMPTY;
