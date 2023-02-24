@@ -172,6 +172,12 @@
           <bnd>
             Sling-Initial-Content: SLING-INF/app-root;overwrite:=true;ignoreImportProviders:=xml;path:=/apps/wcm-io/wcm/ui/granite
 
+            Sling-Namespaces: \
+              wcmio=http://wcm.io/ns,\
+              cq=http://www.day.com/jcr/cq/1.0,\
+              granite=http://www.adobe.com/jcr/granite/1.0,\
+              sling=http://sling.apache.org/jcr/sling/1.0
+
             Import-Package: \
               <!-- For build compatibility with Java 11 -->\
               javax.annotation;version="[0.0,2)",\
