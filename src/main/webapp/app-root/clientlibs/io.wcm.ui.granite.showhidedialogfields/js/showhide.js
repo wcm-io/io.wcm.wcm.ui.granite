@@ -44,19 +44,20 @@
 
   function showHide(component, element) {
     // get the selector to find the target elements.
-    var target = $(element).data("wcmioDialogShowhideTarget");
+    var $element = $(element);
+    var target = $element.data("wcmioDialogShowhideTarget");
     if (!target) {
       return;
     }
 
     // optional: get the selector to find the comment parent element
-    var parentSelector = $(element).data("wcmioDialogShowhideParent");
+    var parentSelector = $element.data("wcmioDialogShowhideParent");
 
     // check if all elements in the dialog, or only those that whare the same parent should be processed
     var $target;
     var $parent = [];
     if (parentSelector) {
-      $parent = $(element).parents(parentSelector);
+      $parent = $element.parents(parentSelector);
     }
     if ($parent.length > 0) {
       $target = $(target, $parent);
@@ -66,8 +67,11 @@
     }
 
     var value;
-    if ($(element).is("coral-checkbox") && typeof component.checked !== "undefined") {
+    if ($element.is("coral-checkbox") && typeof component.checked !== "undefined") {
       value = component.checked ? "true" : "false";
+    }
+    else if ($element.is("coral-select")) {
+      value = $element.children('coral-select-item[selected]').val() || "";
     }
     else if (typeof component.value !== "undefined") {
       value = component.value;
