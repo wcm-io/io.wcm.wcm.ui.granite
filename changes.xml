@@ -23,9 +23,15 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.10.0" date="not released">
+      <action type="add" dev="sseifert">
+        Granite UI Show/Hide: Add support for new data attribute "showhidetargetvalues" to be able to show a component for multiple matches of target values.
+      </action>
+    </release>
+
     <release version="1.9.14" date="2023-08-31">
       <action type="fix" dev="rubnig" issue="4">
-        Coral-Select with a current value together with a showhide, doesn't show the current selected value in Page Properties dialog (AEM 6.5).
+        Granite UI Show/Hide: Coral-Select with a current value together with a showhide, doesn't show the current selected value in Page Properties dialog (AEM 6.5).
       </action>
     </release>
 

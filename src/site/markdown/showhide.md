@@ -15,6 +15,7 @@ Supported Coral UI 3 components:
 * Add the data attribute `showhidetargetvalue` to each target component, the value should equal the value of the select option that will unhide this element.
     * For select components use the select option value
     * For checkbox components use "true" or "false" for the checkbox state
+* Alternatively, you can add the data attribute `showhidetargetvalues` to a target component to show it for a comma-separated list of target values.
 
 To ensure the show/hide features is applied only to a certain group of elements in the edit dialog, when it cannot be ensured that the CSS class is unique across the whole dialog (e.g. in multi fields):
 
