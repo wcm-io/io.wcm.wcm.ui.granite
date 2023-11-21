@@ -24,7 +24,7 @@
   <body>
 
     <release version="1.10.0" date="not released">
-      <action type="add" dev="sseifert">
+      <action type="add" dev="sseifert" issue="7">
         Granite UI Show/Hide: Add support for new data attribute "showhidetargetvalues" to be able to show a component for multiple matches of target values.
       </action>
     </release>

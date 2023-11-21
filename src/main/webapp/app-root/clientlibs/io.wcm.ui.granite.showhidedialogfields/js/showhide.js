@@ -43,15 +43,10 @@
       }
     });
   }
-  
+
   function includesCommaSeparated(valuesString, value) {
     if (valuesString) {
-      var valueArray = valuesString.split(",");
-      for (valueItem in valueArray) {
-        if (valueItem === value) {
-          return true
-        }
-      }
+      return valuesString.split(",").find(item => item === value) != undefined
     }
     return false
   }
