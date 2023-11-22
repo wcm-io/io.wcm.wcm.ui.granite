@@ -11,6 +11,8 @@
  * - Add the class hidden to each target component to make them initially hidden
  * - Add the data attribute showhidetargetvalue to each target component, the value should equal the value of the select
  *   option that will unhide this element. In case of a checkbox use "true" or "false" for checkbox state.
+ * - Alternatively, you can add the data attribute showhidetargetvalues to a target component to show
+ *   it for a comma-separated list of target values.
  *
  * To ensure the show/hide features is applied only to a certain group of elements in the edit dialog,
  * when it cannot be ensured that the CSS class is unique across the whole dialog (e.g. in multi fields):
@@ -40,6 +42,13 @@
         });
       }
     });
+  }
+
+  function includesCommaSeparated(valuesString, value) {
+    if (valuesString) {
+      return valuesString.split(",").find(item => item === value) != undefined
+    }
+    return false
   }
 
   function showHide(component, element) {
@@ -83,7 +92,8 @@
     $target.each(function(index, element) {
       // make sure all unselected target elements are hidden.
       // unhide the target element that contains the selected value as data-showhidetargetvalue attribute
-      var show = element && element.dataset.showhidetargetvalue === value;
+      var show = element && (element.dataset.showhidetargetvalue === value
+          || includesCommaSeparated(element.dataset.showhidetargetvalues, value));
       setVisibilityAndHandleFieldValidation($(element), show);
     });
   }
