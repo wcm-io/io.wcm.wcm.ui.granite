@@ -25,6 +25,9 @@
 
     <release version="1.10.2" date="not released">
       <action type="update" dev="sseifert">
+        Explicitly define folder type for JSON files with "nt:unstructured" as root node to circumvent SLING-12197.
+      </action>
+      <action type="update" dev="sseifert">
         Switch to AEM 6.5.17 as minimum version.
       </action>
     </release>
