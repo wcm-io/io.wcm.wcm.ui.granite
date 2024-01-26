@@ -18,7 +18,8 @@ Granite UI Components for AEM Touch UI.
 
 |WCM Granite UI Extensions version |AEM version supported
 |----------------------------------|----------------------
-|1.9.4 or higher                   |AEM 6.5.7+, AEMaaCS
+|1.10.2 or higher                  |AEM 6.5.17+, AEMaaCS
+|1.9.4 - 1.10.0                    |AEM 6.5.7+, AEMaaCS
 |1.9.0 - 1.9.2                     |AEM 6.5+, AEMaaCS
 |1.7.x - 1.8.x                     |AEM 6.4+, AEMaaCS
 |1.6.x                             |AEM 6.3+
