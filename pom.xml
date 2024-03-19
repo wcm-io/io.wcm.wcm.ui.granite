@@ -207,8 +207,7 @@
             </goals>
             <phase>process-resources</phase>
             <configuration>
-              <nodeVersion>v16.13.0</nodeVersion>
-              <npmVersion>8.1.0</npmVersion>
+              <nodeVersion>v20.11.1</nodeVersion>
             </configuration>
           </execution>
           <execution>
