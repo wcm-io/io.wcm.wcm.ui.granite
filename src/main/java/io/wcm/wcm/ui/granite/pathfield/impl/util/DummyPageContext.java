@@ -43,7 +43,7 @@ import org.apache.sling.api.SlingHttpServletResponse;
  * no direct pass-in of SlingHttpServletRequest.
  */
 @SuppressWarnings("deprecation")
-public class DummyPageContext extends PageContext {
+public final class DummyPageContext extends PageContext {
 
   private final SlingHttpServletRequest slingRequest;
   private final SlingHttpServletResponse slingResponse;
@@ -56,7 +56,12 @@ public class DummyPageContext extends PageContext {
   public DummyPageContext(SlingHttpServletRequest slingRequest, SlingHttpServletResponse slingResponse) {
     this.slingRequest = slingRequest;
     this.slingResponse = slingResponse;
-    this.jspWriter = new DummyJspWriter();
+    try {
+      this.jspWriter = new JspWriterWrapper(slingResponse.getWriter());
+    }
+    catch (IOException ex) {
+      throw new IllegalArgumentException("Unable to get output writer.", ex);
+    }
   }
 
   @Override
