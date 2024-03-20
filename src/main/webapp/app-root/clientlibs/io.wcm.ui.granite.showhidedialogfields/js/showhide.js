@@ -44,9 +44,9 @@
     });
   }
 
-  function includesCommaSeparated(valuesString, value) {
+  function includesCommaSeparated(valuesString, values) {
     if (valuesString) {
-      return valuesString.split(",").find(item => item === value) != undefined
+      return valueString.split(",").find(item => values.includes(item)) != undefined;
     }
     return false
   }
@@ -75,25 +75,28 @@
       $target = $(target);
     }
 
-    var value;
+    var values = [];
     if ($element.is("coral-checkbox") && typeof component.checked !== "undefined") {
-      value = component.checked ? "true" : "false";
+      values.push(component.checked ? "true" : "false");
     }
     else if ($element.is("coral-select")) {
-      value = $element.children('coral-select-item[selected]').val() || "";
+      $element.children("coral-select-item[selected]").each(function(index, element) {
+        var value = $(element).val() || ""
+        values.push(value);
+      });
     }
     else if (typeof component.value !== "undefined") {
-      value = component.value;
+      values.push(component.value);
     }
     else if (typeof component.getValue === "function") {
-      value = component.getValue();
+      values.push(component.getValue());
     }
 
     $target.each(function(index, element) {
       // make sure all unselected target elements are hidden.
       // unhide the target element that contains the selected value as data-showhidetargetvalue attribute
-      var show = element && (element.dataset.showhidetargetvalue === value
-          || includesCommaSeparated(element.dataset.showhidetargetvalues, value));
+      var show = element && (values.includes(element.dataset.showhidetargetvalue)
+          || includesCommaSeparated(element.dataset.showhidetargetvalues, values));
       setVisibilityAndHandleFieldValidation($(element), show);
     });
   }
