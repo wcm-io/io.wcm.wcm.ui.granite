@@ -46,7 +46,7 @@
 
   function includesCommaSeparated(valuesString, values) {
     if (valuesString) {
-      return valueString.split(",").find(item => values.includes(item)) != undefined;
+      return valuesString.split(",").find(item => values.includes(item)) != undefined;
     }
     return false
   }
