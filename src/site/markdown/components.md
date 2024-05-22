@@ -5,7 +5,7 @@
 
 Form checkbox for boolean data.
 
-```json
+```json-jcr
 "field": {
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/checkbox",
   "name": "./field",
@@ -24,7 +24,7 @@ Enhancements over AEM version:
 
 Number field for long value.
 
-```json
+```json-jcr
 "field": {
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/numberfield",
   "name": "./field",
@@ -41,7 +41,7 @@ Enhancements over AEM version:
 
 Form field for date/time value.
 
-```json
+```json-jcr
 "field": {
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/datepicker",
   "displayedFormat": "DD.MM.YYYY HH:mm",
@@ -60,7 +60,7 @@ Enhancements over AEM version:
 
 Select form field.
 
-```json
+```json-jcr
 "field": {
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/select",
   "name": "./field",
@@ -80,7 +80,7 @@ Enhancements over AEM version:
 
 A field that allows the user to enter path. This path field can be used for both picking page paths or asset paths.
 
-```json
+```json-jcr
 "field": {
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/pathfield",
   "name": "./field",
@@ -107,7 +107,7 @@ This is a customized Path Field/Browser that always sets the root path to the in
 Requires proper configuration of Apache Sling Context-Aware configuration, see also [wcm.io Context-Aware Configuration][wcmio-caconfig].
 
 
-```json
+```json-jcr
 "field": {
   "sling:resourceType": "wcm-io/wcm/ui/granite/components/form/configScopePathBrowser",
   "name": "./field",

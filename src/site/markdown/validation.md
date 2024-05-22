@@ -7,7 +7,7 @@ Collection of CoralUI 3 validators.
 
 Validates a string against a predefined E-Mail pattern.
 
-```json
+```json-jcr
 "email": {
   "sling:resourceType": "granite/ui/components/coral/foundation/form/textfield",
   "name": "./email",
@@ -24,7 +24,7 @@ Examples for matching values:
 
 Validates a string against a predefined URL pattern.
 
-```json
+```json-jcr
 "url": {
   "sling:resourceType": "granite/ui/components/coral/foundation/form/textfield",
   "name": "./url",
@@ -46,7 +46,7 @@ Examples for matching values:
 
 Validates a string against a predefined content path pattern.
 
-```json
+```json-jcr
 "url": {
   "sling:resourceType": "granite/ui/components/coral/foundation/form/textfield",
   "name": "./path",
@@ -65,7 +65,7 @@ Examples for matching values:
 
 Validates a string against a custom regex pattern. A custom validation message can be provided as well.
 
-```json
+```json-jcr
 "hex": {
   "sling:resourceType": "granite/ui/components/coral/foundation/form/textfield",
   "name": "./hex",
