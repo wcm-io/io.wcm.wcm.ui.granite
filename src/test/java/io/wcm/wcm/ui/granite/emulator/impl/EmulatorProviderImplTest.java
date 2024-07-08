@@ -98,7 +98,7 @@ class EmulatorProviderImplTest {
     assertTrue(emulators.contains(emulator3));
   }
 
-  private static class DeviceGroupListMock extends ArrayList<DeviceGroup> implements DeviceGroupList {
+  private static final class DeviceGroupListMock extends ArrayList<DeviceGroup> implements DeviceGroupList {
     private static final long serialVersionUID = 1L;
     // DeviceGroup list
   }

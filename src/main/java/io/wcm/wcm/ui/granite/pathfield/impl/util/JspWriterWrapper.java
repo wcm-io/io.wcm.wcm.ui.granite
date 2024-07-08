@@ -36,7 +36,7 @@ class JspWriterWrapper extends JspWriter {
   private final PrintWriter writer;
 
   JspWriterWrapper(@NotNull Writer writer) {
-    super(JspWriter.NO_BUFFER, true);
+    super(NO_BUFFER, true);
     this.writer = new PrintWriter(writer);
   }
 

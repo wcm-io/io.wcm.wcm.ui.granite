@@ -233,7 +233,7 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
    * @param source Source resource
    */
   public static void copySubtree(@NotNull Resource targetParent, @NotNull Resource source) {
-    Resource targetChild = GraniteUiSyntheticResource.child(targetParent, source.getName(), source.getResourceType(), source.getValueMap());
+    Resource targetChild = child(targetParent, source.getName(), source.getResourceType(), source.getValueMap());
     for (Resource sourceChild : source.getChildren()) {
       copySubtree(targetChild, sourceChild);
     }
