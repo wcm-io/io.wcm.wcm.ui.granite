@@ -25,7 +25,7 @@
   <body>
 
     <release version="1.10.6" date="not released">
-      <action type="update" dev="sseifert">
+      <action type="update" dev="sseifert" issue="15">
         Granite UI Show/Hide: Add category 'cq.sites.validations' to make the it available in create page wizard.
       </action>
     </release>
