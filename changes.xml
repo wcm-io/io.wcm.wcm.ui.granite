@@ -24,6 +24,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.10.6" date="not released">
+      <action type="update" dev="sseifert" issue="15">
+        Granite UI Show/Hide: Add category 'cq.sites.validations' to make the it available in create page wizard.
+      </action>
+    </release>
+
     <release version="1.10.4" date="2024-03-21">
       <action type="update" dev="rubnig" issue="13">
         Granite UI Show/Hide: Support multiple options for Coral select component.
