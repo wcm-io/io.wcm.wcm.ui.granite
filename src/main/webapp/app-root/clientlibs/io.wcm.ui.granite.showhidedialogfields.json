@@ -2,6 +2,7 @@
   "jcr:primaryType": "cq:ClientLibraryFolder",
   "categories": [
     "cq.authoring.dialog",
-    "cq.siteadmin.admin.properties"
+    "cq.siteadmin.admin.properties",
+    "cq.sites.validations"
   ]
 }
