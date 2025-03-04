@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
-    <release version="1.10.6" date="not released">
+    <release version="1.10.6" date="2025-03-04">
       <action type="update" dev="sseifert" issue="15">
         Granite UI Show/Hide: Add category 'cq.sites.validations' to make the it available in create page wizard.
       </action>
