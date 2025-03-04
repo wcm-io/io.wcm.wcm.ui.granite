@@ -44,4 +44,4 @@ Sources: https://github.com/wcm-io/io.wcm.wcm.ui.granite
 [validation]: validation.html
 [showhide]: showhide.html
 [apidocs]: apidocs/
-[changelog]: changes-report.html
+[changelog]: changes.html

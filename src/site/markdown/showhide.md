@@ -26,7 +26,7 @@ This works the same as the AEM built-in `cq-dialog-dropdown-showhide` feature, b
 
 ### Example
 
-```json
+```json-jcr
 {
   "sling:resourceType": "granite/ui/components/coral/foundation/container",
   "items": {

@@ -93,7 +93,7 @@ class PredicatedResourceWrapperTest {
     assertTrue(children.isEmpty());
   }
 
-  private static class HideChild2Predcate implements Predicate {
+  private static final class HideChild2Predcate implements Predicate {
     @Override
     public boolean evaluate(Object object) {
       Resource resource = (Resource)object;

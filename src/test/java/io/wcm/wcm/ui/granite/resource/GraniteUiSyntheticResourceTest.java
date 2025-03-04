@@ -106,7 +106,7 @@ class GraniteUiSyntheticResourceTest {
   }
 
   @Test
-  void testWrapMerge() throws Exception {
+  void testWrapMerge() {
     Resource original = context.create().resource("/original/path", SAMPLE_PROPERTES);
 
     Resource underTest = wrapMerge(original, OTHER_SAMPLE_PROPERTES);
@@ -163,7 +163,6 @@ class GraniteUiSyntheticResourceTest {
     Resource parent = wrapMerge(existingParent, ValueMap.EMPTY);
 
     Resource child1 = child(parent, "child1", "/my/child/type", SAMPLE_PROPERTES);
-    child1 = parent.getChild("child1");
 
     assertEquals("/my/path/child1", child1.getPath());
     assertEquals("/my/child/type", child1.getResourceType());
