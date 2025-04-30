@@ -1,5 +1,5 @@
 /**
- * Extension to the standard dropdown/select and checkbox components. It enables hidding/unhidding of other components 
+ * Extension to the standard dropdown/select and checkbox components. It enables hidding/unhidding of other components
  * based on the selection made in the dropdown/select or the checkbox state.
  *
  * Usage:
@@ -17,7 +17,7 @@
  * To ensure the show/hide features is applied only to a certain group of elements in the edit dialog,
  * when it cannot be ensured that the CSS class is unique across the whole dialog (e.g. in multi fields):
  * - Add the data attribute wcmio-dialog-showhide-parent to the dropdown/select element, value should be
- *   a selector that identifies a common parent element. Only dialog fields that are children of that element 
+ *   a selector that identifies a common parent element. Only dialog fields that are children of that element
  *   (e.g. a container) will be processed.
  *
  * This only supports Coral UI 3.
@@ -121,9 +121,11 @@
      if (show) {
        $element.removeClass("hide");
        $element.removeClass("wcmio-dialog-showhide-status-hide");
-       $element.find("input[aria-required=false], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
+       $element.find("input[aria-required=false], textarea[aria-required=true], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
            .filter(":not(.hide>input)")
            .filter(":not(input.hide)")
+           .filter(":not(.hide>textarea)")
+           .filter(":not(textarea.hide)")
            .filter(":not(foundation-autocomplete[aria-required=false] input)")
            .filter(":not(.hide>coral-multifield)")
            .filter(":not(input.coral-multifield)")
@@ -133,7 +135,7 @@
      }
      else {
        $element.addClass("hide");
-       $element.find("input[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
+       $element.find("input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
            .filter(":not(foundation-autocomplete[required] input)")
            .each(function(index, field) {
              toggleValidation($(field));
