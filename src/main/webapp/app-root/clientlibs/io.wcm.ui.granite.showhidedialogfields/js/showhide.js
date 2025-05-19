@@ -26,17 +26,18 @@
   "use strict";
 
   // when dialog gets injected
-  $(document).on("foundation-contentloaded", function(e) {
+  $(document).on("foundation-contentloaded", function (e) {
     // if there is already an inital value make sure the according target element becomes visible
     showHideHandler($(".wcmio-dialog-showhide", e.target));
   });
 
   function showHideHandler(el) {
-    el.each(function(i, element) {
-      if ($(element).is("coral-select") || $(element).is("coral-checkbox")) {
-        Coral.commons.ready(element, function(component) {
+    el.each(function (i, element) {
+      var $element = $(element);
+      if ($element.is("coral-select") || $element.is("coral-checkbox") || $element.is("coral-radio") || $element.is("[role=radiogroup]")) {
+        Coral.commons.ready(element, function (component) {
           showHide(component, element);
-          component.on("change", function() {
+          component.on("change", function () {
             showHide(component, element);
           });
         });
@@ -54,7 +55,7 @@
   function showHide(component, element) {
     // get the selector to find the target elements.
     var $element = $(element);
-    var target = $element.data("wcmioDialogShowhideTarget");
+    var target = $element.data("wcmioDialogShowhidetarget");
     if (!target) {
       return;
     }
@@ -70,29 +71,32 @@
     }
     if ($parent.length > 0) {
       $target = $(target, $parent);
-    }
-    else {
+    } else {
       $target = $(target);
     }
 
     var values = [];
     if ($element.is("coral-checkbox") && typeof component.checked !== "undefined") {
       values.push(component.checked ? "true" : "false");
-    }
-    else if ($element.is("coral-select")) {
-      $element.children("coral-select-item[selected]").each(function(index, element) {
-        var value = $(element).val() || ""
+    } else if ($element.is("coral-radio") && typeof component.checked !== "undefined") {
+      component.checked && values.push($element.val());
+    } else if ($element.is("[role=radiogroup]")) {
+      $element.children("coral-radio[checked]").each(function (i, el) {
+        var value = $(el).val() || ""
         values.push(value);
       });
-    }
-    else if (typeof component.value !== "undefined") {
+    } else if ($element.is("coral-select")) {
+      $element.children("coral-select-item[selected]").each(function (index, el) {
+        var value = $(el).val() || ""
+        values.push(value);
+      });
+    } else if (typeof component.value !== "undefined") {
       values.push(component.value);
-    }
-    else if (typeof component.getValue === "function") {
+    } else if (typeof component.getValue === "function") {
       values.push(component.getValue());
     }
 
-    $target.each(function(index, element) {
+    $target.each(function (index, element) {
       // make sure all unselected target elements are hidden.
       // unhide the target element that contains the selected value as data-showhidetargetvalue attribute
       var show = element && (values.includes(element.dataset.showhidetargetvalue)
@@ -110,39 +114,38 @@
    * @param {jQuery} $element Element to show or hide.
    * @param {Boolean} show <code>true</code> to show the element.
    */
-   function setVisibilityAndHandleFieldValidation($element, show) {
+  function setVisibilityAndHandleFieldValidation($element, show) {
 
-     // if target element is part of a field wrapper, target the wrapper instead
-     var $fieldWrapperParent = $element.parent(".coral-Form-fieldwrapper");
-     if ($fieldWrapperParent.length > 0) {
-       $element = $fieldWrapperParent;
-     }
+    // if target element is part of a field wrapper, target the wrapper instead
+    var $fieldWrapperParent = $element.parent(".coral-Form-fieldwrapper");
+    if ($fieldWrapperParent.length > 0) {
+      $element = $fieldWrapperParent;
+    }
 
-     if (show) {
-       $element.removeClass("hide");
-       $element.removeClass("wcmio-dialog-showhide-status-hide");
-       $element.find("input[aria-required=false], textarea[aria-required=true], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
-           .filter(":not(.hide>input)")
-           .filter(":not(input.hide)")
-           .filter(":not(.hide>textarea)")
-           .filter(":not(textarea.hide)")
-           .filter(":not(foundation-autocomplete[aria-required=false] input)")
-           .filter(":not(.hide>coral-multifield)")
-           .filter(":not(input.coral-multifield)")
-           .each(function(index, field) {
-             toggleValidation($(field));
-           });
-     }
-     else {
-       $element.addClass("hide");
-       $element.find("input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
-           .filter(":not(foundation-autocomplete[required] input)")
-           .each(function(index, field) {
-             toggleValidation($(field));
-           });
-       $element.addClass("wcmio-dialog-showhide-status-hide");
-     }
-   }
+    if (show) {
+      $element.removeClass("hide");
+      $element.removeClass("wcmio-dialog-showhide-status-hide");
+      $element.find("input[aria-required=false], textarea[aria-required=true], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
+          .filter(":not(.hide>input)")
+          .filter(":not(input.hide)")
+          .filter(":not(.hide>textarea)")
+          .filter(":not(textarea.hide)")
+          .filter(":not(foundation-autocomplete[aria-required=false] input)")
+          .filter(":not(.hide>coral-multifield)")
+          .filter(":not(input.coral-multifield)")
+          .each(function (index, field) {
+            toggleValidation($(field));
+          });
+    } else {
+      $element.addClass("hide");
+      $element.find("input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
+          .filter(":not(foundation-autocomplete[required] input)")
+          .each(function (index, field) {
+            toggleValidation($(field));
+          });
+      $element.addClass("wcmio-dialog-showhide-status-hide");
+    }
+  }
 
   /**
    * If the form element is not shown we have to disable the required validation for that field.
@@ -163,13 +166,11 @@
       if (propRequired === true) {
         $field[0].required = false;
         $field.attr("aria-required", false);
-      }
-      else if (propRequired === false) {
+      } else if (propRequired === false) {
         $field[0].required = true;
         $field.removeAttr("aria-required");
       }
-    }
-    else if (typeof ariaRequired !== "undefined") {
+    } else if (typeof ariaRequired !== "undefined") {
       $field.attr("aria-required", String(!isRequired));
     }
 
