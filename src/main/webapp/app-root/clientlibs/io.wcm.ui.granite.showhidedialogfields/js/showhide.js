@@ -37,7 +37,7 @@
       if ($element.is("coral-select") || $element.is("coral-checkbox") || $element.is("coral-radio") || $element.is("[role=radiogroup]")) {
         Coral.commons.ready(element, function (component) {
           showHide(component, element);
-          component.on("change", function () {
+          $(component).on("change", function() {
             showHide(component, element);
           });
         });
