@@ -55,7 +55,7 @@
   function showHide(component, element) {
     // get the selector to find the target elements.
     var $element = $(element);
-    var target = $element.data("wcmioDialogShowhidetarget");
+    var target = $element.data("wcmioDialogShowhideTarget");
     if (!target) {
       return;
     }
