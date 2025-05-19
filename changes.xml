@@ -25,6 +25,9 @@
   <body>
 
     <release version="1.10.8" date="not released">
+      <action type="update" dev="henrykuijpers" issue="25">
+        Granite UI Show/Hide: Showhide support for coral radio &amp; radio group.
+      </action>
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
       </action>
