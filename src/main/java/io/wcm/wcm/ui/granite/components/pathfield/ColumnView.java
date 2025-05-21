@@ -81,6 +81,13 @@ public final class ColumnView {
   private Resource currentResource;
   private final List<Column> columns = new ArrayList<>();
 
+  /**
+   * Constructor
+   */
+  public ColumnView() {
+    // default constructor
+  }
+
   @PostConstruct
   @SuppressWarnings("null")
   private void activate() {
