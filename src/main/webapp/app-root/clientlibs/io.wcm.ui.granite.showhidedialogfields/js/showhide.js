@@ -33,7 +33,7 @@
 
   function showHideHandler(el) {
     el.each(function(i, element) {
-      if ($(element).is("coral-select") || $(element).is("coral-checkbox")) {
+      if ($(element).is("coral-select") || $(element).is("coral-checkbox") || $(element).is("foundation-autocomplete")) {
         Coral.commons.ready(element, function(component) {
           showHide(component, element);
           component.on("change", function() {
