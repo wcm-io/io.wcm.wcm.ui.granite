@@ -135,15 +135,13 @@ describe('io.wcm.ui.granite.validation', () => {
 /**
  * Helper to check validation result.
  * If isValid is true, expects result to be null or undefined.
- * If isValid is false, expects result to be a string and optionally matches expectedMessage.
+ * If isValid is false, expects result to be a string and matches expectedMessage.
  */
 function expectValidationResult(result, isValid, expectedMessage) {
   if (isValid) {
     expect(result === null || result === undefined).toBe(true);
-  } else {
-    expect(typeof result).toBe('string');
-    if (expectedMessage !== undefined) {
-      expect(result).toBe(expectedMessage);
-    }
+  }
+  else {
+    expect(result).toBe(expectedMessage);
   }
 }
