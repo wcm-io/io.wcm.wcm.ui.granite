@@ -71,6 +71,7 @@ public final class RootPathResolver {
   private String fallbackRootPath = DEFAULT_FALLBACK_ROOT_PATH;
 
   /**
+   * Creates a new RootPathResolver instance.
    * @param cmp Component helper
    * @param request Request
    */
@@ -83,6 +84,7 @@ public final class RootPathResolver {
   }
 
   /**
+   * Sets the root path detector implementation to detect root path from context.
    * @param rootPathDetector For detecting root path from context
    */
   public void setRootPathDetector(@NotNull RootPathDetector rootPathDetector) {
@@ -90,6 +92,7 @@ public final class RootPathResolver {
   }
 
   /**
+   * Sets the fallback root path to be used if none is configured.
    * @param fallbackRootPath Fallback root path that is used if none is configured
    */
   public void setFallbackRootPath(@NotNull String fallbackRootPath) {
