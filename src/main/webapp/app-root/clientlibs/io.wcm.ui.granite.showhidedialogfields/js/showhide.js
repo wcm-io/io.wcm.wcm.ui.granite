@@ -117,6 +117,11 @@
      if ($fieldWrapperParent.length > 0) {
        $element = $fieldWrapperParent;
      }
+    // if target element is part of a coral-panel, target also the coral-tab
+    var $parent = $element.parent();
+    if ($parent.is("coral-panel-content")) {
+      $element = $element.add($('#' + $parent.parent().attr('aria-labelledby')));
+    }
 
      if (show) {
        $element.removeClass("hide");
