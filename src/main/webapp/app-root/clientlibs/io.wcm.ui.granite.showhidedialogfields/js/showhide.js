@@ -121,7 +121,7 @@
      if (show) {
        $element.removeClass("hide");
        $element.removeClass("wcmio-dialog-showhide-status-hide");
-       $element.find("input[aria-required=false], textarea[aria-required=true], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
+       $element.find("input[aria-required=false], textarea[aria-required=false], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
            .filter(":not(.hide>input)")
            .filter(":not(input.hide)")
            .filter(":not(.hide>textarea)")
