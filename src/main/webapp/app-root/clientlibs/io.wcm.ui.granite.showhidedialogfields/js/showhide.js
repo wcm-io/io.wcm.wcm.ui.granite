@@ -36,7 +36,7 @@
       if ($(element).is("coral-select") || $(element).is("coral-checkbox")) {
         Coral.commons.ready(element, function(component) {
           showHide(component, element);
-          component.on("change", function() {
+          $(component).on("change", function() {
             showHide(component, element);
           });
         });
@@ -81,7 +81,7 @@
     }
     else if ($element.is("coral-select")) {
       $element.children("coral-select-item[selected]").each(function(index, element) {
-        var value = $(element).val() || ""
+        var value = $(element).attr("value") || ""
         values.push(value);
       });
     }
