@@ -25,7 +25,7 @@
 (function(document, $) {
   "use strict";
 
-  // when dialog gets injected
+  // when a dialog gets injected
   $(document).on("foundation-contentloaded", function(e) {
     // if there is already an inital value make sure the according target element becomes visible
     showHideHandler($(".wcmio-dialog-showhide", e.target));
@@ -56,6 +56,7 @@
     var $element = $(element);
     var target = $element.data("wcmioDialogShowhideTarget");
     if (!target) {
+      console.error('Missing data-wcmio-dialog-showhide-target attribute on ' + element + '.');
       return;
     }
 
