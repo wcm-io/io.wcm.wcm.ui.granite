@@ -112,7 +112,6 @@
    * @param {Boolean} show <code>true</code> to show the element.
    */
    function setVisibilityAndHandleFieldValidation($element, show) {
-
      // if target element is part of a field wrapper, target the wrapper instead
      var $fieldWrapperParent = $element.parent(".coral-Form-fieldwrapper");
      if ($fieldWrapperParent.length > 0) {
