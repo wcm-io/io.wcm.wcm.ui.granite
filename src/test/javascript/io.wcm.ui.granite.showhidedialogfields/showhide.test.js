@@ -101,15 +101,19 @@ describe('dialog-showhide', () => {
         it('Does not execute validation logic if target is already hidden', () => {
             document.body.innerHTML = `
             <div id="dialog">
-                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".target" data-wcmio-dialog-showhide-parent=".content" id="target-missing">
+                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".target" data-wcmio-dialog-showhide-parent=".content">
                     <input/>
                 </coral-checkbox>
-                <div class="coral-Form-fieldwrapper wcmio-dialog-showhide-status-hide">
-                    <div class="target" data-showhidetargetvalue="false" data-foundation-validation="simple-attribute"></div>
+                <div class="coral-Form-fieldwrapper wcmio-dialog-showhide-status-hide target">
+                    <div id="test" data-showhidetargetvalue="false" data-foundation-validation="simple-attribute"></div>
                 </div>
             </div>
             `;
             triggerContentLoaded();
+            // Should not be hidden by wcmio-dialog-showhide
+            expect(document.querySelector('#test')).not.toBeHidden();
+            // Should not have validation triggered
+            expect(document.querySelector('#test')).not.toHaveAttribute('data-valid');
         });
     });
 
