@@ -188,9 +188,7 @@
 
     var api = $field.adaptTo("foundation-validation");
     if (api) {
-      if (isRequired) {
-        api.checkValidity();
-      }
+      api.checkValidity();
       api.updateUI();
     }
   }
