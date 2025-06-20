@@ -121,12 +121,11 @@
      if (show) {
        $element.removeClass("hide");
        $element.removeClass("wcmio-dialog-showhide-status-hide");
-       $element.find("input[aria-required=false], textarea[aria-required=true], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
+       $element.find("[data-validation], [data-foundation-validation], input[aria-required=false], textarea[aria-required=false], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
            .filter(":not(.hide>input)")
            .filter(":not(input.hide)")
            .filter(":not(.hide>textarea)")
            .filter(":not(textarea.hide)")
-           .filter(":not(foundation-autocomplete[aria-required=false] input)")
            .filter(":not(.hide>coral-multifield)")
            .filter(":not(input.coral-multifield)")
            .each(function(index, field) {
@@ -135,8 +134,7 @@
      }
      else {
        $element.addClass("hide");
-       $element.find("input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
-           .filter(":not(foundation-autocomplete[required] input)")
+       $element.find("[data-validation], [data-foundation-validation], input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
            .each(function(index, field) {
              toggleValidation($(field));
            });
