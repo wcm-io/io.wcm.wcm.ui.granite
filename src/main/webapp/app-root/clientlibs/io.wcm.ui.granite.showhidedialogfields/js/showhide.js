@@ -154,10 +154,23 @@
     var ariaRequired = $field.attr("aria-required");
     var isRequired = (ariaRequired === "true");
 
-    // skip toggle if field is already hidden and validation was already toggled (in case of nested show/hide structures)
+    // skip toggle if the field is already hidden and validation was already toggled (in case of nested show/hide structures)
     if ($field.parents(".wcmio-dialog-showhide-status-hide").length > 0) {
       return;
     }
+
+    ['validation', 'foundation-validation'].forEach(function(key) {
+      const attr = 'data-' + key;
+      const backup = 'data-was-' + key;
+      const value = $field.attr(attr);
+      const backupValue = $field.attr(backup);
+
+      if (backupValue !== undefined) {
+        $field.attr(attr, backupValue).removeAttr(backup);
+      } else if (value !== undefined) {
+        $field.attr(backup, value).removeAttr(attr);
+      }
+    });
 
     if ($field.is("foundation-autocomplete") && propRequired !== "undefined") {
       if (propRequired === true) {
