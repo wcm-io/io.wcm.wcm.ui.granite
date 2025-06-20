@@ -161,8 +161,8 @@ describe('dialog-showhide', () => {
             expect(targetElement3.querySelector('input')).toBeFoundationValid();
             expect(targetElement3.querySelector('input')).not.toHaveFoundationValidationMessage();
             expect(targetElement4.querySelector('input')).not.toBeRequired();
-            expect(targetElement4.querySelector('input')).not.toBeFoundationValid();
-            expect(targetElement4.querySelector('input')).toHaveFoundationValidationMessage('Attribute was not "true"');
+            expect(targetElement4.querySelector('input')).toBeFoundationValid();
+            expect(targetElement4.querySelector('input')).not.toHaveFoundationValidationMessage();
         });
 
         it('Change', () => {
@@ -178,8 +178,8 @@ describe('dialog-showhide', () => {
             expect(targetElement3.querySelector('input')).toBeFoundationValid();
             expect(targetElement3.querySelector('input')).not.toHaveFoundationValidationMessage();
             expect(targetElement4.querySelector('input')).toBeRequired();
-            expect(targetElement4.querySelector('input')).toBeFoundationValid();
-            expect(targetElement4.querySelector('input')).not.toHaveFoundationValidationMessage();
+            expect(targetElement4.querySelector('input')).not.toBeFoundationValid();
+            expect(targetElement4.querySelector('input')).toHaveFoundationValidationMessage('Attribute was not "true"');
         });
     });
 
