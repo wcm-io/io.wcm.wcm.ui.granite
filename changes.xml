@@ -28,7 +28,7 @@
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
       </action>
-      <action type="update" dev="sseifert">
+      <action type="update" dev="sseifert" issue="43">
         global.jsp: Get rid of deprecated Granite XSS API.
       </action>
     </release>
