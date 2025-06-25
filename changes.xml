@@ -31,6 +31,9 @@
       <action type="update" dev="sseifert" issue="43">
         global.jsp: Get rid of deprecated Granite XSS API.
       </action>
+      <action type="update" dev="sseifert">
+        Eliminate usage of Commons Collections 3 (as far as possible).
+      </action>
     </release>
 
     <release version="1.10.6" date="2025-03-04">
