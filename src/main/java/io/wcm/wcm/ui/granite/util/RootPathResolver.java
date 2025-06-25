@@ -35,6 +35,7 @@ import com.day.text.Text;
 
 /**
  * Helper class for path-based GraniteUI components to resolve the root path.
+ *
  * <p>
  * Resolution order for root path detection:
  * </p>
@@ -45,6 +46,7 @@ import com.day.text.Text;
  * <li>Uses fallback root path provided for this instance</li>
  * <li>Fallback to "/"</li>
  * </ul>
+ *
  * <p>
  * Additionally the root path is modified:
  * </p>
