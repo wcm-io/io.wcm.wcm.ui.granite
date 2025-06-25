@@ -31,7 +31,7 @@
       <action type="update" dev="sseifert" issue="43">
         global.jsp: Get rid of deprecated Granite XSS API.
       </action>
-      <action type="update" dev="sseifert">
+      <action type="update" dev="sseifert" issue="45">
         columnview.jsp: Eliminate usage of deprecated Sling Commons JSON.
       </action>
     </release>
