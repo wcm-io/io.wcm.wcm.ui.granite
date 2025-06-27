@@ -20,7 +20,7 @@
 <%@include file="/libs/granite/ui/global.jsp"%><%
 
 %><%@page session="false"
-          import="org.apache.sling.commons.json.io.JSONStringer,
+          import="com.fasterxml.jackson.databind.ObjectMapper,
                   org.apache.commons.lang3.StringUtils,
                   com.adobe.granite.ui.components.AttrBuilder,
                   com.adobe.granite.ui.components.Config,
@@ -76,19 +76,17 @@ attrs.add("data-foundation-mode-group", cfg.get("modeGroup", String.class));
 attrs.add("data-foundation-collection-sortby", sortBy);
 attrs.add("data-foundation-collection-sortorder", sortOrder);
 
-String layoutJson = new JSONStringer()
-    .object()
-    .key("name").value(layoutName)
-    .key("limit").value(limit != null ? limit : 40)
-    .key("size").value(size)
-    .key("previewSrc").value(previewSrc)
-    .key("previewMaximized").value(cfg.get("previewMaximized", false))
-    // This is used as an id to identify the layout when there are multiple layouts to represent the same collection.
-    .key("layoutId").value(resource.getName())
-    .key("trackingFeature").value(cfg.get("trackingFeature", String.class))
-    .key("trackingElement").value(cfg.get("trackingElement", String.class))
-    .endObject()
-    .toString();
+LayoutDescriptor descriptor = new LayoutDescriptor();
+descriptor.name = layoutName;
+descriptor.limit = limit != null ? limit.intValue() : 40;
+descriptor.size = size != null ? size : 0;
+descriptor.previewSrc = previewSrc;
+descriptor.previewMaximized = cfg.get("previewMaximized", false);
+//This is used as an id to identify the layout when there are multiple layouts to represent the same collection.
+descriptor.layoutId = resource.getName();
+descriptor.trackingFeature = cfg.get("trackingFeature", String.class);
+descriptor.trackingElement = cfg.get("trackingElement", String.class);
+String layoutJson = new ObjectMapper().writeValueAsString(descriptor);
 
 attrs.addClass(layoutName);
 attrs.add("data-foundation-layout", layoutJson);
@@ -169,3 +167,18 @@ for (Column column : model.getColumns()) {
   </div>
 </div>
 </coral-columnview>
+<%!
+/**
+ * Used to create JSON snippet for the layout descriptor.
+ */
+class LayoutDescriptor {
+  public String name;
+  public int limit;
+  public int size;
+  public String previewSrc;
+  public boolean previewMaximized;
+  public String layoutId;
+  public String trackingFeature;
+  public String trackingElement;
+}
+%>
