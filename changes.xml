@@ -25,6 +25,15 @@
   <body>
 
     <release version="1.10.8" date="not released">
+      <action type="update" dev="henrykuijpers" issue="38">
+        Granite UI Show/Hide: Add unit test coverage.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="38">
+        Granite UI Show/Hide: Toggle validation for hidden fields (just like required state).
+      </action>
+      <action type="update" dev="henrykuijpers" issue="38">
+        Granite UI Show/Hide: Improve error reporting when skipping elements.
+      </action>
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
       </action>
