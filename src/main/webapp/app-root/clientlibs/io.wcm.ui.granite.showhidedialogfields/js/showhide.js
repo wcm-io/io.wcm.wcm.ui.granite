@@ -91,6 +91,8 @@
     }
     else if (typeof component.getValue === "function") {
       values.push(component.getValue());
+    } else {
+      console.error('Unsupported component', component, 'and element', element);
     }
 
     $target.each(function(index, element) {
