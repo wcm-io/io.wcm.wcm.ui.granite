@@ -85,7 +85,7 @@
       });
     } else if ($element.is("coral-select")) {
       $element.children("coral-select-item[selected]").each(function (index, el) {
-        var value = $(el).val() || ""
+        var value = $(el).attr("value") || ""
         values.push(value);
       });
     } else if (typeof component.value !== "undefined") {
