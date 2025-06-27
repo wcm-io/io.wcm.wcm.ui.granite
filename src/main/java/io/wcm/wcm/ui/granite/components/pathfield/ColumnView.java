@@ -162,10 +162,18 @@ public final class ColumnView {
     }
   }
 
+  /**
+   * Returns the current resource for the column view.
+   * @return Current resource
+   */
   public Resource getCurrentResource() {
     return this.currentResource;
   }
 
+  /**
+   * Returns the list of columns in the column view.
+   * @return List of columns
+   */
   public List<Column> getColumns() {
     return this.columns;
   }
@@ -179,7 +187,6 @@ public final class ColumnView {
   private DataSource getDataSource(ComponentHelper cmp, Resource resource) {
     return getDataSource(cmp, resource, null, null);
   }
-
 
   /**
    * Get data source to list children of given resource.

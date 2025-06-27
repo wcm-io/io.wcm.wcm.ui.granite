@@ -41,7 +41,7 @@ class DummyPageContextTest {
   private PageContext underTest;
 
   @BeforeEach
-  protected void setUp() {
+  void setUp() {
     this.underTest = new DummyPageContext(context.request(), context.response());
   }
 
