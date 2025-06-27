@@ -37,6 +37,12 @@
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
       </action>
+      <action type="update" dev="sseifert" issue="43">
+        global.jsp: Get rid of deprecated Granite XSS API.
+      </action>
+      <action type="update" dev="sseifert" issue="45">
+        columnview.jsp: Eliminate usage of deprecated Sling Commons JSON.
+      </action>
     </release>
 
     <release version="1.10.6" date="2025-03-04">
