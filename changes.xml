@@ -40,6 +40,9 @@
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
       </action>
+      <action type="update" dev="henrykuijpers" issue="34">
+        Granite UI Show/Hide: Use checkbox value instead of checked state.
+      </action>
       <action type="update" dev="sseifert" issue="43">
         global.jsp: Get rid of deprecated Granite XSS API.
       </action>
