@@ -78,7 +78,7 @@
 
     var values = [];
     if ($element.is("coral-checkbox") && typeof component.checked !== "undefined") {
-      values.push(component.checked ? "true" : "false");
+      component.checked && values.push(component.value);
     }
     else if ($element.is("coral-select")) {
       $element.children("coral-select-item[selected]").each(function(index, element) {

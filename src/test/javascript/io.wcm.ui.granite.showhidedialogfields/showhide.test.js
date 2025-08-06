@@ -238,22 +238,24 @@ describe('dialog-showhide', () => {
             document.body.innerHTML = `
             <div id="dialog">
                 <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".checkbox-target">
-                    <input type="checkbox"/>
+                    <input type="checkbox" value="true"/>
                 </coral-checkbox>
                 <div class="checkbox-target" id="checkbox-target-1" data-showhidetargetvalue="true"><input id="input-1" type="text"/></div>
-                <div class="checkbox-target" id="checkbox-target-2" data-showhidetargetvalue="false"><input id="input-2" type="text"/></div>
+                <div class="checkbox-target" id="checkbox-target-2" data-showhidetargetvalue=""><input id="input-2" type="text"/></div>
             </div>
             `;
             checkbox = document.querySelector('coral-checkbox');
+            checkbox.value = 'true';
             targetElement1 = document.querySelector('#checkbox-target-1');
             targetElement2 = document.querySelector('#checkbox-target-2');
         });
 
         it('Load', () => {
             checkbox.checked = false;
+            checkbox.querySelector('input').checked = false;
             triggerContentLoaded();
             expect(targetElement1).toBeHidden();
-            expect(targetElement2).not.toBeHidden();
+            expect(targetElement2).toBeHidden();
         });
 
         it('Change', () => {
