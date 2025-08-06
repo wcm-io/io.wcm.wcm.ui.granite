@@ -27,7 +27,7 @@
 (function(document, $) {
   "use strict";
 
-  // when dialog gets injected
+  // when a dialog gets injected
   $(document).on("foundation-contentloaded", function(e) {
     // if there is already an inital value make sure the according target element becomes visible
     showHideHandler($(".wcmio-dialog-showhide", e.target));
@@ -38,7 +38,7 @@
       if ($(element).is("coral-select") || $(element).is("coral-checkbox")) {
         Coral.commons.ready(element, function(component) {
           showHide(component, element);
-          component.on("change", function() {
+          $(component).on("change", function() {
             showHide(component, element);
           });
         });
@@ -58,6 +58,7 @@
     var $element = $(element);
     var target = $element.data("wcmioDialogShowhideTarget");
     if (!target) {
+      console.error('Missing data-wcmio-dialog-showhide-target attribute on ' + element + '.');
       return;
     }
 
@@ -83,7 +84,7 @@
     }
     else if ($element.is("coral-select")) {
       $element.children("coral-select-item[selected]").each(function(index, element) {
-        var value = $(element).val() || ""
+        var value = $(element).attr("value") || ""
         values.push(value);
       });
     }
@@ -92,6 +93,8 @@
     }
     else if (typeof component.getValue === "function") {
       values.push(component.getValue());
+    } else {
+      console.error('Unsupported component', component, 'and element', element);
     }
 
     $target.each(function(index, element) {
@@ -115,7 +118,6 @@
    * @param {Boolean} show <code>true</code> to show the element.
    */
    function setVisibilityAndHandleFieldValidation($element, show) {
-
      // if target element is part of a field wrapper, target the wrapper instead
      var $fieldWrapperParent = $element.parent(".coral-Form-fieldwrapper");
      if ($fieldWrapperParent.length > 0) {
@@ -125,12 +127,11 @@
      if (show) {
        $element.removeClass("hide");
        $element.removeClass("wcmio-dialog-showhide-status-hide");
-       $element.find("input[aria-required=false], textarea[aria-required=true], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
+       $element.find("[data-validation], [data-foundation-validation], input[aria-required=false], textarea[aria-required=false], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
            .filter(":not(.hide>input)")
            .filter(":not(input.hide)")
            .filter(":not(.hide>textarea)")
            .filter(":not(textarea.hide)")
-           .filter(":not(foundation-autocomplete[aria-required=false] input)")
            .filter(":not(.hide>coral-multifield)")
            .filter(":not(input.coral-multifield)")
            .each(function(index, field) {
@@ -139,8 +140,7 @@
      }
      else {
        $element.addClass("hide");
-       $element.find("input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
-           .filter(":not(foundation-autocomplete[required] input)")
+       $element.find("[data-validation], [data-foundation-validation], input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
            .each(function(index, field) {
              toggleValidation($(field));
            });
@@ -158,10 +158,23 @@
     var ariaRequired = $field.attr("aria-required");
     var isRequired = (ariaRequired === "true");
 
-    // skip toggle if field is already hidden and validation was already toggled (in case of nested show/hide structures)
+    // skip toggle if the field is already hidden and validation was already toggled (in case of nested show/hide structures)
     if ($field.parents(".wcmio-dialog-showhide-status-hide").length > 0) {
       return;
     }
+
+    ['validation', 'foundation-validation'].forEach(function(key) {
+      const attr = 'data-' + key;
+      const backup = 'data-was-' + key;
+      const value = $field.attr(attr);
+      const backupValue = $field.attr(backup);
+
+      if (backupValue !== undefined) {
+        $field.attr(attr, backupValue).removeAttr(backup);
+      } else if (value !== undefined) {
+        $field.attr(backup, value).removeAttr(attr);
+      }
+    });
 
     if ($field.is("foundation-autocomplete") && propRequired !== "undefined") {
       if (propRequired === true) {
@@ -179,9 +192,7 @@
 
     var api = $field.adaptTo("foundation-validation");
     if (api) {
-      if (isRequired) {
-        api.checkValidity();
-      }
+      api.checkValidity();
       api.updateUI();
     }
   }

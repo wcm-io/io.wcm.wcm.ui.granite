@@ -43,6 +43,10 @@ public final class Column {
     // non-public constructor
   }
 
+  /**
+   * Returns the column ID.
+   * @return Column ID
+   */
   public String getColumnId() {
     return this.columnId;
   }
@@ -52,6 +56,10 @@ public final class Column {
     return this;
   }
 
+  /**
+   * Indicates if there are more items in the column.
+   * @return true if there are more items, false otherwise
+   */
   public boolean isHasMore() {
     return this.hasMore;
   }
@@ -61,6 +69,10 @@ public final class Column {
     return this;
   }
 
+  /**
+   * Indicates if the column is loaded lazily.
+   * @return true if lazy loading is enabled, false otherwise
+   */
   public boolean isLazy() {
     return this.lazy;
   }
@@ -70,6 +82,10 @@ public final class Column {
     return this;
   }
 
+  /**
+   * Indicates if this column represents the current resource.
+   * @return true if current resource, false otherwise
+   */
   public boolean isCurrentResource() {
     return this.isCurrentResource;
   }
@@ -79,6 +95,10 @@ public final class Column {
     return this;
   }
 
+  /**
+   * Returns the active item ID in the column.
+   * @return Active item ID
+   */
   public String getActiveId() {
     return this.activeId;
   }
@@ -88,6 +108,10 @@ public final class Column {
     return this;
   }
 
+  /**
+   * Indicates if this column is a meta element.
+   * @return true if meta element, false otherwise
+   */
   public boolean isMetaElement() {
     return this.metaElement;
   }
@@ -101,6 +125,10 @@ public final class Column {
     this.items.add(item);
   }
 
+  /**
+   * Returns the list of items in the column.
+   * @return List of column items
+   */
   public List<ColumnItem> getItems() {
     return Collections.unmodifiableList(this.items);
   }
