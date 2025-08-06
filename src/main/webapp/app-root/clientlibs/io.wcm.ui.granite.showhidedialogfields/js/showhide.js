@@ -77,7 +77,7 @@
     if ($element.is("coral-checkbox") && typeof component.checked !== "undefined") {
       values.push(component.checked ? "true" : "false");
     } else if ($element.is("coral-radio") && typeof component.checked !== "undefined") {
-      component.checked && values.push($element.val());
+      component.checked && values.push($element.attr("value"));
     } else if ($element.is("[role=radiogroup]")) {
       $element.children("coral-radio[checked]").each(function (i, el) {
         var value = $(el).attr("value") || ""
