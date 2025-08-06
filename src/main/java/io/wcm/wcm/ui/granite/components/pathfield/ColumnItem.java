@@ -36,10 +36,18 @@ public final class ColumnItem {
     this.resource = resource;
   }
 
+  /**
+   * Returns the resource associated with this column item.
+   * @return Resource of the column item
+   */
   public Resource getResource() {
     return this.resource;
   }
 
+  /**
+   * Returns the resource type of this column item.
+   * @return Resource type
+   */
   public String getResourceType() {
     return this.resourceType;
   }
@@ -49,6 +57,10 @@ public final class ColumnItem {
     return this;
   }
 
+  /**
+   * Indicates if this column item is active.
+   * @return true if active, false otherwise
+   */
   public Boolean getActive() {
     return this.active;
   }
@@ -58,6 +70,10 @@ public final class ColumnItem {
     return this;
   }
 
+  /**
+   * Returns the item ID, which is the resource path.
+   * @return Item ID (resource path)
+   */
   public String getItemId() {
     return resource.getPath();
   }

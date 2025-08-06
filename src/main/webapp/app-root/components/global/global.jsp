@@ -17,8 +17,7 @@
   limitations under the License.
   #L%
   --%>
-<%@page import="com.adobe.granite.xss.XSSAPI"%><%
-%><%@page import="com.day.cq.i18n.I18n"%><%
+<%@page import="com.day.cq.i18n.I18n"%><%
 %><%@page import="com.adobe.granite.ui.components.ComponentHelper"%><%
 %><%@page session="false" pageEncoding="UTF-8" contentType="text/html" %><%
 %><%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.2" %><%
@@ -27,15 +26,5 @@
 
 final ComponentHelper cmp = new ComponentHelper(pageContext);
 final I18n i18n = cmp.getI18n();
-final XSSAPI xssAPI = cmp.getXss();
-
-%><%!
-String outVar(XSSAPI xssAPI, I18n i18n, String text) {
-  return xssAPI.encodeForHTML(i18n.getVar(text));
-}
-
-String outAttrVar(XSSAPI xssAPI, I18n i18n, String text) {
-  return xssAPI.encodeForHTMLAttr(i18n.getVar(text));
-}
 
 %>

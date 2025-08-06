@@ -320,7 +320,7 @@ class ColumnViewTest {
 
     List<String> expectedItemIds = List.of(columnItemIds);
     List<String> actualItemIds = column.getItems().stream()
-        .map(item -> item.getItemId())
+        .map(ColumnItem::getItemId)
         .collect(Collectors.toList());
     assertEquals(expectedItemIds, actualItemIds, "columnItems");
   }
