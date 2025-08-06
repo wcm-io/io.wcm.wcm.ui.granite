@@ -125,6 +125,7 @@ describe('dialog-showhide', () => {
             </div>
             `;
             const checkbox = document.querySelector('coral-checkbox');
+            checkbox.value = 'true';
             checkbox.checked = true;
             const targets = document.querySelectorAll('.target');
             const tabs = document.querySelectorAll('coral-tab');
@@ -133,7 +134,7 @@ describe('dialog-showhide', () => {
             expect(targets[1]).toBeHidden();
             expect(tabs[0]).not.toBeHidden();
             expect(tabs[1]).toBeHidden();
-            checkbox.checked = false;
+            checkbox.value = 'false';
             $(checkbox).trigger('change');
             expect(targets[0]).toBeHidden();
             expect(targets[1]).not.toBeHidden();
