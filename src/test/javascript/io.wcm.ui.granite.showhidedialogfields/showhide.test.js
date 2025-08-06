@@ -115,6 +115,33 @@ describe('dialog-showhide', () => {
             // Should not have validation triggered
             expect(document.querySelector('#test')).not.toHaveAttribute('data-valid');
         });
+
+        it('Supports "not" to invert the decision to show/hide the field', () => {
+            document.body.innerHTML = `
+            <div id="dialog">
+                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".my-target" value="test">
+                    <input value="test"/>
+                </coral-checkbox>
+                <div class="my-target" id="test-true" data-showhidetargetvalue="true" data-showhidetargetnot="true"></div>
+                <div class="my-target" id="test-false" data-showhidetargetvalue="true" data-showhidetargetnot="false"></div>
+                <div class="my-target" id="test-empty" data-showhidetargetvalue="true"></div>
+            </div>`;
+            const checkbox = document.querySelector('coral-checkbox');
+            checkbox.checked = false;
+            const trueItem = document.querySelector('#test-true');
+            const falseItem = document.querySelector('#test-false');
+            const emptyItem = document.querySelector('#test-empty');
+
+            triggerContentLoaded();
+            expect(trueItem).not.toBeHidden();
+            expect(falseItem).toBeHidden();
+            expect(emptyItem).toBeHidden();
+            checkbox.checked = true;
+            $(checkbox).trigger('change');
+            expect(trueItem).toBeHidden();
+            expect(falseItem).not.toBeHidden();
+            expect(emptyItem).not.toBeHidden();
+        });
     });
 
     describe('Select', () => {
