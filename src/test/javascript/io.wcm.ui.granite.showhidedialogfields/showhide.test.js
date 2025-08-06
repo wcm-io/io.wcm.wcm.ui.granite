@@ -98,6 +98,49 @@ describe('dialog-showhide', () => {
             expect(document.querySelector('.coral-Form-fieldwrapper .target input')).toBeFoundationValid();
         });
 
+        it('Targets tab as well as tab content if applicable', () => {
+            document.body.innerHTML = `
+            <div id="dialog">
+                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".target">
+                    <input/>
+                </coral-checkbox>
+                <coral-tabview>
+                    <coral-tablist>
+                        <coral-tab id="label1"></coral-tab>
+                        <coral-tab id="label2"></coral-tab>
+                    </coral-tablist>
+                    <coral-panelstack>
+                        <coral-panel aria-labelledby="label1">
+                            <coral-panel-content>
+                                <div class="target" data-showhidetargetvalue="true"></div>
+                            </coral-panel-content>
+                        </coral-panel>
+                        <coral-panel aria-labelledby="label2">
+                            <coral-panel-content>
+                                <div class="target" data-showhidetargetvalue="false"></div>
+                            </coral-panel-content>
+                        </coral-panel>
+                    </coral-panelstack>
+                </coral-tabview>
+            </div>
+            `;
+            const checkbox = document.querySelector('coral-checkbox');
+            checkbox.checked = true;
+            const targets = document.querySelectorAll('.target');
+            const tabs = document.querySelectorAll('coral-tab');
+            triggerContentLoaded();
+            expect(targets[0]).not.toBeHidden();
+            expect(targets[1]).toBeHidden();
+            expect(tabs[0]).not.toBeHidden();
+            expect(tabs[1]).toBeHidden();
+            checkbox.checked = false;
+            $(checkbox).trigger('change');
+            expect(targets[0]).toBeHidden();
+            expect(targets[1]).not.toBeHidden();
+            expect(tabs[0]).toBeHidden();
+            expect(tabs[1]).not.toBeHidden();
+        });
+
         it('Does not execute validation logic if target is already hidden', () => {
             document.body.innerHTML = `
             <div id="dialog">
