@@ -119,15 +119,16 @@ describe('dialog-showhide', () => {
         it('Supports "not" to invert the decision to show/hide the field', () => {
             document.body.innerHTML = `
             <div id="dialog">
-                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".my-target" value="test">
-                    <input value="test"/>
+                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".my-target">
+                    <input value="test" value="test"/>
                 </coral-checkbox>
-                <div class="my-target" id="test-true" data-showhidetargetvalue="true" data-showhidetargetnot="true"></div>
-                <div class="my-target" id="test-false" data-showhidetargetvalue="true" data-showhidetargetnot="false"></div>
-                <div class="my-target" id="test-empty" data-showhidetargetvalue="true"></div>
+                <div class="my-target" id="test-true" data-showhidetargetvalue="test" data-showhidetargetnot="true"></div>
+                <div class="my-target" id="test-false" data-showhidetargetvalue="test" data-showhidetargetnot="false"></div>
+                <div class="my-target" id="test-empty" data-showhidetargetvalue="test"></div>
             </div>`;
             const checkbox = document.querySelector('coral-checkbox');
             checkbox.checked = false;
+            checkbox.value = 'test';
             const trueItem = document.querySelector('#test-true');
             const falseItem = document.querySelector('#test-false');
             const emptyItem = document.querySelector('#test-empty');
