@@ -252,4 +252,63 @@ describe('dialog-showhide', () => {
             expect(targetElement2).toBeHidden();
         });
     });
+
+    describe('Radio', () => {
+        let radio;
+        let radioGroup;
+        let radioGroupRadio1;
+        let radioGroupRadio2;
+        let radioTargetElement1;
+        let radioTargetElement2;
+        let radioGroupTargetElement1;
+        let radioGroupTargetElement2;
+        beforeEach(() => {
+            document.body.innerHTML = `
+            <div id="dialog">
+                <coral-radio class="wcmio-dialog-showhide" value="1" data-wcmio-dialog-showhide-target=".radio-target">
+                    <input type="radio" value="1" />
+                </coral-radio>
+                <div role="radiogroup" class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".radio-group-target">
+                    <coral-radio value="1">
+                        <input type="radio" value="1" />
+                    </coral-radio>
+                    <coral-radio value="2">
+                        <input type="radio" value="2" />
+                    </coral-radio>
+                </div>
+                <div class="radio-target" id="radio-target-1" data-showhidetargetvalue="1"><input type="text"/></div>
+                <div class="radio-target" id="radio-target-2" data-showhidetargetvalue="2"><input type="text"/></div>
+                <div class="radio-group-target" id="radio-group-target-1" data-showhidetargetvalue="1"><input type="text"/></div>
+                <div class="radio-group-target" id="radio-group-target-2" data-showhidetargetvalue="2"><input type="text"/></div>
+            </div>
+            `;
+            radio = document.querySelector('coral-radio');
+            radioGroup = document.querySelector('[role="radiogroup"]');
+            radioGroupRadio1 = radioGroup.querySelector('coral-radio[value="1"]');
+            radioGroupRadio2 = radioGroup.querySelector('coral-radio[value="2"]');
+            radioTargetElement1 = document.querySelector('#radio-target-1');
+            radioTargetElement2 = document.querySelector('#radio-target-2');
+            radioGroupTargetElement1 = document.querySelector('#radio-group-target-1');
+            radioGroupTargetElement2 = document.querySelector('#radio-group-target-2');
+        });
+
+        it('Load', () => {
+            radio.checked = true;
+            radioGroupRadio1.setAttribute('checked', String(true));
+            radioGroupRadio1.querySelector('input').checked = true;
+            triggerContentLoaded();
+            expect(radioTargetElement1).not.toBeHidden();
+            expect(radioTargetElement2).toBeHidden();
+        });
+
+        it('Change', () => {
+            triggerContentLoaded();
+            radio.querySelector('input').checked = true;
+            radioGroupRadio2.setAttribute('checked', String(true));
+            radioGroupRadio2.querySelector('input').checked = true;
+            $(radio).trigger('change');
+            expect(radioTargetElement1).toBeHidden();
+            expect(radioTargetElement2).toBeHidden();
+        });
+    });
 });
