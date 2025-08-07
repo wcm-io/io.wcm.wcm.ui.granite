@@ -25,6 +25,12 @@
   <body>
 
     <release version="1.11.0" date="not released">
+      <action type="update" dev="henrykuijpers" issue="24">
+        Granite UI Show/Hide: Showhide supporting &quot;not&quot;.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="25">
+        Granite UI Show/Hide: Showhide support for coral radio &amp; radio group.
+      </action>
       <action type="update" dev="henrykuijpers" issue="40">
         Granite UI Show/Hide: Add unit test coverage.
       </action>
