@@ -14,6 +14,13 @@ Granite UI Components for AEM Touch UI.
 * [Changelog][changelog]
 
 
+### Overview
+
+This library provides a selection of [Granite UI components][components] usable in any projects. Some components are subclasses of Granite UI components shipped with AEM Touch UI, overriding and extending some of its features.
+
+Additionally a set of [Granite UI validators][validation] is provided which can be used with AEM 6.2 and up.
+
+
 ### AEM Version Support Matrix
 
 |WCM Granite UI Extensions version |AEM version supported
@@ -28,11 +35,9 @@ Granite UI Components for AEM Touch UI.
 |0.x                               |AEM 6.0+
 
 
-### Overview
+### Usage of deprecated APIs
 
-This library provides a selection of [Granite UI components][components] usable in any projects. Some components are subclasses of Granite UI components shipped with AEM Touch UI, overriding and extending some of its features.
-
-Additionally a set of [Granite UI validators][validation] is provided which can be used with AEM 6.2 and up.
+This module uses the API `org.apache.commons.collections` (Commons Collections 3) which is marked as deprecated in AEM. However, it's also baked into the AEM product API itself ([PredicateProvider](https://developer.adobe.com/experience-manager/reference-materials/cloud-service/javadoc/com/day/cq/commons/predicate/PredicateProvider.html) directly references [Commons Collections 3 Predicate](https://developer.adobe.com/experience-manager/reference-materials/cloud-service/javadoc/org/apache/commons/collections/Predicate.html). So this is unavoidable, unless Adobe changes the AEM product API.
 
 
 ### GitHub Repository

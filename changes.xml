@@ -24,6 +24,40 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.11.0" date="2025-08-07">
+      <action type="update" dev="henrykuijpers" issue="21"><![CDATA[
+        Granite UI Show/Hide: Use checkbox value instead of checked state.<br/>
+        <b>Breaking Change:</b> For certain edge cases, this is a breaking change, as the checkbox value is now used instead of the checked state. The evaluated value is the checkbox value if it is checked, and an empty string if not checked. If you want to trigger the not checked state, you can set the attribute <code>data-showhidetargetnot="true"</code>.
+      ]]></action>
+      <action type="update" dev="henrykuijpers" issue="28">
+        Granite UI Show/Hide: Showhide support for coral tabs.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="24">
+        Granite UI Show/Hide: Showhide supporting &quot;not&quot;.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="25">
+        Granite UI Show/Hide: Showhide support for coral radio &amp; radio group.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="40">
+        Granite UI Show/Hide: Add unit test coverage.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="40">
+        Granite UI Show/Hide: Toggle validation for hidden fields (just like required state).
+      </action>
+      <action type="update" dev="henrykuijpers" issue="40">
+        Granite UI Show/Hide: Improve error reporting when skipping elements.
+      </action>
+      <action type="update" dev="rubnig" issue="22">
+        Granite UI Show/Hide: Showhide support for textarea fields.
+      </action>
+      <action type="update" dev="sseifert" issue="43">
+        global.jsp: Get rid of deprecated Granite XSS API.
+      </action>
+      <action type="update" dev="sseifert" issue="45">
+        columnview.jsp: Eliminate usage of deprecated Sling Commons JSON.
+      </action>
+    </release>
+
     <release version="1.10.6" date="2025-03-04">
       <action type="update" dev="sseifert" issue="15">
         Granite UI Show/Hide: Add category 'cq.sites.validations' to make the it available in create page wizard.
