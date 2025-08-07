@@ -36,6 +36,7 @@ import com.day.cq.wcm.api.PageManager;
 
 /**
  * Helper methods for GraniteUI components.
+ *
  * <p>
  * It uses some heuristics to get the current content path in context of a GraniteUI component:
  * </p>

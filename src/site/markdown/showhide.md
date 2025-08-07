@@ -21,6 +21,10 @@ To ensure the show/hide features is applied only to a certain group of elements 
 
 * Add the data attribute `wcmio-dialog-showhide-parent` to the dropdown/select element, value should be a selector that identifies a common parent element. Only dialog fields that are children of that element (e.g. a container) will be processed.
 
+It can be desired to invert the check result, meaning that a field will be *hidden* instead of *shown*. For example when one specific value should *hide* the target field or when one needs to say *not the empty value* (text field, path field, ...):
+
+* Add the data attribute `showhidetargetnot` with the value `true` to the target component. The check will be inverted, thus *hiding* the field instead of *showing* the field.
+
 This works the same as the AEM built-in `cq-dialog-dropdown-showhide` feature, but with additional features.
 
 
