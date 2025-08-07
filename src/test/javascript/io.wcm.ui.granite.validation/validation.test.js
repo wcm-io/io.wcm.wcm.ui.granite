@@ -1,122 +1,147 @@
 /**
  * @jest-environment jsdom
  */
-// simple mocking to capture registered validators
-var validators = {};
-window.Granite = {
-  "$": function(obj) {
-    return {
-      "adaptTo": function(to) {
-        if (to == "foundation-registry") {
-          return {
-            "register": function(name, validator) {
-              validators[validator.selector] = validator.validate;
-            }
+describe('io.wcm.ui.granite.validation', () => {
+  let validators;
+
+  beforeAll(() => {
+    // Mock Granite and capture registered validators
+    validators = {};
+    window.Granite = {
+      $: (obj) => ({
+        adaptTo: (to) => {
+          if (to === 'foundation-registry') {
+            return {
+              register: (name, validator) => {
+                validators[validator.selector] = validator.validate;
+              }
+            };
           }
-        }
-      },
-      "val": function() {
-        return obj.value;
-      },
-      "attr": function(param) {
-        return obj[param];
+        },
+        val: () => obj.value,
+        attr: (param) => obj[param]
+      }),
+      I18n: {
+        get: (arg) => arg
       }
     };
-  },
-  "I18n": {
-    "get": function(arg) {
-      return arg;
-    }
+    require('../../../main/webapp/app-root/clientlibs/io.wcm.ui.granite.validation/js/validation.js');
+  });
+
+  describe('wcmio.email', () => {
+    let validate;
+    beforeAll(() => {
+      validate = validators['[data-foundation-validation~="wcmio.email"]'];
+    });
+
+    test.each([
+      ["firstname.lastname@mycompany.com", true],
+      ["http://myhost", false],
+      ["http://www.domain.com/path1", false],
+      ["https://myhost/path1/path2", false],
+      ["ftp://myhost", false],
+      ["//myhost", false],
+      ["mailto:firstname.lastname@mycompany.com", false],
+      ["tel:+49 123 456789", false],
+      ["simplestring", false],
+      ["www.domain.com", false],
+      ["/content/site1/page1", false],
+      ["/content/dam/sample.jpg", false],
+      ["/ns1:this/is/ns2:a/path", false]
+    ])('should validate "%s" as %s', (value, isValid) => {
+      const result = validate({ value });
+      expectValidationResult(result, isValid, "Please enter a valid email address.");
+    });
+  });
+
+  describe('wcmio.url', () => {
+    let validate;
+    beforeAll(() => {
+      validate = validators['[data-foundation-validation~="wcmio.url"]'];
+    });
+
+    test.each([
+      ["firstname.lastname@mycompany.com", false],
+      ["http://myhost", true],
+      ["http://www.domain.com/path1", true],
+      ["https://myhost/path1/path2", true],
+      ["ftp://myhost", true],
+      ["//myhost", true],
+      ["mailto:firstname.lastname@mycompany.com", true],
+      ["tel:+49 123 456789", true],
+      ["simplestring", false],
+      ["www.domain.com", false],
+      ["/content/site1/page1", false],
+      ["/content/dam/sample.jpg", false],
+      ["/ns1:this/is/ns2:a/path", false]
+    ])('should validate "%s" as %s', (value, isValid) => {
+      const result = validate({ value });
+      expectValidationResult(result, isValid, "Please enter a valid URL.");
+    });
+  });
+
+  describe('wcmio.path', () => {
+    let validate;
+    beforeAll(() => {
+      validate = validators['[data-foundation-validation~="wcmio.path"]'];
+    });
+
+    test.each([
+      ["firstname.lastname@mycompany.com", false],
+      ["http://myhost", false],
+      ["http://www.domain.com/path1", false],
+      ["https://myhost/path1/path2", false],
+      ["ftp://myhost", false],
+      ["//myhost", false],
+      ["mailto:firstname.lastname@mycompany.com", false],
+      ["tel:+49 123 456789", false],
+      ["simplestring", false],
+      ["www.domain.com", false],
+      ["/content/site1/page1", true],
+      ["/content/dam/sample.jpg", true],
+      ["/ns1:this/is/ns2:a/path", true]
+    ])('should validate "%s" as %s', (value, isValid) => {
+      const result = validate({ value });
+      expectValidationResult(result, isValid, "Please enter a valid content path.");
+    });
+  });
+
+  describe('wcmio.pattern', () => {
+    let validate;
+    beforeAll(() => {
+      validate = validators['[data-foundation-validation~="wcmio.pattern"]'];
+    });
+
+    test('matches pattern', () => {
+      const result = validate({
+        value: "abc",
+        "data-wcmio-pattern": "^ab.*$",
+        "data-wcmio-patternmessage": "Invalid."
+      });
+      expectValidationResult(result, true);
+    });
+
+    test('does not match pattern', () => {
+      const result = validate({
+        value: "def",
+        "data-wcmio-pattern": "^ab.*$",
+        "data-wcmio-patternmessage": "Invalid."
+      });
+      expectValidationResult(result, false, "Invalid.");
+    });
+  });
+});
+
+/**
+ * Helper to check validation result.
+ * If isValid is true, expects result to be null or undefined.
+ * If isValid is false, expects result to be a string and matches expectedMessage.
+ */
+function expectValidationResult(result, isValid, expectedMessage) {
+  if (isValid) {
+    expect(result === null || result === undefined).toBe(true);
   }
-};
-
-// load validation script from clientlib
-require('../../../main/webapp/app-root/clientlibs/io.wcm.ui.granite.validation/js/validation.js');
-
-// helper methods for assertion
-var assert = require('assert');
-var assertValid = function(validate, value) {
-  it('valid: ' + value, function() {
-    assert.equal(validate({"value":value}), null);
-  });
+  else {
+    expect(result).toBe(expectedMessage);
+  }
 }
-var assertInvalid = function(validate, value) {
-  it('invalid: ' + value, function() {
-    assert.notEqual(validate({"value":value}), null);
-  });
-}
-
-
-
-// assert validator implementation
-describe('wcmio.email', function() {
-  var validate = validators['[data-foundation-validation~="wcmio.email"]'];
-  assertValid(validate, "firstname.lastname@mycompany.com");
-  assertInvalid(validate, "http://myhost");
-  assertInvalid(validate, "http://www.domain.com/path1");
-  assertInvalid(validate, "https://myhost/path1/path2");
-  assertInvalid(validate, "ftp://myhost");
-  assertInvalid(validate, "//myhost");
-  assertInvalid(validate, "mailto:firstname.lastname@mycompany.com");
-  assertInvalid(validate, "tel:+49 123 456789");
-  assertInvalid(validate, "simplestring");
-  assertInvalid(validate, "www.domain.com");
-  assertInvalid(validate, "/content/site1/page1");
-  assertInvalid(validate, "/content/dam/sample.jpg");
-  assertInvalid(validate, "/ns1:this/is/ns2:a/path");
-});
-
-describe('wcmio.url', function() {
-  var validate = validators['[data-foundation-validation~="wcmio.url"]'];
-  assertInvalid(validate, "firstname.lastname@mycompany.com");
-  assertValid(validate, "http://myhost");
-  assertValid(validate, "http://www.domain.com/path1");
-  assertValid(validate, "https://myhost/path1/path2");
-  assertValid(validate, "ftp://myhost");
-  assertValid(validate, "//myhost");
-  assertValid(validate, "mailto:firstname.lastname@mycompany.com");
-  assertValid(validate, "tel:+49 123 456789");
-  assertInvalid(validate, "simplestring");
-  assertInvalid(validate, "www.domain.com");
-  assertInvalid(validate, "/content/site1/page1");
-  assertInvalid(validate, "/content/dam/sample.jpg");
-  assertInvalid(validate, "/ns1:this/is/ns2:a/path");
-});
-
-describe('wcmio.path', function() {
-  var validate = validators['[data-foundation-validation~="wcmio.path"]'];
-  assertInvalid(validate, "firstname.lastname@mycompany.com");
-  assertInvalid(validate, "http://myhost");
-  assertInvalid(validate, "http://www.domain.com/path1");
-  assertInvalid(validate, "https://myhost/path1/path2");
-  assertInvalid(validate, "ftp://myhost");
-  assertInvalid(validate, "//myhost");
-  assertInvalid(validate, "mailto:firstname.lastname@mycompany.com");
-  assertInvalid(validate, "tel:+49 123 456789");
-  assertInvalid(validate, "simplestring");
-  assertInvalid(validate, "www.domain.com");
-  assertValid(validate, "/content/site1/page1");
-  assertValid(validate, "/content/dam/sample.jpg");
-  assertValid(validate, "/ns1:this/is/ns2:a/path");
-});
-
-describe('wcmio.pattern', function() {
-  var validate = validators['[data-foundation-validation~="wcmio.pattern"]'];
-
-  it('matches pattern', function() {
-    assert.equal(validate({
-      "value": "abc",
-      "data-wcmio-pattern": "^ab.*$",
-      "data-wcmio-patternmessage": "Invalid."
-    }), null);
-  });
-  
-  it('does not match pattern', function() {
-    assert.equal(validate({
-      "value": "def",
-      "data-wcmio-pattern": "^ab.*$",
-      "data-wcmio-patternmessage": "Invalid."
-    }), "Invalid.");
-  });
-  
-});

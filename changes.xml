@@ -24,9 +24,33 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
-    <release version="1.10.8" date="not released">
+    <release version="1.11.0" date="not released">
+      <action type="update" dev="henrykuijpers" issue="24">
+        Granite UI Show/Hide: Showhide supporting &quot;not&quot;.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="25">
+        Granite UI Show/Hide: Showhide support for coral radio &amp; radio group.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="40">
+        Granite UI Show/Hide: Add unit test coverage.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="40">
+        Granite UI Show/Hide: Toggle validation for hidden fields (just like required state).
+      </action>
+      <action type="update" dev="henrykuijpers" issue="40">
+        Granite UI Show/Hide: Improve error reporting when skipping elements.
+      </action>
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
+      </action>
+      <action type="update" dev="henrykuijpers" issue="34">
+        Granite UI Show/Hide: Use checkbox value instead of checked state.
+      </action>
+      <action type="update" dev="sseifert" issue="43">
+        global.jsp: Get rid of deprecated Granite XSS API.
+      </action>
+      <action type="update" dev="sseifert" issue="45">
+        columnview.jsp: Eliminate usage of deprecated Sling Commons JSON.
       </action>
     </release>
 
