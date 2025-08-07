@@ -13,6 +13,8 @@
  *   option that will unhide this element. In case of a checkbox use "true" or "false" for checkbox state.
  * - Alternatively, you can add the data attribute showhidetargetvalues to a target component to show
  *   it for a comma-separated list of target values.
+ * - When desired, showhidetargetnot can be used to invert the check, allowing the use of a list of values that cause
+ *   the field to be hidden instead of shown.
  *
  * To ensure the show/hide features is applied only to a certain group of elements in the edit dialog,
  * when it cannot be ensured that the CSS class is unique across the whole dialog (e.g. in multi fields):
@@ -98,8 +100,10 @@
     $target.each(function(index, element) {
       // make sure all unselected target elements are hidden.
       // unhide the target element that contains the selected value as data-showhidetargetvalue attribute
-      var show = element && (values.includes(element.dataset.showhidetargetvalue)
+      var targetValueIsContained = !!(values.includes(element.dataset.showhidetargetvalue)
           || includesCommaSeparated(element.dataset.showhidetargetvalues, values));
+      var not = element.dataset.showhidetargetnot === 'true';
+      var show = element && targetValueIsContained !== not;
       setVisibilityAndHandleFieldValidation($(element), show);
     });
   }
