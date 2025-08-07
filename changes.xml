@@ -25,6 +25,10 @@
   <body>
 
     <release version="1.11.0" date="not released">
+      <action type="update" dev="henrykuijpers" issue="21"><![CDATA[
+        Granite UI Show/Hide: Use checkbox value instead of checked state.<br/>
+        <b>Breaking Change:</b> For certain edge cases, this is a breaking change, as the checkbox value is now used instead of the checked state. The evaluated value is the checkbox value if it is checked, and an empty string if not checked. If you want to trigger the not checked state, you can set the attribute <code>data-showhidetargetnot="true"</code>.
+      ]]></action>
       <action type="update" dev="henrykuijpers" issue="28">
         Granite UI Show/Hide: Showhide support for coral tabs.
       </action>
@@ -45,9 +49,6 @@
       </action>
       <action type="update" dev="rubnig" issue="22">
         Granite UI Show/Hide: Showhide support for textarea fields.
-      </action>
-      <action type="update" dev="henrykuijpers" issue="34">
-        Granite UI Show/Hide: Use checkbox value instead of checked state.
       </action>
       <action type="update" dev="sseifert" issue="43">
         global.jsp: Get rid of deprecated Granite XSS API.
