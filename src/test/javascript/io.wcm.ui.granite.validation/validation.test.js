@@ -1,39 +1,29 @@
 /**
  * @jest-environment jsdom
  */
+window.$ = require('jquery');
+require('../mocks/granite/ui')(window);
+require('../mocks/granite/i18n')(window);
+require('../mocks/foundation/validation')(window);
+
 describe('io.wcm.ui.granite.validation', () => {
-  let validators;
+  function validate(type, value, isValid, validationMessage, additionalProperties = {}) {
+    const el = document.createElement('input');
+    Object.entries({
+      'data-foundation-validation': type,
+      ...additionalProperties
+    }).forEach(([attributeName, attributeValue]) => el.setAttribute(attributeName, String(attributeValue)));
+    el.setAttribute('data-foundation-validation', type);
+    el.value = value;
+    const validator = $(el).adaptTo("foundation-validation");
+    expectValidationResult(validator, isValid, validationMessage);
+  }
 
   beforeAll(() => {
-    // Mock Granite and capture registered validators
-    validators = {};
-    window.Granite = {
-      $: (obj) => ({
-        adaptTo: (to) => {
-          if (to === 'foundation-registry') {
-            return {
-              register: (name, validator) => {
-                validators[validator.selector] = validator.validate;
-              }
-            };
-          }
-        },
-        val: () => obj.value,
-        attr: (param) => obj[param]
-      }),
-      I18n: {
-        get: (arg) => arg
-      }
-    };
     require('../../../main/webapp/app-root/clientlibs/io.wcm.ui.granite.validation/js/validation.js');
   });
 
   describe('wcmio.email', () => {
-    let validate;
-    beforeAll(() => {
-      validate = validators['[data-foundation-validation~="wcmio.email"]'];
-    });
-
     test.each([
       ["firstname.lastname@mycompany.com", true],
       ["http://myhost", false],
@@ -49,17 +39,11 @@ describe('io.wcm.ui.granite.validation', () => {
       ["/content/dam/sample.jpg", false],
       ["/ns1:this/is/ns2:a/path", false]
     ])('should validate "%s" as %s', (value, isValid) => {
-      const result = validate({ value });
-      expectValidationResult(result, isValid, "Please enter a valid email address.");
+      validate('wcmio.email', value, isValid, "Please enter a valid email address.");
     });
   });
 
   describe('wcmio.url', () => {
-    let validate;
-    beforeAll(() => {
-      validate = validators['[data-foundation-validation~="wcmio.url"]'];
-    });
-
     test.each([
       ["firstname.lastname@mycompany.com", false],
       ["http://myhost", true],
@@ -75,17 +59,11 @@ describe('io.wcm.ui.granite.validation', () => {
       ["/content/dam/sample.jpg", false],
       ["/ns1:this/is/ns2:a/path", false]
     ])('should validate "%s" as %s', (value, isValid) => {
-      const result = validate({ value });
-      expectValidationResult(result, isValid, "Please enter a valid URL.");
+      validate('wcmio.url', value, isValid, "Please enter a valid URL.");
     });
   });
 
   describe('wcmio.path', () => {
-    let validate;
-    beforeAll(() => {
-      validate = validators['[data-foundation-validation~="wcmio.path"]'];
-    });
-
     test.each([
       ["firstname.lastname@mycompany.com", false],
       ["http://myhost", false],
@@ -101,33 +79,19 @@ describe('io.wcm.ui.granite.validation', () => {
       ["/content/dam/sample.jpg", true],
       ["/ns1:this/is/ns2:a/path", true]
     ])('should validate "%s" as %s', (value, isValid) => {
-      const result = validate({ value });
-      expectValidationResult(result, isValid, "Please enter a valid content path.");
+      validate('wcmio.path', value, isValid, "Please enter a valid content path.");
     });
   });
 
   describe('wcmio.pattern', () => {
-    let validate;
-    beforeAll(() => {
-      validate = validators['[data-foundation-validation~="wcmio.pattern"]'];
-    });
-
-    test('matches pattern', () => {
-      const result = validate({
-        value: "abc",
-        "data-wcmio-pattern": "^ab.*$",
-        "data-wcmio-patternmessage": "Invalid."
+    test.each([
+        ["abc", "^ab.*$", true],
+        ["def", "^ab.*$", false]
+    ])('should validate "%s" as %s', (value, pattern, isValid) => {
+      validate('wcmio.pattern', value, isValid, "Invalid.", {
+        'data-wcmio-pattern': pattern,
+        'data-wcmio-patternmessage': "Invalid."
       });
-      expectValidationResult(result, true);
-    });
-
-    test('does not match pattern', () => {
-      const result = validate({
-        value: "def",
-        "data-wcmio-pattern": "^ab.*$",
-        "data-wcmio-patternmessage": "Invalid."
-      });
-      expectValidationResult(result, false, "Invalid.");
     });
   });
 });
@@ -137,11 +101,10 @@ describe('io.wcm.ui.granite.validation', () => {
  * If isValid is true, expects result to be null or undefined.
  * If isValid is false, expects result to be a string and matches expectedMessage.
  */
-function expectValidationResult(result, isValid, expectedMessage) {
-  if (isValid) {
-    expect(result === null || result === undefined).toBe(true);
-  }
-  else {
-    expect(result).toBe(expectedMessage);
+function expectValidationResult(validator, isValid, expectedMessage) {
+  const result = validator.checkValidity();
+  expect(result).toBe(isValid);
+  if (!isValid) {
+    expect(validator.message).toBe(expectedMessage);
   }
 }
