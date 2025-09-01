@@ -177,8 +177,8 @@
         tempName: 'data-was-required'
       }
     ].forEach(function(obj) {
-      const attributeName = show ? obj.tempName : obj.name;
-      const value = $field.attr(attributeName);
+      var attributeName = show ? obj.tempName : obj.name;
+      var value = $field.attr(attributeName);
       $field.removeAttr(attributeName);
       if (value) {
         $field.attr(show ? obj.name : obj.tempName, value);
