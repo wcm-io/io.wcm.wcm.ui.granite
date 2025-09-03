@@ -31,6 +31,8 @@ import org.osgi.framework.ServiceReference;
  */
 class LatestPredicateProviderWrapper extends AbstractPredicateProviderWrapper {
 
+  private static final String NODE_PREDICATE_INTERFACE = "com.day.cq.commons.predicates.NodePredicate";
+
   LatestPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {
     super(serviceReference, bundleContext);
   }
@@ -42,7 +44,24 @@ class LatestPredicateProviderWrapper extends AbstractPredicateProviderWrapper {
     if (predicate == null) {
       return null;
     }
+    if (isNodePredicate(predicate)) {
+      return new NodePredicateWrapper((java.util.function.Predicate)predicate)::test;
+    }
     return predicate::test;
+  }
+
+  /**
+   * Checks if the given predicate implementation implements the NodePredicate interface.
+   * @param obj Predicate implementation
+   * @return true if NodePredicate
+   */
+  private static boolean isNodePredicate(Object obj) {
+    for (Class<?> intf : obj.getClass().getInterfaces()) {
+      if (NODE_PREDICATE_INTERFACE.equals(intf.getName())) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

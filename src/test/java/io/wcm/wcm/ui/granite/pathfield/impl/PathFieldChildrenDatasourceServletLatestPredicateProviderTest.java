@@ -62,7 +62,7 @@ class PathFieldChildrenDatasourceServletLatestPredicateProviderTest {
         PREDICATE_NAME, "folder");
     context.registerService(Predicate.class, new com.day.cq.commons.predicate.IsHierarchyNodePredicate(),
         PREDICATE_NAME, "hierarchy");
-    context.registerService(Predicate.class, new com.day.cq.commons.predicate.HierarchyNotFilePredicate(),
+    context.registerService(java.util.function.Predicate.class, new com.day.cq.commons.predicates.HierarchyNotFilePredicate(),
         PREDICATE_NAME, "hierarchyNotFile");
     context.registerService(Predicate.class, new com.day.cq.commons.predicate.IsNoSystemNodePredicate(),
         PREDICATE_NAME, "nosystem");

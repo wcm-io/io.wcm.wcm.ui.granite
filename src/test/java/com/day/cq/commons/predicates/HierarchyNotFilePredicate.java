@@ -19,13 +19,30 @@
  */
 package com.day.cq.commons.predicates;
 
-import java.util.function.Predicate;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.day.cq.commons.jcr.JcrConstants;
 
 /**
- * This new predicate provider interface is introduced in AEMaaCS API in 2024.
+ * New predicate implementation that is introduced in AEMaaCS API in 2024.
  */
-public interface PredicateProvider {
+public class HierarchyNotFilePredicate implements NodePredicate {
 
-  Predicate getPredicate(String name);
+  private final Logger log = LoggerFactory.getLogger(HierarchyNotFilePredicate.class);
 
+  @Override
+  public boolean test(Node node) {
+    try {
+      return node.isNodeType(JcrConstants.NT_HIERARCHYNODE) && !node.isNodeType(JcrConstants.NT_FILE);
+    }
+    catch (RepositoryException ex) {
+      log.warn("Error evaluating predciate.", ex);
+    }
+    return false;
+  }
 }
+

@@ -21,11 +21,13 @@ package com.day.cq.commons.predicates;
 
 import java.util.function.Predicate;
 
-/**
- * This new predicate provider interface is introduced in AEMaaCS API in 2024.
- */
-public interface PredicateProvider {
+import javax.jcr.Node;
 
-  Predicate getPredicate(String name);
+/**
+ * New NodePredicate interface is introduced in AEMaaCS API in 2024.
+ */
+public interface NodePredicate extends Predicate<Node> {
+
+  // no implementation
 
 }

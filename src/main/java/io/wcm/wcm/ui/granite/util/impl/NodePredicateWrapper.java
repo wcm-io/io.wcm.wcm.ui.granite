@@ -17,15 +17,29 @@
  * limitations under the License.
  * #L%
  */
-package com.day.cq.commons.predicates;
+package io.wcm.wcm.ui.granite.util.impl;
 
 import java.util.function.Predicate;
 
-/**
- * This new predicate provider interface is introduced in AEMaaCS API in 2024.
- */
-public interface PredicateProvider {
+import javax.jcr.Node;
 
-  Predicate getPredicate(String name);
+import org.apache.sling.api.resource.Resource;
+
+class NodePredicateWrapper implements Predicate<Resource> {
+
+  private final Predicate<Node> delegate;
+
+  NodePredicateWrapper(Predicate<Node> delegate) {
+    this.delegate = delegate;
+  }
+
+  @Override
+  public boolean test(Resource resource) {
+    Node node = resource.adaptTo(Node.class);
+    if (node != null) {
+      return delegate.test(node);
+    }
+    return false;
+  }
 
 }

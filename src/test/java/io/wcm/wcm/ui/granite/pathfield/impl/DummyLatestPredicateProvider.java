@@ -37,14 +37,20 @@ public class DummyLatestPredicateProvider implements PredicateProvider {
 
   @Override
   public Predicate getPredicate(String name) {
-    org.apache.commons.collections.Predicate[] predicates = context.getServices(org.apache.commons.collections.Predicate.class,
+    Predicate[] predicates = context.getServices(Predicate.class,
         "(" + PREDICATE_NAME + "=" + name + ")");
     if (predicates.length > 0) {
-      return predicates[0]::evaluate;
+      return predicates[0];
     }
     else {
-      return null;
+      // fallback to old predicate implementations
+      org.apache.commons.collections.Predicate[] commonsPredicates = context.getServices(org.apache.commons.collections.Predicate.class,
+          "(" + PREDICATE_NAME + "=" + name + ")");
+      if (commonsPredicates.length > 0) {
+        return commonsPredicates[0]::evaluate;
+      }
     }
+    return null;
   }
 
 }

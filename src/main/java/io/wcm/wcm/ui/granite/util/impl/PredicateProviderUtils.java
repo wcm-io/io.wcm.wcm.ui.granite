@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>
  * Tries to get them from latest implementation from <code>com.day.cq.commons.predicates.PredicateProvider</code>
- * first (introduced in AEMaaCS API in 2025), and if that's not available, falls back to
+ * first (introduced in AEMaaCS API in 2024), and if that's not available, falls back to
  * <code>com.day.cq.commons.predicate.PredicateProvider</code> (also available in AEM 6.x).
  * </p>
  */
