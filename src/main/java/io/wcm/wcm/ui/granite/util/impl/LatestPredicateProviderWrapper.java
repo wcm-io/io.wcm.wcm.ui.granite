@@ -19,60 +19,27 @@
  */
 package io.wcm.wcm.ui.granite.util.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.apache.commons.collections4.Predicate;
 import org.apache.sling.api.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-class LatestPredicateProviderWrapper implements PredicateProviderWrapper {
-
-  private final ServiceReference<?> serviceReference;
-  private final BundleContext bundleContext;
-  private final Object service;
-  private Method getPredicateMethod;
-
-  private static final Logger log = LoggerFactory.getLogger(LatestPredicateProviderWrapper.class);
+class LatestPredicateProviderWrapper extends AbstractPredicateProviderWrapper {
 
   LatestPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {
-    this.serviceReference = serviceReference;
-    this.bundleContext = bundleContext;
-    service = bundleContext.getService(serviceReference);
-    if (service != null) {
-      try {
-        getPredicateMethod = service.getClass().getMethod("getPredicate", String.class);
-      }
-      catch (NoSuchMethodException | SecurityException ex) {
-        log.warn("Legacy PredicateProvider service does not implement expected method 'getPredicate(String)'.", ex);
-      }
-    }
+    super(serviceReference, bundleContext);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public @Nullable Predicate<Resource> getPredicate(@NotNull String name) {
-    if (getPredicateMethod != null) {
-      try {
-        @SuppressWarnings("unchecked")
-        java.util.function.Predicate<Resource> predicate = (java.util.function.Predicate)getPredicateMethod.invoke(service, name);
-        return predicate::test;
-      }
-      catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-        log.warn("Error calling 'getPredicate(String)' on legacy PredicateProvider service.", ex);
-      }
-
+    java.util.function.Predicate<Resource> predicate = (java.util.function.Predicate)getPredicateInternal(name);
+    if (predicate == null) {
+      return null;
     }
-    return null;
-  }
-
-  @Override
-  public void close() {
-    bundleContext.ungetService(serviceReference);
+    return predicate::test;
   }
 
 }

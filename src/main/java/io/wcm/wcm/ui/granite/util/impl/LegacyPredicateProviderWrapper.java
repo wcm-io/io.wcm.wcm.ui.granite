@@ -28,38 +28,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-class LegacyPredicateProviderWrapper implements PredicateProviderWrapper {
-
-  private final ServiceReference<?> serviceReference;
-  private final BundleContext bundleContext;
-  private final Object service;
-  private Method getPredicateMethod;
-
-  private static final Logger log = LoggerFactory.getLogger(LegacyPredicateProviderWrapper.class);
+class LegacyPredicateProviderWrapper extends AbstractPredicateProviderWrapper {
 
   LegacyPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {
-    this.serviceReference = serviceReference;
-    this.bundleContext = bundleContext;
-    service = bundleContext.getService(serviceReference);
-    if (service != null) {
-      try {
-        getPredicateMethod = service.getClass().getMethod("getPredicate", String.class);
-      }
-      catch (NoSuchMethodException | SecurityException ex) {
-        log.warn("Legacy PredicateProvider service does not implement expected method 'getPredicate(String)'.", ex);
-      }
-    }
+    super(serviceReference, bundleContext);
   }
 
   @Override
   public @Nullable Predicate<Resource> getPredicate(@NotNull String name) {
-    if (getPredicateMethod != null) {
+    Object predicate = getPredicateInternal(name);
+    if (predicate != null) {
+      Method evaluateMethod;
       try {
-        Object predicate = getPredicateMethod.invoke(service, name);
-        Method evaluateMethod = predicate.getClass().getMethod("evaluate", Object.class);
+        evaluateMethod = predicate.getClass().getMethod("evaluate", Object.class);
         return resource -> {
           try {
             return Boolean.TRUE.equals(evaluateMethod.invoke(predicate, resource));
@@ -70,17 +52,11 @@ class LegacyPredicateProviderWrapper implements PredicateProviderWrapper {
           }
         };
       }
-      catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException ex) {
-        log.warn("Error calling 'getPredicate(String)' on legacy PredicateProvider service.", ex);
+      catch (NoSuchMethodException | SecurityException ex) {
+        log.warn("Legacy Predicate does not implement expected method 'evaluate(Object)'.", ex);
       }
-
     }
     return null;
-  }
-
-  @Override
-  public void close() {
-    bundleContext.ungetService(serviceReference);
   }
 
 }
