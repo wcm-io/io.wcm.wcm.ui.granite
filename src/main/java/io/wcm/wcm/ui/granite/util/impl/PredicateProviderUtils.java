@@ -64,25 +64,35 @@ public final class PredicateProviderUtils {
     if (filter == null) {
       return Collections.emptyList();
     }
-    PredicateProviderWrapper predicateProvider = getPredicateProvider(bundleContext);
-    return Arrays.asList(filter).stream()
-        .filter(Objects::nonNull)
-        .map(item -> {
-          Predicate<Resource> predicate = predicateProvider.getPredicate(item);
-          if (predicate != null) {
-            return predicate;
-          }
-          else {
-            log.warn("Unable to find predicate implementation for filter: {}", item);
-            return null;
-          }
-        })
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+    try (PredicateProviderWrapper predicateProvider = getPredicateProvider(bundleContext)) {
+      return Arrays.asList(filter).stream()
+          .filter(Objects::nonNull)
+          .map(item -> {
+            Predicate<Resource> predicate = predicateProvider.getPredicate(item);
+            if (predicate != null) {
+              return predicate;
+            }
+            else {
+              log.warn("Unable to find predicate implementation for filter: {}", item);
+              return null;
+            }
+          })
+          .filter(Objects::nonNull)
+          .collect(Collectors.toList());
+    }
+    catch (Exception ex) {
+      log.warn("Unable to close predicate provider.", ex);
+      return Collections.emptyList();
+    }
   }
 
   private static @NotNull PredicateProviderWrapper getPredicateProvider(@NotNull BundleContext bundleContext) {
-    ServiceReference<?> serviceReference = bundleContext.getServiceReference(PREDICATE_PROVIDER_CLASS_NAME_LEGACY);
+    ServiceReference<?> serviceReference = bundleContext.getServiceReference(PREDICATE_PROVIDER_CLASS_NAME_LATEST);
+    if (serviceReference != null) {
+      log.debug("Using legacy PredicateProvider implementation: {}", PREDICATE_PROVIDER_CLASS_NAME_LATEST);
+      return new LatestPredicateProviderWrapper(serviceReference, bundleContext);
+    }
+    serviceReference = bundleContext.getServiceReference(PREDICATE_PROVIDER_CLASS_NAME_LEGACY);
     if (serviceReference != null) {
       log.debug("Using legacy PredicateProvider implementation: {}", PREDICATE_PROVIDER_CLASS_NAME_LEGACY);
       return new LegacyPredicateProviderWrapper(serviceReference, bundleContext);

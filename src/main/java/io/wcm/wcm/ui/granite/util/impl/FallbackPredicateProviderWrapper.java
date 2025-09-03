@@ -35,7 +35,7 @@ class FallbackPredicateProviderWrapper implements PredicateProviderWrapper {
   }
 
   @Override
-  public void unget() {
+  public void close() throws Exception {
     // nothing to do
   }
 

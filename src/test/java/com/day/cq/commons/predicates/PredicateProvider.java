@@ -17,16 +17,15 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.ui.granite.util.impl;
+package com.day.cq.commons.predicates;
 
-import org.apache.commons.collections4.Predicate;
-import org.apache.sling.api.resource.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.function.Predicate;
 
-interface PredicateProviderWrapper extends AutoCloseable {
+/**
+ * This new predicate provider interface is introduced in AEMaaCS API in 2025.
+ */
+public interface PredicateProvider {
 
-  @Nullable
-  Predicate<Resource> getPredicate(@NotNull String name);
+  Predicate getPredicate(String name);
 
 }

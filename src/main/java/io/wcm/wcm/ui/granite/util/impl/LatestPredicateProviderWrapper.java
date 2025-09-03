@@ -31,16 +31,16 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class LegacyPredicateProviderWrapper implements PredicateProviderWrapper {
+class LatestPredicateProviderWrapper implements PredicateProviderWrapper {
 
   private final ServiceReference<?> serviceReference;
   private final BundleContext bundleContext;
   private final Object service;
   private Method getPredicateMethod;
 
-  private static final Logger log = LoggerFactory.getLogger(LegacyPredicateProviderWrapper.class);
+  private static final Logger log = LoggerFactory.getLogger(LatestPredicateProviderWrapper.class);
 
-  LegacyPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {
+  LatestPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {
     this.serviceReference = serviceReference;
     this.bundleContext = bundleContext;
     service = bundleContext.getService(serviceReference);
@@ -58,19 +58,11 @@ class LegacyPredicateProviderWrapper implements PredicateProviderWrapper {
   public @Nullable Predicate<Resource> getPredicate(@NotNull String name) {
     if (getPredicateMethod != null) {
       try {
-        Object predicate = getPredicateMethod.invoke(service, name);
-        Method evaluateMethod = predicate.getClass().getMethod("evaluate", Object.class);
-        return resource -> {
-          try {
-            return Boolean.TRUE.equals(evaluateMethod.invoke(predicate, resource));
-          }
-          catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            log.warn("Error calling 'getPredicate(String)' on legacy PredicateProvider service.", ex);
-            return false;
-          }
-        };
+        @SuppressWarnings("unchecked")
+        java.util.function.Predicate<Resource> predicate = (java.util.function.Predicate)getPredicateMethod.invoke(service, name);
+        return predicate::test;
       }
-      catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException ex) {
+      catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         log.warn("Error calling 'getPredicate(String)' on legacy PredicateProvider service.", ex);
       }
 

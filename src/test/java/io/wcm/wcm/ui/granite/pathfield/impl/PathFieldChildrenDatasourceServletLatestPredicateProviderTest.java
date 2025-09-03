@@ -23,7 +23,7 @@ import static com.day.cq.commons.jcr.JcrConstants.JCR_PRIMARYTYPE;
 import static com.day.cq.commons.jcr.JcrConstants.NT_FILE;
 import static com.day.cq.commons.jcr.JcrConstants.NT_HIERARCHYNODE;
 import static com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
-import static io.wcm.wcm.ui.granite.pathfield.impl.DummyPredicateProvider.PREDICATE_NAME;
+import static io.wcm.wcm.ui.granite.pathfield.impl.DummyLegacyPredicateProvider.PREDICATE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -40,14 +40,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.adobe.granite.ui.components.ExpressionResolver;
 import com.adobe.granite.ui.components.ds.DataSource;
-import com.day.cq.commons.predicate.PredicateProvider;
+import com.day.cq.commons.predicates.PredicateProvider;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import io.wcm.wcm.ui.granite.testcontext.MockExpressionResolver;
 
 @ExtendWith(AemContextExtension.class)
-class PathFieldChildrenDatasourceServletTest {
+class PathFieldChildrenDatasourceServletLatestPredicateProviderTest {
 
   private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
 
@@ -56,7 +56,7 @@ class PathFieldChildrenDatasourceServletTest {
   @BeforeEach
   void setUp() {
     context.registerService(ExpressionResolver.class, new MockExpressionResolver());
-    context.registerService(PredicateProvider.class, new DummyPredicateProvider(context));
+    context.registerService(PredicateProvider.class, new DummyLatestPredicateProvider(context));
 
     context.registerService(Predicate.class, new com.day.cq.commons.predicate.IsFolderPredicate(),
         PREDICATE_NAME, "folder");
