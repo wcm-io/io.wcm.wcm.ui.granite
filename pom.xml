@@ -59,6 +59,11 @@
       <artifactId>commons-lang3</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <scope>compile</scope>
+    </dependency>
 
 <!-- (implicit reference in configScopePathBrowser JSP)
     <dependency>
@@ -85,8 +90,8 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.framework</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>

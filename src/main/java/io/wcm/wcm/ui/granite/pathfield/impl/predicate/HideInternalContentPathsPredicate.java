@@ -22,14 +22,14 @@ package io.wcm.wcm.ui.granite.pathfield.impl.predicate;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
 /**
  * Hide certain "AEM-internal" content paths when listing resource children.
  */
-public class HideInternalContentPathsPredicate implements Predicate {
+public class HideInternalContentPathsPredicate implements Predicate<Resource> {
 
   /**
    * List of paths that are hidden by default.
@@ -67,9 +67,9 @@ public class HideInternalContentPathsPredicate implements Predicate {
   private static final String CONTENT_ROOT_PATH = "/content";
 
   @Override
-  public boolean evaluate(Object object) {
+  public boolean evaluate(Resource resource) {
     // if resource is a resource on the first level (below root node), allow only /content
-    String path = ((Resource)object).getPath();
+    String path = resource.getPath();
     if (FIRST_LEVEL_PATH.matcher(path).matches()) {
       return StringUtils.equals(path, CONTENT_ROOT_PATH);
     }

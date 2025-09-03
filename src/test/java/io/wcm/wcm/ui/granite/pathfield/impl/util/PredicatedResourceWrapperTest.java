@@ -27,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.Test;
@@ -93,10 +93,9 @@ class PredicatedResourceWrapperTest {
     assertTrue(children.isEmpty());
   }
 
-  private static final class HideChild2Predcate implements Predicate {
+  private static final class HideChild2Predcate implements Predicate<Resource> {
     @Override
-    public boolean evaluate(Object object) {
-      Resource resource = (Resource)object;
+    public boolean evaluate(Resource resource) {
       return !StringUtils.equals(resource.getName(), "child2");
     }
   }

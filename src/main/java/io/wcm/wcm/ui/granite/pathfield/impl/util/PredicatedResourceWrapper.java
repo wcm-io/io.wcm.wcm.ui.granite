@@ -21,9 +21,9 @@ package io.wcm.wcm.ui.granite.pathfield.impl.util;
 
 import java.util.Iterator;
 
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.iterators.FilterIterator;
-import org.apache.commons.collections.iterators.TransformIterator;
+import org.apache.commons.collections4.Predicate;
+import org.apache.commons.collections4.iterators.FilterIterator;
+import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceWrapper;
 
@@ -32,13 +32,13 @@ import org.apache.sling.api.resource.ResourceWrapper;
  */
 public class PredicatedResourceWrapper extends ResourceWrapper {
 
-  private final Predicate predicate;
+  private final Predicate<Resource> predicate;
 
   /**
    * @param resource Resource
    * @param predicate Predicate
    */
-  public PredicatedResourceWrapper(Resource resource, Predicate predicate) {
+  public PredicatedResourceWrapper(Resource resource, Predicate<Resource> predicate) {
     super(resource);
     this.predicate = predicate;
   }
@@ -53,10 +53,10 @@ public class PredicatedResourceWrapper extends ResourceWrapper {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("null")
   public Iterator<Resource> listChildren() {
-    return new TransformIterator(new FilterIterator(super.listChildren(), predicate),
-        obj -> new PredicatedResourceWrapper((Resource)obj, predicate));
+    return new TransformIterator<>(new FilterIterator<>(super.listChildren(), predicate),
+        obj -> new PredicatedResourceWrapper(obj, predicate));
   }
 
   @Override
