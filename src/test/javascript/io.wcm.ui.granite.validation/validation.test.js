@@ -16,7 +16,11 @@ describe('io.wcm.ui.granite.validation', () => {
     el.setAttribute('data-foundation-validation', type);
     el.value = value;
     const validator = $(el).adaptTo("foundation-validation");
-    expectValidationResult(validator, isValid, validationMessage);
+    const result = validator.checkValidity();
+    expect(result).toBe(isValid);
+    if (!isValid) {
+      expect(validator.message).toBe(validationMessage);
+    }
   }
 
   beforeAll(() => {
@@ -96,15 +100,3 @@ describe('io.wcm.ui.granite.validation', () => {
   });
 });
 
-/**
- * Helper to check validation result.
- * If isValid is true, expects result to be null or undefined.
- * If isValid is false, expects result to be a string and matches expectedMessage.
- */
-function expectValidationResult(validator, isValid, expectedMessage) {
-  const result = validator.checkValidity();
-  expect(result).toBe(isValid);
-  if (!isValid) {
-    expect(validator.message).toBe(expectedMessage);
-  }
-}
