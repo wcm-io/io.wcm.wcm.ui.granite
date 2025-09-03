@@ -29,6 +29,9 @@ import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Wrapper for legacy PredicateProvider implementation that returns Commons Collection 3 Predicate.
+ */
 class LegacyPredicateProviderWrapper extends AbstractPredicateProviderWrapper {
 
   LegacyPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {

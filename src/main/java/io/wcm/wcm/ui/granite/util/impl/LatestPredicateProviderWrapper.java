@@ -26,6 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Wrapper for latest PredicateProvider implementation that returns java.util.function.Predicate.
+ */
 class LatestPredicateProviderWrapper extends AbstractPredicateProviderWrapper {
 
   LatestPredicateProviderWrapper(ServiceReference<?> serviceReference, BundleContext bundleContext) {
