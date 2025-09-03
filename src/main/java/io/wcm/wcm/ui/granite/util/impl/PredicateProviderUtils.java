@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Predicate;
 import org.apache.sling.api.resource.Resource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -60,8 +61,8 @@ public final class PredicateProviderUtils {
    * @return List of predicates
    */
   @SuppressWarnings({ "java:S2583", "null" }) // filter may be null
-  public static @NotNull List<Predicate<Resource>> toPredicates(@NotNull String[] filter, @NotNull BundleContext bundleContext) {
-    if (filter == null) {
+  public static @NotNull List<Predicate<Resource>> toPredicates(@NotNull String @Nullable [] filter, @NotNull BundleContext bundleContext) {
+    if (filter == null || filter.length == 0) {
       return Collections.emptyList();
     }
     try (PredicateProviderWrapper predicateProvider = getPredicateProvider(bundleContext)) {
