@@ -90,7 +90,7 @@ public final class PredicateProviderUtils {
   private static @NotNull PredicateProviderWrapper getPredicateProvider(@NotNull BundleContext bundleContext) {
     ServiceReference<?> serviceReference = bundleContext.getServiceReference(PREDICATE_PROVIDER_CLASS_NAME_LATEST);
     if (serviceReference != null) {
-      log.debug("Using legacy PredicateProvider implementation: {}", PREDICATE_PROVIDER_CLASS_NAME_LATEST);
+      log.debug("Using latest PredicateProvider implementation: {}", PREDICATE_PROVIDER_CLASS_NAME_LATEST);
       return new LatestPredicateProviderWrapper(serviceReference, bundleContext);
     }
     serviceReference = bundleContext.getServiceReference(PREDICATE_PROVIDER_CLASS_NAME_LEGACY);
