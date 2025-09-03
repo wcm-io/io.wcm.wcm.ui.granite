@@ -22,7 +22,8 @@ package io.wcm.wcm.ui.granite.pathfield.impl.predicate;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.Predicate;
+import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +36,7 @@ class HideInternalContentPathsPredicateTest {
 
   private final AemContext context = new AemContext();
 
-  private Predicate underTest;
+  private Predicate<Resource> underTest;
 
   @BeforeEach
   void setUp() {

@@ -21,36 +21,33 @@ package io.wcm.wcm.ui.granite.pathfield.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
-import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.PredicateUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.iterators.FilterIterator;
-import org.apache.commons.collections.iterators.TransformIterator;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.Predicate;
+import org.apache.commons.collections4.PredicateUtils;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.FilterIterator;
+import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.jetbrains.annotations.NotNull;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.adobe.granite.ui.components.Config;
 import com.adobe.granite.ui.components.ExpressionHelper;
@@ -59,10 +56,10 @@ import com.adobe.granite.ui.components.PagingIterator;
 import com.adobe.granite.ui.components.ds.AbstractDataSource;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.EmptyDataSource;
-import com.day.cq.commons.predicate.PredicateProvider;
 
 import io.wcm.wcm.ui.granite.pathfield.impl.predicate.HideInternalContentPathsPredicate;
 import io.wcm.wcm.ui.granite.pathfield.impl.util.PredicatedResourceWrapper;
+import io.wcm.wcm.ui.granite.util.impl.PredicateProviderUtils;
 
 /**
  * Servlet implementing the data source for the path field widget.
@@ -75,12 +72,14 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/ui/granite/components/form/pathfield/datasources/children";
 
+  private BundleContext bundleContext;
   @Reference
   private ExpressionResolver expressionResolver;
-  @Reference
-  private PredicateProvider predicateProvider;
 
-  private static final Logger log = LoggerFactory.getLogger(PathFieldChildrenDatasourceServlet.class);
+  @Activate
+  private void activate(BundleContext bc) {
+    this.bundleContext = bc;
+  }
 
   @Override
   @SuppressWarnings("null")
@@ -133,33 +132,32 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
       final String itemResourceType = cfg.get("itemResourceType", String.class);
       final String[] filter = new String[] { ex.get(cfg.get("filter", "hierarchyNotFile"), String.class) };
 
-      final Collection<Predicate> predicates = new ArrayList<>();
+      final Collection<Predicate<Resource>> predicates = new ArrayList<>();
       predicates.add(new HideInternalContentPathsPredicate());
-      predicates.addAll(toPredicates(filter));
+      predicates.addAll(PredicateProviderUtils.toPredicates(filter, bundleContext));
 
       if (searchName != null) {
         final Pattern searchNamePattern = Pattern.compile(Pattern.quote(searchName), Pattern.CASE_INSENSITIVE);
         predicates.add(obj -> {
-            Resource r = (Resource)obj;
+            Resource r = obj;
             return searchNamePattern.matcher(r.getName()).lookingAt();
         });
       }
 
-      final Predicate predicate = PredicateUtils.allPredicate(predicates);
-      final Transformer transformer = createTransformer(itemResourceType, predicate);
+      final Predicate<Resource> predicate = PredicateUtils.allPredicate(predicates);
+      final Transformer<Resource, Resource> transformer = createTransformer(itemResourceType, predicate);
 
       DataSource datasource = new AbstractDataSource() {
         @Override
-        @SuppressWarnings("unchecked")
         public Iterator<Resource> iterator() {
-          List<Resource> list = IteratorUtils.toList(new FilterIterator(parent.listChildren(), predicate));
+          List<Resource> list = IteratorUtils.toList(new FilterIterator<>(parent.listChildren(), predicate));
 
           // sort result set alphabetically - but only if parent node does not have orderable child nodes
           if (!isOrderableChildNodes(parent)) {
             Collections.sort(list, (Resource r1, Resource r2) -> r1.getName().compareTo(r2.getName()));
           }
 
-          return new TransformIterator(new PagingIterator<>(list.iterator(), offset, limit), transformer);
+          return new TransformIterator<>(new PagingIterator<>(list.iterator(), offset, limit), transformer);
         }
       };
 
@@ -169,29 +167,8 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
     request.setAttribute(DataSource.class.getName(), ds);
   }
 
-  @SuppressWarnings("java:S2583") // filter may be null
-  private List<Predicate> toPredicates(@NotNull String[] filter) {
-    if (filter == null) {
-      return Collections.emptyList();
-    }
-    return Arrays.asList(filter).stream()
-        .filter(Objects::nonNull)
-        .map(item -> {
-          Predicate predicate = predicateProvider.getPredicate(item);
-          if (predicate != null) {
-            return predicate;
-          }
-          else {
-            log.warn("Unable to find predicate implementation for filter: {}", item);
-            return null;
-          }
-        })
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
-  }
-
-  private static Transformer createTransformer(final String itemResourceType, final Predicate predicate) {
-    return r -> new PredicatedResourceWrapper((Resource)r, predicate) {
+  private static Transformer<Resource, Resource> createTransformer(final String itemResourceType, final Predicate<Resource> predicate) {
+    return r -> new PredicatedResourceWrapper(r, predicate) {
       @Override
       public String getResourceType() {
         if (itemResourceType == null) {
