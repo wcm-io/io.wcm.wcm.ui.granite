@@ -92,8 +92,6 @@
       });
     } else if (typeof component.value !== "undefined") {
       values.push(component.value);
-    } else if (typeof component.getValue === "function") {
-      values.push(component.getValue());
     } else {
       console.error('Unsupported component', component, 'and element', element);
     }
@@ -134,23 +132,21 @@
     if (show) {
       $element.removeClass("hide");
       $element.removeClass("wcmio-dialog-showhide-status-hide");
-      $element.find("[data-validation], [data-foundation-validation], input[aria-required=false], textarea[aria-required=false], coral-multifield[aria-required=false], foundation-autocomplete[aria-required=false]")
+      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required=false]")
           .filter(":not(.hide>input)")
           .filter(":not(input.hide)")
           .filter(":not(.hide>textarea)")
           .filter(":not(textarea.hide)")
-
           .filter(":not(.hide>coral-multifield)")
           .filter(":not(input.coral-multifield)")
           .each(function (index, field) {
-            toggleValidation($(field));
+            toggleValidation($(field), true);
           });
     } else {
       $element.addClass("hide");
-      $element.find("[data-validation], [data-foundation-validation],input[aria-required=true], textarea[aria-required=true], coral-multifield[aria-required=true], foundation-autocomplete[required]")
-
+      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required=true]")
           .each(function (index, field) {
-            toggleValidation($(field));
+            toggleValidation($(field), false);
           });
       $element.addClass("wcmio-dialog-showhide-status-hide");
     }
@@ -160,41 +156,34 @@
    * If the form element is not shown we have to disable the required validation for that field.
    *
    * @param {jQuery} $field To disable / enable required validation.
+   * @param {boolean} show Should the field be shown or hidden?
    */
-  function toggleValidation($field) {
-    var propRequired = $field.prop("required");
-    var ariaRequired = $field.attr("aria-required");
-    var isRequired = (ariaRequired === "true");
-
-    // skip toggle if the field is already hidden and validation was already toggled (in case of nested show/hide structures)
-    if ($field.parents(".wcmio-dialog-showhide-status-hide").length > 0) {
-      return;
-    }
-
-    ['validation', 'foundation-validation'].forEach(function(key) {
-      const attr = 'data-' + key;
-      const backup = 'data-was-' + key;
-      const value = $field.attr(attr);
-      const backupValue = $field.attr(backup);
-
-      if (backupValue !== undefined) {
-        $field.attr(attr, backupValue).removeAttr(backup);
-      } else if (value !== undefined) {
-        $field.attr(backup, value).removeAttr(attr);
+  function toggleValidation($field, show) {
+    [
+      {
+        name: 'data-validation',
+        tempName: 'data-was-validation'
+      },
+      {
+        name: 'data-foundation-validation',
+        tempName: 'data-was-foundation-validation'
+      },
+      {
+        name: 'aria-required',
+        tempName: 'data-was-aria-required'
+      },
+      {
+        name: 'required',
+        tempName: 'data-was-required'
+      }
+    ].forEach(function(obj) {
+      var attributeName = show ? obj.tempName : obj.name;
+      var value = $field.attr(attributeName);
+      $field.removeAttr(attributeName);
+      if (value) {
+        $field.attr(show ? obj.name : obj.tempName, value);
       }
     });
-
-    if ($field.is("foundation-autocomplete") && propRequired !== "undefined") {
-      if (propRequired === true) {
-        $field[0].required = false;
-        $field.attr("aria-required", false);
-      } else if (propRequired === false) {
-        $field[0].required = true;
-        $field.removeAttr("aria-required");
-      }
-    } else if (typeof ariaRequired !== "undefined") {
-      $field.attr("aria-required", String(!isRequired));
-    }
 
     var api = $field.adaptTo("foundation-validation");
     if (api) {

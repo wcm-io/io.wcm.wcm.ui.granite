@@ -25,8 +25,8 @@ expect.extend({
 window.$ = require('jquery');
 
 require('../mocks/coral/commons')(window);
-require('../mocks/granite/ui')(window, $);
-require('../mocks/foundation/validation')(window, $);
+require('../mocks/granite/ui')(window);
+require('../mocks/foundation/validation')(window);
 require('../../../main/webapp/app-root/clientlibs/io.wcm.ui.granite.showhidedialogfields/js/showhide.js');
 
 $(window).adaptTo('foundation-registry').register('foundation.validation.validator', {
@@ -148,16 +148,27 @@ describe('dialog-showhide', () => {
                 <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".target" data-wcmio-dialog-showhide-parent=".content">
                     <input/>
                 </coral-checkbox>
-                <div class="coral-Form-fieldwrapper wcmio-dialog-showhide-status-hide target">
-                    <div id="test" data-showhidetargetvalue="false" data-foundation-validation="simple-attribute"></div>
+                <div class="coral-Form-fieldwrapper wcmio-dialog-showhide-status-hide target" data-showhidetargetvalue="true">
+                    <div id="test" data-foundation-validation="simple-attribute"></div>
                 </div>
             </div>
             `;
+            const checkbox = document.querySelector('coral-checkbox');
+            checkbox.checked = false;
+            checkbox.value = 'true';
+            const fieldWrapper = document.querySelector('.target');
+            const element = document.querySelector('#test');
             triggerContentLoaded();
-            // Should not be hidden by wcmio-dialog-showhide
-            expect(document.querySelector('#test')).not.toBeHidden();
+            // Should be hidden by wcmio-dialog-showhide
+            expect(fieldWrapper).toBeHidden();
             // Should not have validation triggered
-            expect(document.querySelector('#test')).not.toHaveAttribute('data-valid');
+            expect(element).toHaveAttribute('data-valid', 'true');
+            checkbox.checked = true;
+            $(checkbox).trigger('change');
+            // Should not be hidden by wcmio-dialog-showhide
+            expect(fieldWrapper).not.toBeHidden();
+            // Should have validation triggered
+            expect(element).toHaveAttribute('data-valid', 'false');
         });
 
         it('Supports "not" to invert the decision to show/hide the field', () => {
@@ -186,6 +197,25 @@ describe('dialog-showhide', () => {
             expect(trueItem).toBeHidden();
             expect(falseItem).not.toBeHidden();
             expect(emptyItem).not.toBeHidden();
+        });
+
+        it('Supports foundation-autocomplete', () => {
+            document.body.innerHTML = `
+            <div id="dialog">
+                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".my-target"></coral-checkbox>
+                <foundation-autocomplete class="my-target" data-foundation-validation data-showhidetargetvalue="test">
+                </foundation-autocomplete>
+            </div>`;
+            const checkbox = document.querySelector('coral-checkbox');
+            const foundationAutocomplete = document.querySelector('foundation-autocomplete');
+
+            checkbox.value = 'test';
+            checkbox.checked = false;
+            triggerContentLoaded();
+            expect(foundationAutocomplete).toBeHidden();
+            checkbox.checked = true;
+            $(checkbox).trigger('change');
+            expect(foundationAutocomplete).not.toBeHidden();
         });
     });
 
