@@ -138,10 +138,7 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
 
       if (searchName != null) {
         final Pattern searchNamePattern = Pattern.compile(Pattern.quote(searchName), Pattern.CASE_INSENSITIVE);
-        predicates.add(obj -> {
-            Resource r = obj;
-            return searchNamePattern.matcher(r.getName()).lookingAt();
-        });
+        predicates.add(resource -> searchNamePattern.matcher(resource.getName()).lookingAt());
       }
 
       final Predicate<Resource> predicate = PredicateUtils.allPredicate(predicates);
