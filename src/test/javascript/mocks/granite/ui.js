@@ -1,4 +1,4 @@
-module.exports = function(window, $) {
+module.exports = function(window) {
     window.Granite = window.Granite || {};
     window.Granite.$ = $;
     window.Granite.UI = {

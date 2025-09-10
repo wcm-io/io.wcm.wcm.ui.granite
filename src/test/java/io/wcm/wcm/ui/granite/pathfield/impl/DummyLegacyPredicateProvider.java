@@ -25,13 +25,13 @@ import com.day.cq.commons.predicate.PredicateProvider;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 
-class DummyPredicateProvider implements PredicateProvider {
+public class DummyLegacyPredicateProvider implements PredicateProvider {
 
   public static final String PREDICATE_NAME = "predicate.name";
 
   private final AemContext context;
 
-  DummyPredicateProvider(AemContext context) {
+  DummyLegacyPredicateProvider(AemContext context) {
     this.context = context;
   }
 

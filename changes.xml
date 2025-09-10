@@ -24,6 +24,16 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.11.2" date="2025-09-10">
+      <action type="update" dev="sseifert" issue="50"><![CDATA[
+        Auto-detect latest implementation of PredicateProvider in package <code>com.day.cq.commons.predicates.PredicateProvider</code> or <code>com.day.cq.commons.predicate.PredicateProvider</code> to avoid warnings in AEMaaCS.<br/>
+        Get rid of dependency to Commons Collection 3 by using reflection to access the legacy PredicateProvider.
+      ]]></action>
+      <action type="fix" dev="henrykuijpers" issue="48">
+        Granite UI Show/Hide: Fix bug with foundation-autocomplete becoming required while it should not be.
+      </action>
+    </release>
+
     <release version="1.11.0" date="2025-08-07">
       <action type="update" dev="henrykuijpers" issue="21"><![CDATA[
         Granite UI Show/Hide: Use checkbox value instead of checked state.<br/>

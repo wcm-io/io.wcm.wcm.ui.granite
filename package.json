@@ -18,6 +18,10 @@
     "reporters": [
       "jest-standard-reporter"
     ],
-    "coverageDirectory": "target/jest-coverage"
+    "coverageDirectory": "target/jest-coverage",
+    "collectCoverageFrom": [
+      "**/src/**/*.js",
+      "!**/src/test/**/*.js"
+    ]
   }
 }
