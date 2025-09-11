@@ -132,7 +132,9 @@
     if (show) {
       $element.removeClass("hide");
       $element.removeClass("wcmio-dialog-showhide-status-hide");
-      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required=false]")
+      // Only restore validation for fields that had it before being hidden
+      // Look for fields with data-was-* attributes instead of current validation attributes
+      $element.find("[data-was-validation], [data-was-foundation-validation], [data-was-aria-required], [data-was-required]")
           .filter(":not(.hide>input)")
           .filter(":not(input.hide)")
           .filter(":not(.hide>textarea)")
@@ -144,7 +146,7 @@
           });
     } else {
       $element.addClass("hide");
-      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required=true]")
+      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [aria-required=true], [required]")
           .each(function (index, field) {
             toggleValidation($(field), false);
           });
