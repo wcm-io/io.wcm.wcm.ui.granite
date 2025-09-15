@@ -132,7 +132,8 @@
     if (show) {
       $element.removeClass("hide");
       $element.removeClass("wcmio-dialog-showhide-status-hide");
-      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required=false]")
+      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
+          .filter(":not(input[role=combobox])") // Input belonging to foundation-autocomplete
           .filter(":not(.hide>input)")
           .filter(":not(input.hide)")
           .filter(":not(.hide>textarea)")
@@ -144,7 +145,8 @@
           });
     } else {
       $element.addClass("hide");
-      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required=true]")
+      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
+          .filter(":not(input[role=combobox])") // Input belonging to foundation-autocomplete
           .each(function (index, field) {
             toggleValidation($(field), false);
           });
@@ -171,10 +173,6 @@
       {
         name: 'aria-required',
         tempName: 'data-was-aria-required'
-      },
-      {
-        name: 'required',
-        tempName: 'data-was-required'
       }
     ].forEach(function(obj) {
       var attributeName = show ? obj.tempName : obj.name;
@@ -184,6 +182,16 @@
         $field.attr(show ? obj.name : obj.tempName, value);
       }
     });
+    if ($field.is("foundation-autocomplete")) {
+      var required = $field.prop("required");
+      var wasRequired = $field.attr("data-was-required");
+      if (!wasRequired) {
+        $field.attr("data-was-required", required);
+      }
+      if (wasRequired === 'true') {
+        $field.prop('required', show);
+      }
+    }
 
     var api = $field.adaptTo("foundation-validation");
     if (api) {
