@@ -187,6 +187,7 @@
       var wasRequired = $field.attr("data-was-required");
       if (!wasRequired) {
         $field.attr("data-was-required", required);
+        wasRequired = String(required);
       }
       if (wasRequired === 'true') {
         $field.prop('required', show);
