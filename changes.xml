@@ -24,6 +24,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.11.4" date="not released">
+      <action type="fix" dev="henrykuijpers" issue="54">
+        Granite UI Show/Hide: Fix bug which prevented saving dialogs when required pathfields were present in other hidden sections.
+      </action>
+    </release>
+
     <release version="1.11.2" date="2025-09-10">
       <action type="update" dev="sseifert" issue="50"><![CDATA[
         Auto-detect latest implementation of PredicateProvider in package <code>com.day.cq.commons.predicates.PredicateProvider</code> or <code>com.day.cq.commons.predicate.PredicateProvider</code> to avoid warnings in AEMaaCS.<br/>
