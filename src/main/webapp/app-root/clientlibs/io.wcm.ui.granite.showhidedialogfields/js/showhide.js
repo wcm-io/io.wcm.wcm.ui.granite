@@ -152,6 +152,36 @@
           });
       $element.addClass("wcmio-dialog-showhide-status-hide");
     }
+
+    toggleHiddenInput($element, show);
+  }
+
+  function toggleHiddenInput($element, show) {
+      if (show) {
+          $element.find("input:hidden[data-was-hidden]")
+              .each(function (index, field) {
+                  var $field = $(field);
+                  $field.removeAttr("data-was-hidden");
+                  $field.removeAttr("disabled");
+              });
+          if ($element.attr("type") === "hidden" && $element.attr("data-was-hidden") !== undefined) {
+              $element.removeAttr("data-was-hidden");
+              $element.removeAttr("disabled");
+          }
+      } else {
+          $element.find("input:hidden")
+              .filter(":not([data-was-hidden])")
+              .filter(":not([disabled])")
+              .each(function (index, field) {
+                  var $field = $(field);
+                  $field.attr("data-was-hidden", true);
+                  $field.attr("disabled", true);
+              });
+          if ($element.attr("type") === "hidden" && $element.attr("disabled") === undefined) {
+              $element.attr("data-was-hidden", true);
+              $element.attr("disabled", true);
+          }
+      }
   }
 
   /**
