@@ -129,6 +129,8 @@
       $element = $element.add($('#' + $parent.parent().attr('aria-labelledby')));
     }
 
+    toggleHiddenInput($element, show);
+
     if (show) {
       $element.removeClass("hide");
       $element.removeClass("wcmio-dialog-showhide-status-hide");
@@ -152,8 +154,6 @@
           });
       $element.addClass("wcmio-dialog-showhide-status-hide");
     }
-
-    toggleHiddenInput($element, show);
   }
 
   function toggleHiddenInput($element, show) {
@@ -172,12 +172,14 @@
           $element.find("input:hidden")
               .filter(":not([data-was-hidden])")
               .filter(":not([disabled])")
+              .filter(":not([name$='@Delete'])")
               .each(function (index, field) {
                   var $field = $(field);
                   $field.attr("data-was-hidden", true);
                   $field.attr("disabled", true);
               });
-          if ($element.attr("type") === "hidden" && $element.attr("disabled") === undefined) {
+          if ($element.attr("type") === "hidden" && $element.attr("disabled") === undefined &&
+              $element.attr("name") !== undefined && !$element.attr("name").endsWith("@Delete")) {
               $element.attr("data-was-hidden", true);
               $element.attr("disabled", true);
           }
