@@ -385,4 +385,52 @@ describe('dialog-showhide', () => {
             expect(radioTargetElement2).toBeHidden();
         });
     });
+
+    describe('Hidden input', () => {
+        let checkbox;
+        let hiddenElement1;
+        let hiddenElement2;
+        let hiddenElement3;
+        let hiddenElement3Delete;
+        beforeEach(() => {
+            document.body.innerHTML = `
+            <div id="dialog">
+                <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".checkbox-target">
+                    <input type="checkbox" value="true"/>
+                </coral-checkbox>
+                <div class="checkbox-target" id="checkbox-target-1" data-showhidetargetvalue="true"><input id="input-1" name="hidden-1" type="hidden" value="value-1"/></div>
+                <div class="checkbox-target" id="checkbox-target-2" data-showhidetargetvalue="true" data-showhidetargetnot="true"><input id="input-2" type="hidden" name="hidden-2" value="value-2"/></div>
+                <input class="checkbox-target" id="input-3" name="hidden-3" type="hidden" value="value-3" data-showhidetargetvalue="true"/>
+                <input class="checkbox-target" id="input-3-delete" name="hidden-3@Delete" type="hidden" data-showhidetargetvalue="true"/>
+            </div>
+            `;
+            checkbox = document.querySelector('coral-checkbox');
+            checkbox.value = 'true';
+            hiddenElement1 = document.querySelector('#input-1');
+            hiddenElement2 = document.querySelector('#input-2');
+            hiddenElement3 = document.querySelector('#input-3');
+            hiddenElement3Delete = document.querySelector('#input-3-delete');
+        });
+
+        it('Load', () => {
+            checkbox.checked = false;
+            checkbox.querySelector('input').checked = false;
+            triggerContentLoaded();
+            expect(hiddenElement1).toBeDisabled();
+            expect(hiddenElement2).not.toBeDisabled();
+            expect(hiddenElement3).toBeDisabled();
+            expect(hiddenElement3Delete).not.toBeDisabled();
+        });
+
+        it('Change', () => {
+            triggerContentLoaded();
+            checkbox.checked = true;
+            checkbox.querySelector('input').checked = true;
+            $(checkbox).trigger('change');
+            expect(hiddenElement1).not.toBeDisabled();
+            expect(hiddenElement2).toBeDisabled();
+            expect(hiddenElement3).not.toBeDisabled();
+            expect(hiddenElement3Delete).not.toBeDisabled();
+        });
+    });
 });
