@@ -5,7 +5,8 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "jest": "30.2.0",
