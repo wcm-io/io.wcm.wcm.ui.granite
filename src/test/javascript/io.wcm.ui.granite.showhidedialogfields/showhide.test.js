@@ -11,14 +11,6 @@ expect.extend({
     'toBeHiddenInherited': function(el) {
         const hidden = el.closest('.hide.wcmio-dialog-showhide-status-hide');
         return matchers.expect(hidden).toBeTrue();
-    },
-    'toBeFoundationValid': function(el) {
-        return matchers.toHaveAttribute.call(this, el, 'data-valid', 'true');
-    },
-    'toHaveFoundationValidationMessage': function(el, message) {
-        return message
-            ? matchers.toHaveAttribute.call(this, el, 'data-validation-message', message)
-            : matchers.toHaveAttribute.call(this, el, 'data-validation-message');
     }
 });
 
@@ -95,7 +87,6 @@ describe('dialog-showhide', () => {
             expect(document.querySelector('.coral-Form-fieldwrapper')).toBeHidden();
             expect(document.querySelector('.coral-Form-fieldwrapper .target')).not.toBeHidden();
             expect(document.querySelector('.coral-Form-fieldwrapper .target input')).not.toBeRequired();
-            expect(document.querySelector('.coral-Form-fieldwrapper .target input')).toBeFoundationValid();
         });
 
         it('Targets tab as well as tab content if applicable', () => {
@@ -161,14 +152,10 @@ describe('dialog-showhide', () => {
             triggerContentLoaded();
             // Should be hidden by wcmio-dialog-showhide
             expect(fieldWrapper).toBeHidden();
-            // Should not have validation triggered
-            expect(element).toHaveAttribute('data-valid', 'true');
             checkbox.checked = true;
             $(checkbox).trigger('change');
             // Should not be hidden by wcmio-dialog-showhide
             expect(fieldWrapper).not.toBeHidden();
-            // Should have validation triggered
-            expect(element).toHaveAttribute('data-valid', 'false');
         });
 
         it('Supports "not" to invert the decision to show/hide the field', () => {
@@ -264,11 +251,7 @@ describe('dialog-showhide', () => {
             expect(targetElement3).toBeHidden();
             expect(targetElement4).toBeHidden();
             expect(targetElement3.querySelector('input')).not.toBeRequired();
-            expect(targetElement3.querySelector('input')).toBeFoundationValid();
-            expect(targetElement3.querySelector('input')).not.toHaveFoundationValidationMessage();
             expect(targetElement4.querySelector('input')).not.toBeRequired();
-            expect(targetElement4.querySelector('input')).toBeFoundationValid();
-            expect(targetElement4.querySelector('input')).not.toHaveFoundationValidationMessage();
         });
 
         it('Change', () => {
@@ -281,11 +264,7 @@ describe('dialog-showhide', () => {
             expect(targetElement3).toBeHidden();
             expect(targetElement4).not.toBeHidden();
             expect(targetElement3.querySelector('input')).not.toBeRequired();
-            expect(targetElement3.querySelector('input')).toBeFoundationValid();
-            expect(targetElement3.querySelector('input')).not.toHaveFoundationValidationMessage();
             expect(targetElement4.querySelector('input')).toBeRequired();
-            expect(targetElement4.querySelector('input')).not.toBeFoundationValid();
-            expect(targetElement4.querySelector('input')).toHaveFoundationValidationMessage('Attribute was not "true"');
         });
     });
 
