@@ -102,7 +102,7 @@
       var targetValueIsContained = !!(values.includes(element.dataset.showhidetargetvalue)
           || includesCommaSeparated(element.dataset.showhidetargetvalues, values));
       var not = element.dataset.showhidetargetnot === 'true';
-      var show = element && targetValueIsContained !== not;
+      var show = element && targetValueIsContained !== not && !element.closest('.hide.wcmio-dialog-showhide-status-hide');
       setVisibilityAndHandleFieldValidation($(element), show);
     });
   }
