@@ -558,6 +558,67 @@ describe('dialog-showhide', () => {
                 expect(siblingHidden).not.toBeDisabled(); // Should remain unchanged
                 expect(innerHidden).toBeDisabled(); // Controlled by inner handler
             });
+
+            it('Should disable nested handler validation when parent context is hidden', () => {
+                document.body.innerHTML = `
+                <div id="dialog">
+                    <!-- Outer handler that controls parent context -->
+                    <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".parent-context">
+                        <input type="checkbox" value="true"/>
+                    </coral-checkbox>
+                    
+                    <div class="parent-context" data-showhidetargetvalue="true">
+                        <!-- Nested handler inside parent context -->
+                        <coral-checkbox class="wcmio-dialog-showhide nested-handler" data-wcmio-dialog-showhide-target=".nested-target">
+                            <input type="checkbox" value="true"/>
+                        </coral-checkbox>
+                        
+                        <div class="nested-target" data-showhidetargetvalue="true">
+                            <input id="nested-required-input" type="text" aria-required="true" data-foundation-validation="simple-attribute" data-simple-attribute="true"/>
+                        </div>
+                    </div>
+                </div>`;
+                
+                const outerCheckbox = document.querySelector('coral-checkbox:not(.nested-handler)');
+                const nestedCheckbox = document.querySelector('.nested-handler');
+                const nestedInput = document.querySelector('#nested-required-input');
+                
+                // Start with outer unchecked (parent context hidden) and nested checked
+                outerCheckbox.checked = false;
+                outerCheckbox.value = 'true';
+                nestedCheckbox.checked = true; // This would normally show the nested target
+                nestedCheckbox.value = 'true';
+                
+                triggerContentLoaded();
+                
+                // Parent context should be hidden
+                expect(document.querySelector('.parent-context')).toBeHidden();
+                
+                // Even though nested checkbox is checked, the nested target should be hidden 
+                // because the nested handler recognizes it's in a hidden context
+                expect(document.querySelector('.nested-target')).toBeHidden();
+                expect(nestedInput).not.toBeRequired(); // Should not be required because context is hidden
+                
+                // Now show the parent context
+                outerCheckbox.checked = true;
+                $(outerCheckbox).trigger('change');
+                
+                expect(document.querySelector('.parent-context')).not.toBeHidden();
+                
+                // The nested handler should now work normally, and since nested checkbox is checked,
+                // the nested target should be shown
+                expect(document.querySelector('.nested-target')).not.toBeHidden();
+                expect(nestedInput).toBeRequired(); // Should now be required
+                
+                // Hide parent context again
+                outerCheckbox.checked = false;
+                $(outerCheckbox).trigger('change');
+                
+                expect(document.querySelector('.parent-context')).toBeHidden();
+                // Nested target should be hidden again regardless of nested checkbox state
+                expect(document.querySelector('.nested-target')).toBeHidden();
+                expect(nestedInput).not.toBeRequired();
+            });
         });
     });
 });

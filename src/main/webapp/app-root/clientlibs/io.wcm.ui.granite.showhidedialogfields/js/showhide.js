@@ -60,6 +60,10 @@
       return;
     }
 
+    // Check if this show/hide handler is itself within a hidden context
+    // If so, all its targets should be treated as hidden regardless of its own logic
+    var isHandlerHidden = $element.closest('.hide.wcmio-dialog-showhide-status-hide').length > 0;
+
     // optional: get the selector to find the comment parent element
     var parentSelector = $element.data("wcmioDialogShowhideParent");
 
@@ -103,6 +107,12 @@
           || includesCommaSeparated(element.dataset.showhidetargetvalues, values));
       var not = element.dataset.showhidetargetnot === 'true';
       var show = element && targetValueIsContained !== not;
+      
+      // If the handler itself is hidden, force all targets to be hidden
+      if (isHandlerHidden) {
+        show = false;
+      }
+      
       setVisibilityAndHandleFieldValidation($(element), show);
     });
   }
@@ -154,6 +164,13 @@
           });
       $element.addClass("wcmio-dialog-showhide-status-hide");
     }
+
+    // Trigger re-evaluation of nested show/hide handlers when context visibility changes
+    $element.find('.wcmio-dialog-showhide').each(function() {
+      var $nestedHandler = $(this);
+      var nestedComponent = $nestedHandler[0];
+      showHide(nestedComponent, nestedComponent);
+    });
   }
 
   function toggleHiddenInput($element, show) {
