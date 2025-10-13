@@ -28,6 +28,9 @@
       <action type="fix" dev="rubnig" issue="59">
         Granite UI Show/Hide: Make sure hidden fields are not being posted, when they are in a hidden piece of a dialog.
       </action>
+      <action type="fix" dev="sseifert" issue="57">
+        Granite UI Show/Hide: Required/invalid fields should not be marked red when opening the dialog.
+      </action>
       <action type="fix" dev="sseifert" issue="60">
         Granite UI Show/Hide: Ensure nested Show/Hide blocks do not conflict with each other.
       </action>

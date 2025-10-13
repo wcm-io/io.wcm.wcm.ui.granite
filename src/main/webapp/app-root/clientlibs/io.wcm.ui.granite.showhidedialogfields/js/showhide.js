@@ -225,12 +225,6 @@
         $field.prop('required', show);
       }
     }
-
-    var api = $field.adaptTo("foundation-validation");
-    if (api) {
-      api.checkValidity();
-      api.updateUI();
-    }
   }
 
   /**
