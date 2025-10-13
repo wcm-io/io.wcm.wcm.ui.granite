@@ -28,6 +28,9 @@
       <action type="fix" dev="rubnig" issue="59">
         Granite UI Show/Hide: Make sure hidden fields are not being posted, when they are in a hidden piece of a dialog.
       </action>
+      <action type="fix" dev="sseifert" issue="60">
+        Granite UI Show/Hide: Ensure nested Show/Hide blocks do not conflict with each other.
+      </action>
     </release>
 
     <release version="1.11.4" date="2025-09-22">
