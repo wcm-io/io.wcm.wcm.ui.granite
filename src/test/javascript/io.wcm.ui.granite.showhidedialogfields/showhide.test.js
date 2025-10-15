@@ -412,4 +412,213 @@ describe('dialog-showhide', () => {
             expect(hiddenElement3Delete).not.toBeDisabled();
         });
     });
+
+    describe('Nested Show/Hide Handlers', () => {
+        describe('Basic nested functionality', () => {
+            it('Should handle nested show/hide handlers without validation conflicts', () => {
+                document.body.innerHTML = `
+                <div id="dialog">
+                    <!-- Outer handler -->
+                    <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".outer-target">
+                        <input type="checkbox" value="true"/>
+                    </coral-checkbox>
+                    
+                    <div class="outer-target" data-showhidetargetvalue="true">
+                        <input id="outer-input" type="text" aria-required="true" data-foundation-validation="simple-attribute" data-simple-attribute="true"/>
+                        
+                        <!-- Inner nested handler -->
+                        <coral-checkbox class="wcmio-dialog-showhide inner-checkbox" data-wcmio-dialog-showhide-target=".inner-target">
+                            <input type="checkbox" value="true"/>
+                        </coral-checkbox>
+                        
+                        <div class="inner-target" data-showhidetargetvalue="true">
+                            <input id="inner-input" type="text" aria-required="true" data-foundation-validation="simple-attribute" data-simple-attribute="true"/>
+                        </div>
+                        
+                        <!-- Sibling input that should only be controlled by outer handler -->
+                        <input id="sibling-input" type="text" aria-required="true" data-foundation-validation="simple-attribute" data-simple-attribute="true"/>
+                    </div>
+                </div>`;
+                
+                const outerCheckbox = document.querySelector('coral-checkbox:not(.inner-checkbox)');
+                const innerCheckbox = document.querySelector('.inner-checkbox');
+                const outerInput = document.querySelector('#outer-input');
+                const innerInput = document.querySelector('#inner-input');
+                const siblingInput = document.querySelector('#sibling-input');
+                
+                // Test initial state - both checkboxes unchecked
+                outerCheckbox.checked = false;
+                outerCheckbox.value = 'true';
+                innerCheckbox.checked = false;  
+                innerCheckbox.value = 'true';
+                
+                triggerContentLoaded();
+                
+                // Outer target should be hidden, so all inputs should be non-required
+                expect(document.querySelector('.outer-target')).toBeHidden();
+                expect(outerInput).not.toBeRequired();
+                expect(innerInput).not.toBeRequired();
+                expect(siblingInput).not.toBeRequired();
+                
+                // Show outer target
+                outerCheckbox.checked = true;
+                $(outerCheckbox).trigger('change');
+                
+                // Now outer and sibling inputs should be required, but inner should still be hidden
+                expect(document.querySelector('.outer-target')).not.toBeHidden();
+                expect(outerInput).toBeRequired(); // Controlled by outer handler
+                expect(siblingInput).toBeRequired(); // Controlled by outer handler
+                expect(document.querySelector('.inner-target')).toBeHidden();
+                expect(innerInput).not.toBeRequired(); // Controlled by inner handler, still hidden
+                
+                // Show inner target
+                innerCheckbox.checked = true;
+                $(innerCheckbox).trigger('change');
+                
+                // All inputs should now be required
+                expect(document.querySelector('.inner-target')).not.toBeHidden();
+                expect(outerInput).toBeRequired(); // Still controlled by outer
+                expect(siblingInput).toBeRequired(); // Still controlled by outer  
+                expect(innerInput).toBeRequired(); // Now controlled by inner
+                
+                // Hide inner target - should not affect outer controlled inputs
+                innerCheckbox.checked = false;
+                $(innerCheckbox).trigger('change');
+                
+                expect(document.querySelector('.inner-target')).toBeHidden();
+                expect(outerInput).toBeRequired(); // Should remain unchanged
+                expect(siblingInput).toBeRequired(); // Should remain unchanged
+                expect(innerInput).not.toBeRequired(); // Controlled by inner handler
+            });
+
+            it('Should handle nested hidden inputs without conflicts', () => {
+                document.body.innerHTML = `
+                <div id="dialog">
+                    <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".outer-target">
+                        <input type="checkbox" value="true"/>
+                    </coral-checkbox>
+                    
+                    <div class="outer-target" data-showhidetargetvalue="true">
+                        <input id="outer-hidden" type="hidden" name="outer-field" value="outer-value"/>
+                        
+                        <coral-checkbox class="wcmio-dialog-showhide inner-checkbox" data-wcmio-dialog-showhide-target=".inner-target">
+                            <input type="checkbox" value="true"/>
+                        </coral-checkbox>
+                        
+                        <div class="inner-target" data-showhidetargetvalue="true">
+                            <input id="inner-hidden" type="hidden" name="inner-field" value="inner-value"/>
+                        </div>
+                        
+                        <input id="sibling-hidden" type="hidden" name="sibling-field" value="sibling-value"/>
+                    </div>
+                </div>`;
+                
+                const outerCheckbox = document.querySelector('coral-checkbox:not(.inner-checkbox)');
+                const innerCheckbox = document.querySelector('.inner-checkbox');
+                const outerHidden = document.querySelector('#outer-hidden');
+                const innerHidden = document.querySelector('#inner-hidden');
+                const siblingHidden = document.querySelector('#sibling-hidden');
+                
+                // Both checkboxes unchecked
+                outerCheckbox.checked = false;
+                outerCheckbox.value = 'true';
+                innerCheckbox.checked = false;
+                innerCheckbox.value = 'true';
+                
+                triggerContentLoaded();
+                
+                // All hidden inputs should be disabled because outer target is hidden
+                expect(outerHidden).toBeDisabled();
+                expect(innerHidden).toBeDisabled();
+                expect(siblingHidden).toBeDisabled();
+                
+                // Show outer target
+                outerCheckbox.checked = true;
+                $(outerCheckbox).trigger('change');
+                
+                // Outer controlled inputs should be enabled, inner should still be disabled
+                expect(outerHidden).not.toBeDisabled();
+                expect(siblingHidden).not.toBeDisabled();
+                expect(innerHidden).toBeDisabled(); // Still controlled by inner handler
+                
+                // Show inner target
+                innerCheckbox.checked = true;
+                $(innerCheckbox).trigger('change');
+                
+                // All should be enabled
+                expect(outerHidden).not.toBeDisabled();
+                expect(siblingHidden).not.toBeDisabled();
+                expect(innerHidden).not.toBeDisabled();
+                
+                // Hide inner target - should not affect outer controlled inputs
+                innerCheckbox.checked = false;
+                $(innerCheckbox).trigger('change');
+                
+                expect(outerHidden).not.toBeDisabled(); // Should remain unchanged
+                expect(siblingHidden).not.toBeDisabled(); // Should remain unchanged
+                expect(innerHidden).toBeDisabled(); // Controlled by inner handler
+            });
+
+            it('Should disable nested handler validation when parent context is hidden', () => {
+                document.body.innerHTML = `
+                <div id="dialog">
+                    <!-- Outer handler that controls parent context -->
+                    <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".parent-context">
+                        <input type="checkbox" value="true"/>
+                    </coral-checkbox>
+                    
+                    <div class="parent-context" data-showhidetargetvalue="true">
+                        <!-- Nested handler inside parent context -->
+                        <coral-checkbox class="wcmio-dialog-showhide nested-handler" data-wcmio-dialog-showhide-target=".nested-target">
+                            <input type="checkbox" value="true"/>
+                        </coral-checkbox>
+                        
+                        <div class="nested-target" data-showhidetargetvalue="true">
+                            <input id="nested-required-input" type="text" aria-required="true" data-foundation-validation="simple-attribute" data-simple-attribute="true"/>
+                        </div>
+                    </div>
+                </div>`;
+                
+                const outerCheckbox = document.querySelector('coral-checkbox:not(.nested-handler)');
+                const nestedCheckbox = document.querySelector('.nested-handler');
+                const nestedInput = document.querySelector('#nested-required-input');
+                
+                // Start with outer unchecked (parent context hidden) and nested checked
+                outerCheckbox.checked = false;
+                outerCheckbox.value = 'true';
+                nestedCheckbox.checked = true; // This would normally show the nested target
+                nestedCheckbox.value = 'true';
+                
+                triggerContentLoaded();
+                
+                // Parent context should be hidden
+                expect(document.querySelector('.parent-context')).toBeHidden();
+                
+                // Even though nested checkbox is checked, the nested target should be hidden 
+                // because the nested handler recognizes it's in a hidden context
+                expect(document.querySelector('.nested-target')).toBeHidden();
+                expect(nestedInput).not.toBeRequired(); // Should not be required because context is hidden
+                
+                // Now show the parent context
+                outerCheckbox.checked = true;
+                $(outerCheckbox).trigger('change');
+                
+                expect(document.querySelector('.parent-context')).not.toBeHidden();
+                
+                // The nested handler should now work normally, and since nested checkbox is checked,
+                // the nested target should be shown
+                expect(document.querySelector('.nested-target')).not.toBeHidden();
+                expect(nestedInput).toBeRequired(); // Should now be required
+                
+                // Hide parent context again
+                outerCheckbox.checked = false;
+                $(outerCheckbox).trigger('change');
+                
+                expect(document.querySelector('.parent-context')).toBeHidden();
+                // Nested target should be hidden again regardless of nested checkbox state
+                expect(document.querySelector('.nested-target')).toBeHidden();
+                expect(nestedInput).not.toBeRequired();
+            });
+        });
+    });
 });
