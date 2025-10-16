@@ -60,6 +60,10 @@
       return;
     }
 
+    // Check if this show/hide handler is itself within a hidden context
+    // If so, all its targets should be treated as hidden regardless of its own logic
+    var isHandlerHidden = $element.closest('.hide.wcmio-dialog-showhide-status-hide').length > 0;
+
     // optional: get the selector to find the comment parent element
     var parentSelector = $element.data("wcmioDialogShowhideParent");
 
@@ -103,6 +107,12 @@
           || includesCommaSeparated(element.dataset.showhidetargetvalues, values));
       var not = element.dataset.showhidetargetnot === 'true';
       var show = element && targetValueIsContained !== not;
+      
+      // If the handler itself is hidden, force all targets to be hidden
+      if (isHandlerHidden) {
+        show = false;
+      }
+      
       setVisibilityAndHandleFieldValidation($(element), show);
     });
   }
@@ -129,10 +139,12 @@
       $element = $element.add($('#' + $parent.parent().attr('aria-labelledby')));
     }
 
+    toggleHiddenInput($element, show);
+
     if (show) {
       $element.removeClass("hide");
       $element.removeClass("wcmio-dialog-showhide-status-hide");
-      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
+      filterElementsExcludingNestedShowHide($element, "[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
           .filter(":not(input[role=combobox])") // Input belonging to foundation-autocomplete
           .filter(":not(.hide>input)")
           .filter(":not(input.hide)")
@@ -145,12 +157,49 @@
           });
     } else {
       $element.addClass("hide");
-      $element.find("[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
+      filterElementsExcludingNestedShowHide($element, "[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
           .filter(":not(input[role=combobox])") // Input belonging to foundation-autocomplete
           .each(function (index, field) {
             toggleValidation($(field), false);
           });
       $element.addClass("wcmio-dialog-showhide-status-hide");
+    }
+
+    // Trigger re-evaluation of nested show/hide handlers when context visibility changes
+    $element.find('.wcmio-dialog-showhide').each(function() {
+      var $nestedHandler = $(this);
+      var nestedComponent = $nestedHandler[0];
+      showHide(nestedComponent, nestedComponent);
+    });
+  }
+
+  function toggleHiddenInput($element, show) {
+    if (show) {
+      filterElementsExcludingNestedShowHide($element, "input:hidden[data-was-hidden]")
+        .each(function (index, field) {
+          var $field = $(field);
+          $field.removeAttr("data-was-hidden");
+          $field.removeAttr("disabled");
+        });
+      if ($element.attr("type") === "hidden" && $element.attr("data-was-hidden") !== undefined) {
+        $element.removeAttr("data-was-hidden");
+        $element.removeAttr("disabled");
+      }
+    } else {
+      filterElementsExcludingNestedShowHide($element, "input:hidden")
+        .filter(":not([data-was-hidden])")
+        .filter(":not([disabled])")
+        .filter(":not([name$='@Delete'])")
+        .each(function (index, field) {
+          var $field = $(field);
+          $field.attr("data-was-hidden", true);
+          $field.attr("disabled", true);
+        });
+      if ($element.attr("type") === "hidden" && $element.attr("disabled") === undefined &&
+        $element.attr("name") !== undefined && !$element.attr("name").endsWith("@Delete")) {
+        $element.attr("data-was-hidden", true);
+        $element.attr("disabled", true);
+      }
     }
   }
 
@@ -193,12 +242,55 @@
         $field.prop('required', show);
       }
     }
+  }
 
-    var api = $field.adaptTo("foundation-validation");
-    if (api) {
-      api.checkValidity();
-      api.updateUI();
-    }
+  /**
+   * Filters elements within the given parent element, excluding those that belong to nested show/hide handlers.
+   * This prevents conflicts when show/hide handlers are nested inside each other.
+   *
+   * @param {jQuery} $parent Parent element to search within.
+   * @param {String} selector CSS selector to find elements.
+   * @returns {jQuery} Filtered jQuery object containing only elements not controlled by nested handlers.
+   */
+  function filterElementsExcludingNestedShowHide($parent, selector) {
+    var $allElements = $parent.find(selector);
+    var $filteredElements = $();
+
+    // Find all nested show/hide control elements within the parent
+    var $nestedShowHideElements = $parent.find('.wcmio-dialog-showhide');
+
+    $allElements.each(function() {
+      var $element = $(this);
+      var belongsToNestedHandler = false;
+
+      // Check if this element is controlled by any nested show/hide handler
+      $nestedShowHideElements.each(function() {
+        var $nestedControl = $(this);
+        var nestedTarget = $nestedControl.data("wcmioDialogShowhideTarget");
+        
+        if (nestedTarget) {
+          // Check if the element is within the scope of this nested handler's target
+          var $nestedTargets = $(nestedTarget);
+          $nestedTargets.each(function() {
+            if ($(this).find($element).length > 0 || $(this).is($element)) {
+              belongsToNestedHandler = true;
+              return false; // Break out of loop
+            }
+          });
+          
+          if (belongsToNestedHandler) {
+            return false; // Break out of outer loop
+          }
+        }
+      });
+
+      // Only include elements that don't belong to nested handlers
+      if (!belongsToNestedHandler) {
+        $filteredElements = $filteredElements.add($element);
+      }
+    });
+
+    return $filteredElements;
   }
 
 })(document, Granite.$);
