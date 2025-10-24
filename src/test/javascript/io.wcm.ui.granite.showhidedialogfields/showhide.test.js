@@ -373,7 +373,7 @@ describe('dialog-showhide', () => {
         let hiddenElement3Delete;
         beforeEach(() => {
             document.body.innerHTML = `
-            <div id="dialog">
+            <div id="dialog" class="wcmio-dialog-showhide-delete-hidden-fields">
                 <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".checkbox-target">
                     <input type="checkbox" value="true"/>
                 </coral-checkbox>
@@ -493,7 +493,7 @@ describe('dialog-showhide', () => {
 
             it('Should handle nested hidden inputs without conflicts', () => {
                 document.body.innerHTML = `
-                <div id="dialog">
+                <div id="dialog" class="wcmio-dialog-showhide-delete-hidden-fields">
                     <coral-checkbox class="wcmio-dialog-showhide" data-wcmio-dialog-showhide-target=".outer-target">
                         <input type="checkbox" value="true"/>
                     </coral-checkbox>
