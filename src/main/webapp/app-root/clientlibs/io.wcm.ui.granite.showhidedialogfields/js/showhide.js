@@ -139,7 +139,7 @@
       $element = $element.add($('#' + $parent.parent().attr('aria-labelledby')));
     }
 
-    if ($element.closest('.wcmio-dialog-showhide-delete-hidden-fields').length) {
+    if ($element.closest('.wcmio-dialog-showhide-disable-hidden-fields').length) {
       toggleHiddenInput($element, show);
     }
 
