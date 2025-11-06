@@ -9,6 +9,8 @@ Supported Coral UI 3 components:
 
 ### Usage
 
+This works the same as the AEM built-in `cq-dialog-dropdown-showhide` feature, but with additional features.
+
 * Add the class `wcmio-dialog-showhide` to a select/dropdown or checkbox Granite UI component
 * Add a data attribute `wcmio-dialog-showhide-target` to the same element. The value should be a selector, usually a specific class name (the target class), to find all possible target elements that can be shown/hidden.
 * Add the target class to each target component that should be shown/hidden
@@ -25,7 +27,10 @@ It can be desired to invert the check result, meaning that a field will be *hidd
 
 * Add the data attribute `showhidetargetnot` with the value `true` to the target component. The check will be inverted, thus *hiding* the field instead of *showing* the field.
 
-This works the same as the AEM built-in `cq-dialog-dropdown-showhide` feature, but with additional features.
+Experimental features:
+
+* Add the class`wcmio-dialog-showhide-disable-hidden-fields` to automatically enable/disable all `hidden` fields in the shown/hidden sections.
+
 
 
 ### Example
