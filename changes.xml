@@ -24,6 +24,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.11.8" date="2025-11-07">
+      <action type="fix" dev="henrykuijpers" issue="67">
+        Granite UI Show/Hide: Make enabling/disabling of hidden fields an opt-in feature. It's only enabled when the class wcmio-dialog-showhide-disable-hidden-fields is added.
+      </action>
+    </release>
+
     <release version="1.11.6" date="2025-10-16">
       <action type="fix" dev="rubnig" issue="59">
         Granite UI Show/Hide: Make sure hidden fields are not being posted, when they are in a hidden piece of a dialog.
