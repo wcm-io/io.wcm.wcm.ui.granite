@@ -24,6 +24,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.11.10" date="unreleased">
+      <action type="add" dev="henrykuijpers" issue="70">
+        Granite UI Show/Hide: Support coral-fileupload.
+      </action>
+    </release>
+
     <release version="1.11.8" date="2025-11-07">
       <action type="fix" dev="henrykuijpers" issue="67">
         Granite UI Show/Hide: Make enabling/disabling of hidden fields an opt-in feature. It's only enabled when the class wcmio-dialog-showhide-disable-hidden-fields is added.
