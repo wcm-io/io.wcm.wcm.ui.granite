@@ -27,6 +27,8 @@
 (function(document, $) {
   "use strict";
 
+  var FIELDS_SELECTOR = "[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete, coral-fileupload";
+
   // when a dialog gets injected
   $(document).on("foundation-contentloaded", function (e) {
     // if there is already an inital value make sure the according target element becomes visible
@@ -146,7 +148,7 @@
     if (show) {
       $element.removeClass("hide");
       $element.removeClass("wcmio-dialog-showhide-status-hide");
-      filterElementsExcludingNestedShowHide($element, "[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
+      filterElementsExcludingNestedShowHide($element, FIELDS_SELECTOR)
           .filter(":not(input[role=combobox])") // Input belonging to foundation-autocomplete
           .filter(":not(.hide>input)")
           .filter(":not(input.hide)")
@@ -159,7 +161,7 @@
           });
     } else {
       $element.addClass("hide");
-      filterElementsExcludingNestedShowHide($element, "[data-validation]:not([data-validation='']), [data-foundation-validation]:not([data-foundation-validation='']), [data-was-validation], [data-was-foundation-validation], [aria-required], [data-was-aria-required], foundation-autocomplete")
+      filterElementsExcludingNestedShowHide($element, FIELDS_SELECTOR)
           .filter(":not(input[role=combobox])") // Input belonging to foundation-autocomplete
           .each(function (index, field) {
             toggleValidation($(field), false);
@@ -236,12 +238,25 @@
     if ($field.is("foundation-autocomplete")) {
       var required = $field.prop("required");
       var wasRequired = $field.attr("data-was-required");
-      if (!wasRequired) {
+      if (wasRequired === undefined) {
         $field.attr("data-was-required", required);
         wasRequired = String(required);
       }
       if (wasRequired === 'true') {
         $field.prop('required', show);
+      }
+    }
+    if ($field.is("coral-fileupload")) {
+      var required = $field.attr("data-cq-fileupload-required") === '';
+      var wasRequired = $field.attr("data-was-cq-fileupload-required");
+      if (wasRequired === undefined) {
+        $field.attr("data-was-cq-fileupload-required", required);
+        wasRequired = String(required);
+      }
+      if (wasRequired === 'true') {
+        show
+          ? $field.attr('data-cq-fileupload-required', '')
+          : $field.removeAttr('data-cq-fileupload-required');
       }
     }
   }
