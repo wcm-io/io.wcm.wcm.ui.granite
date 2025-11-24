@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
-    <release version="1.11.10" date="unreleased">
+    <release version="1.11.10" date="2025-11-24">
       <action type="add" dev="henrykuijpers" issue="70">
         Granite UI Show/Hide: Support coral-fileupload.
       </action>
