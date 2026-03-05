@@ -57,7 +57,9 @@ class EmulatorProviderImplTest {
   @BeforeEach
   void setUp() {
     underTest = context.registerInjectActivateService(new EmulatorProviderImpl(),
-        "templatePathPatterns", new String[] { "^/apps/app1/.*$", "^/apps/app2/.*$" });
+        "templatePathPatterns", new String[] {
+            "^/apps/app1/.*$", "^/apps/app2/.*$"
+        });
 
     page1 = context.create().page("/content/page1", "/apps/app1/template1",
         "cq:deviceGroups", new String[] {
@@ -99,6 +101,7 @@ class EmulatorProviderImplTest {
   }
 
   private static final class DeviceGroupListMock extends ArrayList<DeviceGroup> implements DeviceGroupList {
+
     private static final long serialVersionUID = 1L;
     // DeviceGroup list
   }
