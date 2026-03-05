@@ -60,26 +60,28 @@ public final class PredicateProviderUtils {
    * @param bundleContext OSGi bundle context
    * @return List of predicates
    */
-  @SuppressWarnings({ "java:S2583", "null" }) // filter may be null
+  @SuppressWarnings({
+      "java:S2583", "null"
+  }) // filter may be null
   public static @NotNull List<Predicate<Resource>> toPredicates(@NotNull String @Nullable [] filter, @NotNull BundleContext bundleContext) {
     if (filter == null || filter.length == 0) {
       return Collections.emptyList();
     }
     try (PredicateProviderWrapper predicateProvider = getPredicateProvider(bundleContext)) {
       return Arrays.asList(filter).stream()
-          .filter(Objects::nonNull)
-          .map(item -> {
-            Predicate<Resource> predicate = predicateProvider.getPredicate(item);
-            if (predicate != null) {
-              return predicate;
-            }
-            else {
-              log.warn("Unable to find predicate implementation for filter: {}", item);
-              return null;
-            }
-          })
-          .filter(Objects::nonNull)
-          .collect(Collectors.toList());
+        .filter(Objects::nonNull)
+        .map(item -> {
+          Predicate<Resource> predicate = predicateProvider.getPredicate(item);
+          if (predicate != null) {
+            return predicate;
+          }
+          else {
+            log.warn("Unable to find predicate implementation for filter: {}", item);
+            return null;
+          }
+        })
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
     }
     catch (Exception ex) {
       log.warn("Unable to close predicate provider.", ex);

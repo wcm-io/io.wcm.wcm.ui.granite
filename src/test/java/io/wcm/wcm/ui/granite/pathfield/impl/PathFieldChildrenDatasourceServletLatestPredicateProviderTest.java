@@ -73,10 +73,10 @@ class PathFieldChildrenDatasourceServletLatestPredicateProviderTest {
         "sling:resourceType", PathFieldChildrenDatasourceServlet.RESOURCE_TYPE));
 
     context.build().resource("/content/l1", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
-        .siblingsMode()
-        .resource("l1b", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
-        .resource("l1a", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
-        .resource("file", JCR_PRIMARYTYPE, NT_FILE);
+      .siblingsMode()
+      .resource("l1b", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
+      .resource("l1a", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
+      .resource("file", JCR_PRIMARYTYPE, NT_FILE);
 
   }
 
@@ -114,10 +114,10 @@ class PathFieldChildrenDatasourceServletLatestPredicateProviderTest {
   @Test
   void testHierarchyNotFilePredicate_OrderedChildNodes() {
     context.build().resource("/content/l2", JCR_PRIMARYTYPE, NT_UNSTRUCTURED)
-        .siblingsMode()
-        .resource("l2b", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
-        .resource("l2a", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
-        .resource("file", JCR_PRIMARYTYPE, NT_FILE);
+      .siblingsMode()
+      .resource("l2b", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
+      .resource("l2a", JCR_PRIMARYTYPE, NT_HIERARCHYNODE)
+      .resource("file", JCR_PRIMARYTYPE, NT_FILE);
 
     Map<String, Object> props = Map.of(
         "path", "/content/l2",

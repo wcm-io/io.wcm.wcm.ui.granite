@@ -247,14 +247,14 @@ public final class ColumnView {
     items = list.iterator();
 
     Column column = new Column()
-        .isCurrentResource(true)
-        .columnId(currentResource.getPath())
-        .hasMore(hasMore)
-        .metaElement(true);
+      .isCurrentResource(true)
+      .columnId(currentResource.getPath())
+      .hasMore(hasMore)
+      .metaElement(true);
     while (items.hasNext()) {
       Resource item = items.next();
       column.addItem(new ColumnItem(item)
-          .resourceType(itemResourceType));
+        .resourceType(itemResourceType));
     }
 
     return column;
@@ -278,11 +278,11 @@ public final class ColumnView {
     String columnId = "parentof:" + rootResource.getPath();
 
     Column column = new Column()
-        .columnId(columnId)
-        .hasMore(false);
+      .columnId(columnId)
+      .hasMore(false);
     column.addItem(new ColumnItem(rootResource)
-        .resourceType(itemResourceType)
-        .active(true));
+      .resourceType(itemResourceType)
+      .active(true));
     return column;
   }
 
@@ -307,9 +307,9 @@ public final class ColumnView {
       }
 
       Column column = new Column()
-          .columnId(r.getPath())
-          .lazy(true)
-          .activeId(activeId);
+        .columnId(r.getPath())
+        .lazy(true)
+        .activeId(activeId);
       columns.add(column);
     }
     return columns;

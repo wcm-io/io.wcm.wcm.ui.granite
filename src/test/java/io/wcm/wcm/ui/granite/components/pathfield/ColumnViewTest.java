@@ -67,6 +67,7 @@ class ColumnViewTest {
 
     // simulate data source retrieval
     context.request().setRequestDispatcherFactory(new MockRequestDispatcherFactory() {
+
       @Override
       public RequestDispatcher getRequestDispatcher(Resource resource, RequestDispatcherOptions options) {
         String path = resource.getValueMap().get("path", String.class);
@@ -78,6 +79,7 @@ class ColumnViewTest {
         }
         return requestDispatcher;
       }
+
       @Override
       public RequestDispatcher getRequestDispatcher(String path, RequestDispatcherOptions options) {
         Resource resource = context.resourceResolver().getResource(path);
@@ -320,8 +322,8 @@ class ColumnViewTest {
 
     List<String> expectedItemIds = List.of(columnItemIds);
     List<String> actualItemIds = column.getItems().stream()
-        .map(ColumnItem::getItemId)
-        .collect(Collectors.toList());
+      .map(ColumnItem::getItemId)
+      .collect(Collectors.toList());
     assertEquals(expectedItemIds, actualItemIds, "columnItems");
   }
 

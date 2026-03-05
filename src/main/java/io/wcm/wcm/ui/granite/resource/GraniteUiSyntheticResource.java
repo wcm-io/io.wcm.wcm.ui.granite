@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2014 - 2015 wcm.io
+ * Copyright (C) 2014-2015 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,9 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
     return result;
   }
 
-  @SuppressWarnings({ "unchecked", "null" })
+  @SuppressWarnings({
+      "unchecked", "null"
+  })
   @Override
   public <Type> Type adaptTo(Class<Type> type) {
     if (ValueMap.class.equals(type)) {

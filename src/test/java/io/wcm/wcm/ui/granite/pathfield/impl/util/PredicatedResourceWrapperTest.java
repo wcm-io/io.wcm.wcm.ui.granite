@@ -94,6 +94,7 @@ class PredicatedResourceWrapperTest {
   }
 
   private static final class HideChild2Predcate implements Predicate<Resource> {
+
     @Override
     public boolean evaluate(Resource resource) {
       return !StringUtils.equals(resource.getName(), "child2");
