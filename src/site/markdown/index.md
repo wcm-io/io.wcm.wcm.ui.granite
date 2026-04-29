@@ -25,7 +25,8 @@ Additionally a set of [Granite UI validators][validation] is provided which can 
 
 |WCM Granite UI Extensions version |AEM version supported
 |----------------------------------|----------------------
-|1.10.2 or higher                  |AEM 6.5.17+, AEMaaCS
+|1.11.12 or higher                 |AEM 6.5.24+, AEM 6.6.2+, AEMaaCS
+|1.10.2 - 1.11.10                  |AEM 6.5.17+, AEM 6.6.0+, AEMaaCS
 |1.9.4 - 1.10.0                    |AEM 6.5.7+, AEMaaCS
 |1.9.0 - 1.9.2                     |AEM 6.5+, AEMaaCS
 |1.7.x - 1.8.x                     |AEM 6.4+, AEMaaCS
