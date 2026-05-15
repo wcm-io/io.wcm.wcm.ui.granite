@@ -28,7 +28,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -108,7 +108,7 @@ public final class ColumnView {
     }
 
     // generate column for root
-    if (showRoot && (StringUtils.equals(currentResource.getPath(), rootResource.getPath()) || loadAncestors)) {
+    if (showRoot && (Strings.CS.equals(currentResource.getPath(), rootResource.getPath()) || loadAncestors)) {
       columns.add(getRootColumn(rootResource, itemResourceType));
     }
 
@@ -154,11 +154,11 @@ public final class ColumnView {
   }
 
   private boolean isSameResourceOrChild(Resource rootResource, Resource resource) {
-    if (StringUtils.equals(rootResource.getPath(), resource.getPath())) {
+    if (Strings.CS.equals(rootResource.getPath(), resource.getPath())) {
       return true;
     }
     else {
-      return StringUtils.startsWith(resource.getPath(), rootResource.getPath() + "/");
+      return Strings.CS.startsWith(resource.getPath(), rootResource.getPath() + "/");
     }
   }
 
@@ -322,7 +322,7 @@ public final class ColumnView {
   private static List<Resource> getAncestors(Resource currentResource, Resource rootResource) {
     List<Resource> results = new ArrayList<>();
 
-    if (currentResource == null || rootResource == null || StringUtils.equals(currentResource.getPath(), rootResource.getPath())) {
+    if (currentResource == null || rootResource == null || Strings.CS.equals(currentResource.getPath(), rootResource.getPath())) {
       return results;
     }
 

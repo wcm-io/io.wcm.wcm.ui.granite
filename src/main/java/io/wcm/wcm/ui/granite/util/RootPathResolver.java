@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.jetbrains.annotations.NotNull;
@@ -168,7 +169,7 @@ public final class RootPathResolver {
       return rootPath;
     }
     StringBuilder combinedPath = new StringBuilder(rootPath);
-    if (!StringUtils.startsWith(appendPath, "/")) {
+    if (!Strings.CS.startsWith(appendPath, "/")) {
       combinedPath.append("/");
     }
     combinedPath.append(appendPath);

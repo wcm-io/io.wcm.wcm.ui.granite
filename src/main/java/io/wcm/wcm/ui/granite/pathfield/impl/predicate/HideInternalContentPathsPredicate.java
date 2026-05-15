@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.Resource;
 
 /**
@@ -71,7 +71,7 @@ public class HideInternalContentPathsPredicate implements Predicate<Resource> {
     // if resource is a resource on the first level (below root node), allow only /content
     String path = resource.getPath();
     if (FIRST_LEVEL_PATH.matcher(path).matches()) {
-      return StringUtils.equals(path, CONTENT_ROOT_PATH);
+      return Strings.CS.equals(path, CONTENT_ROOT_PATH);
     }
     // allow all other paths except those from the list above
     return !HIDE_CONTENT_PATHS.contains(path);

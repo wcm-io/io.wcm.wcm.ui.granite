@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.Predicate;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -97,7 +97,7 @@ class PredicatedResourceWrapperTest {
 
     @Override
     public boolean evaluate(Resource resource) {
-      return !StringUtils.equals(resource.getName(), "child2");
+      return !Strings.CS.equals(resource.getName(), "child2");
     }
   }
 

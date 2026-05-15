@@ -172,7 +172,7 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
     return r -> new PredicatedResourceWrapper(r, predicate) {
 
       @Override
-      public String getResourceType() {
+      public @NotNull String getResourceType() {
         if (itemResourceType == null) {
           return super.getResourceType();
         }

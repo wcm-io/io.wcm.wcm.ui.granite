@@ -61,8 +61,9 @@ public final class PredicateProviderUtils {
    * @return List of predicates
    */
   @SuppressWarnings({
-      "java:S2583", "null"
-  }) // filter may be null
+      "java:S2583", "null", // filter may be null
+      "PMD.AvoidCatchingGenericException"
+  })
   public static @NotNull List<Predicate<Resource>> toPredicates(@NotNull String @Nullable [] filter, @NotNull BundleContext bundleContext) {
     if (filter == null || filter.length == 0) {
       return Collections.emptyList();

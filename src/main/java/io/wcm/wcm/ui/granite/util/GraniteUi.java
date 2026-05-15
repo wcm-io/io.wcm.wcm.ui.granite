@@ -22,6 +22,7 @@ package io.wcm.wcm.ui.granite.util;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -157,7 +158,7 @@ public final class GraniteUi {
     if (path == null) {
       return false;
     }
-    return StringUtils.startsWith(path, "/");
+    return Strings.CS.startsWith(path, "/");
   }
 
   private static Resource getContentResourceOrParentFromPath(SlingHttpServletRequest slingRequest, String contentPath) {
