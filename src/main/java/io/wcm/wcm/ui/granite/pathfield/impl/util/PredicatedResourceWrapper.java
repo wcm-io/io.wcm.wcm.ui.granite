@@ -26,6 +26,7 @@ import org.apache.commons.collections4.iterators.FilterIterator;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceWrapper;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Wraps a resource and filters all children by given predicate.
@@ -44,7 +45,7 @@ public class PredicatedResourceWrapper extends ResourceWrapper {
   }
 
   @Override
-  public Resource getChild(String relPath) {
+  public Resource getChild(@NotNull String relPath) {
     Resource child = super.getChild(relPath);
     if (child == null || !predicate.evaluate(child)) {
       return null;

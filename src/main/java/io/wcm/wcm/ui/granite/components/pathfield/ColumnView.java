@@ -34,8 +34,8 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.api.wrappers.CompositeValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.apache.sling.api.wrappers.ValueMapUtil;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.jetbrains.annotations.NotNull;
@@ -213,7 +213,7 @@ public final class ColumnView {
         ValueMap overwriteDataSourceProperties = new ValueMapDecorator(Map.of(PN_LIMIT, newLimit));
         Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
             dataSourceResource.getResourceType(),
-            new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
+            ValueMapUtil.merge(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
         return cmp.asDataSource(dataSourceResourceWrapper, resourceWrapper);
       }
       else {
