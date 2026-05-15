@@ -32,7 +32,6 @@ import org.apache.sling.api.resource.SyntheticResource;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 import com.day.cq.commons.jcr.JcrConstants;
@@ -122,7 +121,7 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
    * @return Resource
    */
   public static Resource create(@NotNull ResourceResolver resourceResolver, @NotNull ValueMap valueMap) {
-    return create(resourceResolver, null, JcrConstants.NT_UNSTRUCTURED, valueMap);
+    return create(resourceResolver, "", JcrConstants.NT_UNSTRUCTURED, valueMap);
   }
 
   /**
@@ -132,7 +131,7 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
    * @param resourceType Resource type
    * @return Resource
    */
-  public static Resource create(@NotNull ResourceResolver resourceResolver, @Nullable String path, @NotNull String resourceType) {
+  public static Resource create(@NotNull ResourceResolver resourceResolver, @NotNull String path, @NotNull String resourceType) {
     return create(resourceResolver, path, resourceType, ValueMap.EMPTY);
   }
 
@@ -144,7 +143,7 @@ public final class GraniteUiSyntheticResource extends SyntheticResource {
    * @param valueMap Properties
    * @return Resource
    */
-  public static Resource create(@NotNull ResourceResolver resourceResolver, @Nullable String path, @NotNull String resourceType,
+  public static Resource create(@NotNull ResourceResolver resourceResolver, @NotNull String path, @NotNull String resourceType,
       @NotNull ValueMap valueMap) {
     return new GraniteUiSyntheticResource(resourceResolver,
         path,

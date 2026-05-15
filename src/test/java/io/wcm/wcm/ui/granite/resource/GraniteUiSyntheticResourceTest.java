@@ -78,7 +78,7 @@ class GraniteUiSyntheticResourceTest {
   @Test
   void testCreateProperitesWithoutPath() {
     Resource underTest = create(context.resourceResolver(), SAMPLE_PROPERTES);
-    assertEquals(null, underTest.getPath());
+    assertEquals("", underTest.getPath());
     assertEquals(JcrConstants.NT_UNSTRUCTURED, underTest.getResourceType());
     assertEquals("value1", underTest.getValueMap().get("prop1", String.class));
     assertEquals(25, (int)underTest.getValueMap().get("prop2", 0));
