@@ -28,14 +28,14 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.api.wrappers.CompositeValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.apache.sling.api.wrappers.ValueMapUtil;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +108,7 @@ public final class ColumnView {
     }
 
     // generate column for root
-    if (showRoot && (StringUtils.equals(currentResource.getPath(), rootResource.getPath()) || loadAncestors)) {
+    if (showRoot && (Strings.CS.equals(currentResource.getPath(), rootResource.getPath()) || loadAncestors)) {
       columns.add(getRootColumn(rootResource, itemResourceType));
     }
 
@@ -154,11 +154,11 @@ public final class ColumnView {
   }
 
   private boolean isSameResourceOrChild(Resource rootResource, Resource resource) {
-    if (StringUtils.equals(rootResource.getPath(), resource.getPath())) {
+    if (Strings.CS.equals(rootResource.getPath(), resource.getPath())) {
       return true;
     }
     else {
-      return StringUtils.startsWith(resource.getPath(), rootResource.getPath() + "/");
+      return Strings.CS.startsWith(resource.getPath(), rootResource.getPath() + "/");
     }
   }
 
@@ -213,7 +213,7 @@ public final class ColumnView {
         ValueMap overwriteDataSourceProperties = new ValueMapDecorator(Map.of(PN_LIMIT, newLimit));
         Resource dataSourceResourceWrapper = GraniteUiSyntheticResource.child(resourceWrapper, NN_DATASOURCE,
             dataSourceResource.getResourceType(),
-            new CompositeValueMap(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
+            ValueMapUtil.merge(overwriteDataSourceProperties, dataSourceResource.getValueMap()));
         return cmp.asDataSource(dataSourceResourceWrapper, resourceWrapper);
       }
       else {
@@ -247,14 +247,14 @@ public final class ColumnView {
     items = list.iterator();
 
     Column column = new Column()
-        .isCurrentResource(true)
-        .columnId(currentResource.getPath())
-        .hasMore(hasMore)
-        .metaElement(true);
+      .isCurrentResource(true)
+      .columnId(currentResource.getPath())
+      .hasMore(hasMore)
+      .metaElement(true);
     while (items.hasNext()) {
       Resource item = items.next();
       column.addItem(new ColumnItem(item)
-          .resourceType(itemResourceType));
+        .resourceType(itemResourceType));
     }
 
     return column;
@@ -278,11 +278,11 @@ public final class ColumnView {
     String columnId = "parentof:" + rootResource.getPath();
 
     Column column = new Column()
-        .columnId(columnId)
-        .hasMore(false);
+      .columnId(columnId)
+      .hasMore(false);
     column.addItem(new ColumnItem(rootResource)
-        .resourceType(itemResourceType)
-        .active(true));
+      .resourceType(itemResourceType)
+      .active(true));
     return column;
   }
 
@@ -307,9 +307,9 @@ public final class ColumnView {
       }
 
       Column column = new Column()
-          .columnId(r.getPath())
-          .lazy(true)
-          .activeId(activeId);
+        .columnId(r.getPath())
+        .lazy(true)
+        .activeId(activeId);
       columns.add(column);
     }
     return columns;
@@ -322,7 +322,7 @@ public final class ColumnView {
   private static List<Resource> getAncestors(Resource currentResource, Resource rootResource) {
     List<Resource> results = new ArrayList<>();
 
-    if (currentResource == null || rootResource == null || StringUtils.equals(currentResource.getPath(), rootResource.getPath())) {
+    if (currentResource == null || rootResource == null || Strings.CS.equals(currentResource.getPath(), rootResource.getPath())) {
       return results;
     }
 

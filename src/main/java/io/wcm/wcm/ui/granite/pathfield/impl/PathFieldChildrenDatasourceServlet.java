@@ -68,6 +68,7 @@ import io.wcm.wcm.ui.granite.util.impl.PredicateProviderUtils;
 @SlingServletResourceTypes(
     resourceTypes = PathFieldChildrenDatasourceServlet.RESOURCE_TYPE)
 public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet {
+
   private static final long serialVersionUID = 1L;
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/ui/granite/components/form/pathfield/datasources/children";
@@ -130,7 +131,9 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
       final Integer offset = ex.get(cfg.get("offset", String.class), Integer.class);
       final Integer limit = ex.get(cfg.get("limit", String.class), Integer.class);
       final String itemResourceType = cfg.get("itemResourceType", String.class);
-      final String[] filter = new String[] { ex.get(cfg.get("filter", "hierarchyNotFile"), String.class) };
+      final String[] filter = new String[] {
+          ex.get(cfg.get("filter", "hierarchyNotFile"), String.class)
+      };
 
       final Collection<Predicate<Resource>> predicates = new ArrayList<>();
       predicates.add(new HideInternalContentPathsPredicate());
@@ -145,6 +148,7 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
       final Transformer<Resource, Resource> transformer = createTransformer(itemResourceType, predicate);
 
       DataSource datasource = new AbstractDataSource() {
+
         @Override
         public Iterator<Resource> iterator() {
           List<Resource> list = IteratorUtils.toList(new FilterIterator<>(parent.listChildren(), predicate));
@@ -166,8 +170,9 @@ public class PathFieldChildrenDatasourceServlet extends SlingSafeMethodsServlet 
 
   private static Transformer<Resource, Resource> createTransformer(final String itemResourceType, final Predicate<Resource> predicate) {
     return r -> new PredicatedResourceWrapper(r, predicate) {
+
       @Override
-      public String getResourceType() {
+      public @NotNull String getResourceType() {
         if (itemResourceType == null) {
           return super.getResourceType();
         }
