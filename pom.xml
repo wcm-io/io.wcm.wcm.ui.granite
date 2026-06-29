@@ -30,7 +30,7 @@
 
   <groupId>io.wcm</groupId>
   <artifactId>io.wcm.wcm.ui.granite</artifactId>
-  <version>1.12.0</version>
+  <version>1.12.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>WCM Granite UI Extensions</name>
@@ -48,7 +48,7 @@
     <site.url.module.prefix>wcm/ui/granite</site.url.module.prefix>
 
     <!-- Enable reproducible builds -->
-    <project.build.outputTimestamp>2026-06-29T07:16:35Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-06-29T07:17:23Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
